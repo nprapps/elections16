@@ -1,8 +1,16 @@
 {
-    "name": "app-template",
-    "version": "1.0.0",
-    "dependencies": {
-        "less": "~1.7.0",
-        "universal-jst": "~1.0.5"
-    }
+  "name": "app-template",
+  "version": "1.0.0",
+  "dependencies": {
+    "less": "~1.7.0",
+    "universal-jst": "~1.0.5"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.16",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.2",
+    "phantomjs": "^1.9.19"
+  }
 }
