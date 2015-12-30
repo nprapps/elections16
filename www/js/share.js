@@ -11,7 +11,7 @@ var SHARE = (function () {
 
 	var setup = function() {
 		$shareModal = $('#share-modal');
-		$clippy = $shareModal.find('.clippy');	
+		$clippy = $shareModal.find('.clippy');
 		$email = $shareModal.find('.email-friend a');
 		$facebook = $shareModal.find('.facebook-share a');
 		$twitter = $shareModal.find('.twitter-share a');
@@ -28,7 +28,7 @@ var SHARE = (function () {
 
 	    clippy.on('ready', function(readyEvent) {
 	        clippy.on('aftercopy', onClippyCopy);
-	    });    
+	    });
 	}
 
 	/*

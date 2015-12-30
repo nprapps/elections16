@@ -26,6 +26,7 @@ module.exports = function(config) {
       'templates.js',
       'copy.js',
       'app.js',
+      '../test/spec/**/*spec.js'
     ],
 
 
