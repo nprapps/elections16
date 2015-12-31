@@ -26,7 +26,15 @@ module.exports = function(config) {
       'templates.js',
       'copy.js',
       'app.js',
-      '../test/spec/**/*spec.js'
+      '../../node_modules/jasmine-jquery/lib/jasmine-jquery.js',
+      '../test/spec/**/*spec.js',
+
+      {
+        pattern: 'data/candidates.json',
+        watched: false,
+        served: true,
+        included: true
+      }
     ],
 
 
