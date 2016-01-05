@@ -15,7 +15,4 @@ describe('app.js', function() {
         var candidateList = makeListOfCandidates(candidates);
         expect(candidateList.length).toBe(candidates.length);
     });
-
-
-
 });

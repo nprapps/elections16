@@ -5,7 +5,7 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '../js/',
+    basePath: '../',
 
 
     // frameworks to use
@@ -27,10 +27,10 @@ module.exports = function(config) {
       'copy.js',
       'app.js',
       '../../node_modules/jasmine-jquery/lib/jasmine-jquery.js',
-      '../test/spec/**/*spec.js',
+      'test/spec/**/*spec.js',
 
       {
-        pattern: 'data/candidates.json',
+        pattern: 'data/*.json',
         watched: false,
         served: true,
         included: true
