@@ -3,7 +3,7 @@ Copyright 2016 NPR.  All rights reserved.  No part of these materials may be rep
 (Want to use this code? Send an email to nprapps@npr.org!)
 
 
-elections16
+Elections 2016
 ========================
 
 * [What is this?](#what-is-this)
