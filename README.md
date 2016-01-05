@@ -31,7 +31,7 @@ Elections 2016
 What is this?
 -------------
 
-**TKTK: Describe elections16 here.**
+A rig to consume and display 2016 election results, from primaries through the general election.
 
 Assumptions
 -----------
