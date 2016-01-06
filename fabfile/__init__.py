@@ -64,6 +64,15 @@ def staging():
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
+@task
+def dev():
+    """
+    Run locally.
+    """
+    env.settings = 'dev'
+    app_config.configure_targets(env.settings)
+
+
 """
 Branches
 
