@@ -230,5 +230,5 @@ DATABASE = {
     'user': secrets.get('POSTGRES_USER', None),
     'password': secrets.get('POSTGRES_PASSWORD', None),
     'host': secrets.get('POSTGRES_HOST', 'localhost'),
-    'port': secrets.get('POSTGRES_PORT', 5432)
+    'port': secrets.get('POSTGRES_PORT', '5432')
 }

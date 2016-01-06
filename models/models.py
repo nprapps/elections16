@@ -59,4 +59,3 @@ class Results(BaseModel):
     votecount = IntegerField(null=True)
     votepct = DecimalField(null=True)
     winner = BooleanField(null=True)
-

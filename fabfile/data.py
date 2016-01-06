@@ -4,7 +4,7 @@
 Commands that update or process the application data.
 """
 from elex.api.api import Elections
-from fabric.api import local, task, require, run
+from fabric.api import local, task, require, run, shell_env
 from fabric.state import env
 from models import models
 
@@ -24,14 +24,10 @@ def bootstrap_db():
     """
     Build the database.
     """
-    require('settings', provided_by=['production', 'staging', 'dev'])
-
-    if env.settings == 'dev':
+    pg_vars = _get_pg_vars()
+    with shell_env(**pg_vars):
         local('dropdb --if-exists %s' % app_config.DATABASE['name'])
         local('createdb %s' % app_config.DATABASE['name'])
-    else:
-        # use correct connection string and do it
-        pass
 
     models.Results.create_table()
 
@@ -57,3 +53,22 @@ def load_results(election_date=None):
     else:
         pass
         # use correct connection string
+
+
+def _get_pg_vars():
+    """
+    Construct a dict of postgres environment variables to set in shell for
+    fabric commands
+    """
+    vars = {
+        'PGHOST': app_config.DATABASE['host'],
+        'PGPORT': app_config.DATABASE['port'],
+        'PGDATABASE': app_config.DATABASE['name'],
+    }
+    if app_config.DATABASE['user']:
+        vars['PGUSER'] = app_config.DATABASE['user']
+
+    if app_config.DATABASE['password']:
+        vars['PGPASSWORD'] = app_config.DATABASE['password']
+
+    return vars
