@@ -35,9 +35,7 @@ Base configuration
 """
 env.user = app_config.SERVER_USER
 env.forward_agent = True
-
 env.hosts = []
-env.settings = None
 
 """
 Environments
