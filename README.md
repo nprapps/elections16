@@ -321,6 +321,8 @@ For running cron jobs:
 
 You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
 
+You will also need to set any secrets that for local development come from workinprivate in `/etc/environment'.
+
 Install cron jobs
 -----------------
 
