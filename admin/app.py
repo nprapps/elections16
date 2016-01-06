@@ -4,10 +4,10 @@ import app_config
 import datetime
 import json
 import logging
-import static
 
 from flask import Flask, make_response, render_template
 from render_utils import make_context, smarty_filter, urlencode_filter
+from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ except IOError:
 
 app.logger.setLevel(logging.INFO)
 
-app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
+app.register_blueprint(static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')

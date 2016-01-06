@@ -104,7 +104,7 @@ def app(port='8000'):
         local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app.app:wsgi_app' % port)
 
 @task
-def admin_app(port='8001'):
+def admin(port='8001'):
     """
     Serve admin/app.py.
     """
