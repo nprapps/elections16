@@ -20,7 +20,6 @@ module.exports = function(config) {
       'lib/bootstrap.js',
       'lib/underscore.js',
       'lib/ZeroClipboard.js',
-      'templates.js',
       'app.js',
       '../../node_modules/jasmine-jquery/lib/jasmine-jquery.js',
       'test/spec/**/*spec.js',
