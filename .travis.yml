@@ -11,4 +11,4 @@ script:
   - fab tests
   - fab js_tests
   #- python -m nose2.__main__ -v
-sudo: false
+#sudo: false
