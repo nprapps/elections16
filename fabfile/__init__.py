@@ -35,9 +35,7 @@ Base configuration
 """
 env.user = app_config.SERVER_USER
 env.forward_agent = True
-
 env.hosts = []
-env.settings = None
 
 """
 Environments
@@ -63,6 +61,15 @@ def staging():
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
+
+@task
+def dev():
+    """
+    Run locally.
+    """
+    env.settings = 'dev'
+    app_config.configure_targets(env.settings)
+
 
 """
 Branches
