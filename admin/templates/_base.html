@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{{ COPY.content.project_name }}</title>
+
+    <!-- CSS -->
+    {{ CSS.push('less/admin.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/app.min.css') }}
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+</head>
+<body>
+    <!-- ANALYTICS JAVASCRIPT -->
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.render('js/app-header.min.js') }}
+
+    {% block content %}
+    {% endblock content %}
+
+    {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/lib/underscore.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/lib/bootstrap.js') }}
+    {{ JS.push('js/lib/moment.js') }}
+
+    {# uncomment both files to use simpleStorage #}
+    {# {{ JS.push('js/lib/simpleStorage.js') }} #}
+    {# {{ JS.push('js/storage.js') }} #}
+
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/admin.js') }}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
+    {{ JS.render('js/app-footer.min.js') }}
+
+    {% block extra_foot %}
+    {% endblock extra_foot %}
+
+</body>
+</html>

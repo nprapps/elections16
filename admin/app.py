@@ -14,11 +14,11 @@ app = Flask(__name__)
 app.debug = app_config.DEBUG
 
 try:
-    file_handler = logging.FileHandler('%s/public_app.log' % app_config.SERVER_LOG_PATH)
+    file_handler = logging.FileHandler('%s/admin_app.log' % app_config.SERVER_LOG_PATH)
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 except IOError:
-    print 'Could not open %s/public_app.log, skipping file-based logging' % app_config.SERVER_LOG_PATH
+    print 'Could not open %s/admin_app.log, skipping file-based logging' % app_config.SERVER_LOG_PATH
 
 app.logger.setLevel(logging.INFO)
 
@@ -37,7 +37,7 @@ def _test_app():
 
     return make_response(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-# Example of rendering index.html with public_app 
+# Example of rendering index.html with admin_app 
 @app.route ('/%s/' % app_config.PROJECT_SLUG, methods=['GET'])
 def index():
     """
@@ -58,4 +58,4 @@ else:
 
 # Catch attempts to run the app directly
 if __name__ == '__main__':
-    print 'This command has been removed! Please run "fab public_app" instead!'
+    print 'This command has been removed! Please run "fab admin_app" instead!'
