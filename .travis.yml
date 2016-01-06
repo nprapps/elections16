@@ -1,7 +1,14 @@
 language: python
 python:
   - "2.7"
+before_script:
+    - sudo apt-get install phantomjs
+    - npm install
+# karma karma-jasmine jasmine-fixture jasmine-core phantomjs karma-phantomjs-launcher
 install:
   - travis_retry pip install -r requirements.txt
-script: python -m nose2.__main__ -v
+script: 
+  - fab tests
+  - fab js_tests
+  #- python -m nose2.__main__ -v
 sudo: false
