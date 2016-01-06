@@ -96,17 +96,17 @@ Running the app
 @task
 def app(port='8000'):
     """
-    Serve app.py.
+    Serve app/app.py.
     """
     if env.settings:
-        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app:wsgi_app'" % (env.settings, port))
+        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app.app:wsgi_app'" % (env.settings, port))
     else:
-        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app:wsgi_app' % port)
+        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app.app:wsgi_app' % port)
 
 @task
-def admin_app(port='8001'):
+def admin(port='8001'):
     """
-    Serve admin_app.py.
+    Serve admin/app.py.
     """
     if env.settings:
         local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload admin.app:wsgi_app'" % (env.settings, port))

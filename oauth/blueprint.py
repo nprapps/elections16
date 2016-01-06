@@ -10,7 +10,7 @@ from render_utils import make_context
 
 SPREADSHEET_URL_TEMPLATE = 'https://docs.google.com/feeds/download/spreadsheets/Export?exportFormat=xlsx&key=%s'
 
-oauth = Blueprint('_oauth', __name__)
+oauth = Blueprint('_oauth', __name__, template_folder='templates')
 
 @oauth.route('/oauth/')
 def oauth_alert():
@@ -28,7 +28,7 @@ def oauth_alert():
         if resp.status == 200:
             context['email'] = resp.data['email']
 
-    return render_template('oauth/oauth.html', **context)
+    return render_template('oauth.html', **context)
 
 @oauth.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
@@ -40,7 +40,7 @@ def authenticate():
     context = make_context()
 
     if not _has_api_credentials():
-        return render_template('oauth/warning.html', **context)
+        return render_template('warning.html', **context)
 
     result = authomatic.login(WerkzeugAdapter(request, response), 'google')
 
@@ -51,7 +51,7 @@ def authenticate():
             save_credentials(result.user.credentials)
             get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
 
-        return render_template('oauth/authenticate.html', **context)
+        return render_template('authenticate.html', **context)
 
     return response
 

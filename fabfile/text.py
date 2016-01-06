@@ -8,7 +8,7 @@ import app_config
 import os
 
 from fabric.api import task
-from oauth import get_document, get_credentials
+from oauth.blueprint import get_document, get_credentials
 from termcolor import colored
 
 @task(default=True)
