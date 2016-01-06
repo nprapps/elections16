@@ -228,7 +228,6 @@ secrets = get_secrets()
 DATABASE = {
     'name': PROJECT_SLUG,
     'user': secrets.get('POSTGRES_USER', None),
-    'engine': 'peewee.PostgresqlDatabase',
     'password': secrets.get('POSTGRES_PASSWORD', None),
     'host': secrets.get('POSTGRES_HOST', 'localhost'),
     'port': secrets.get('POSTGRES_PORT', 5432)
