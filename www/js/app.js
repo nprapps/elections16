@@ -8,7 +8,6 @@ var candidates = {}
  */
 var onDocumentLoad = function(e) {
     // Cache jQuery references
-    SHARE.setup();
 }
 
 var getCandidates = function() {
