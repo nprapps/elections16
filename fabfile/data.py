@@ -48,11 +48,9 @@ def load_results(election_date=None):
         next_election = Elections().get_next_election()
         election_date = next_election.serialize().get('electiondate')
 
-    if env.settings == 'dev':
+    pg_vars = _get_pg_vars()
+    with shell_env(**pg_vars):
         local('elex results %s | psql %s -c "COPY results FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
-    else:
-        pass
-        # use correct connection string
 
 
 def _get_pg_vars():
