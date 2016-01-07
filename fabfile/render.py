@@ -63,7 +63,7 @@ def app_config_js():
     """
     Render app_config.js to file.
     """
-    from static import _app_config_js
+    from static.blueprint import _app_config_js
 
     with _fake_context('/js/app_config.js'):
         response = _app_config_js()
@@ -76,7 +76,7 @@ def copytext_js():
     """
     Render COPY to copy.js.
     """
-    from static import _copy_js
+    from static.blueprint import _copy_js
 
     with _fake_context('/js/copytext.js'):
         response = _copy_js()
