@@ -105,7 +105,7 @@ def app(port='8000'):
     """
     Serve app/app.py.
     """
-    if env.settings:
+    if env.get('settings'):
         local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app.app:wsgi_app'" % (env.settings, port))
     else:
         local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app.app:wsgi_app' % port)
@@ -115,7 +115,7 @@ def admin(port='8001'):
     """
     Serve admin/app.py.
     """
-    if env.settings:
+    if env.get('settings'):
         local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload admin.app:wsgi_app'" % (env.settings, port))
     else:
         local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload admin.app:wsgi_app' % port)
