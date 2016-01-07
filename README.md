@@ -10,6 +10,7 @@ Elections 2016
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
+* [Data commands](#data-commands)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
