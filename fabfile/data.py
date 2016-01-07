@@ -30,7 +30,7 @@ def bootstrap_db():
         local('createdb %s' % app_config.DATABASE['name'])
 
     models.Results.create_table()
-
+    models.CallOverrides.create_table()
 
 @task
 def bootstrap_data(election_date=None):
