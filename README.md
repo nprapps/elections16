@@ -51,26 +51,29 @@ What's in here?
 
 The project contains the following folders and important files:
 
-* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> servers.render_confs``, don't edit anything in ``confs/rendered`` directly.
+* ``admin`` -- A [Flask](http://flask.pocoo.org/) app to be deployed to a server that provides the admin UI.
+  - ``app.py``: The admin Flask app.
+  - ``templates``: Admin app templates.
+* ``app`` -- A [Flask](http://flask.pocoo.org/) app used to build the public, static site.
+  - ``app.py``: The public Flask app.
+  - ``templates``: Public app templates.
+* ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
+* ``confs`` -- Server configuration files for [nginx](https://www.nginx.com/resources/wiki/) and [uwsgi](https://uwsgi-docs.readthedocs.org/en/latest/). Edit the templates and run ``fab <dev/production/staging> servers.render_confs``, don't edit anything in ``confs/rendered`` directly.
+* ``crontab`` -- Cron jobs to be installed as part of the project.
 * ``data`` -- Data files, such as those used to generate HTML.
-* ``fabfile`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands for automating setup, deployment, data processing, etc.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
+* ``fabfile`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands for automating setup, deployment, data processing, etc.
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
-* ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
-* ``tests`` -- Python unit tests.
-* ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
-* ``www/assets`` -- A symlink to an S3 bucket containing binary assets (images, audio).
-* ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
-* ``www/test`` -- Javascript tests and supporting files.
-* ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
-* ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
-* ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
-* ``crontab`` -- Cron jobs to be installed as part of the project.
-* ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
+* ``oauth`` -- [Flask blueprint](http://flask.pocoo.org/docs/0.10/blueprints/) that manages access to Google Drive.
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
-* ``static.py`` -- Static Flask views used in both ``app.py`` and ``public_app.py``.
+* ``static`` -- [Flask blueprint](http://flask.pocoo.org/docs/0.10/blueprints/) that serves up static files.
+* ``tests`` -- [Nose2](https://github.com/nose-devs/nose2) Python unit tests.
+* ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
+* ``www/assets`` -- Synchronizes with an S3 bucket containing binary assets (images, audio).
+* ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
+* ``www/js/test`` -- Javascript tests and supporting files.
 
 Bootstrap the project
 ---------------------
@@ -89,10 +92,39 @@ cd elections16
 mkvirtualenv elections16
 pip install -r requirements.txt
 npm install
-fab update
+fab dev update
+fab dev data.bootstrap_db
+fab dev data.load_results
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
+
+Data commands
+-------------
+
+Reset the database and rebuild from scratch:
+
+```
+fab dev data.bootstrap_db
+```
+
+Load results for next election:
+
+```
+fab dev data.load_results
+```
+
+Load results for specific election with a date parameter:
+
+```
+fab dev data.load_results:2015-11-03
+```
+
+To run on a server:
+
+```
+fab staging master servers.fabcast:data.load_results:2015-11-03
+```
 
 Hide project secrets
 --------------------
