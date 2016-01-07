@@ -87,7 +87,7 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__) 
+    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -207,25 +207,19 @@ def deploy_confs():
             rendered_path = _get_rendered_conf_path(service, extension)
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
-            a = local('md5 -q %s' % rendered_path, capture=True)
-            b = run('md5sum %s' % installed_path).split()[0]
+            print 'Updating %s' % installed_path
+            put(rendered_path, installed_path, use_sudo=True)
 
-            if a != b:
-                print 'Updating %s' % installed_path
-                put(rendered_path, installed_path, use_sudo=True)
-
-                if service == 'nginx':
-                    sudo('service nginx reload')
-                elif service == 'uwsgi':
-                    service_name = _get_installed_service_name(service)
-                    sudo('initctl reload-configuration')
-                    sudo('service %s restart' % service_name)
-                elif service == 'app':
-                    run('touch %s' % app_config.UWSGI_SOCKET_PATH)
-                    sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
-                    sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
-            else:
-                print '%s has not changed' % rendered_path
+            if service == 'nginx':
+                sudo('service nginx reload')
+            elif service == 'uwsgi':
+                service_name = _get_installed_service_name(service)
+                sudo('initctl reload-configuration')
+                sudo('service %s restart' % service_name)
+            elif service == 'app':
+                run('touch %s' % app_config.UWSGI_SOCKET_PATH)
+                sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
+                sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
 
 @task
 def nuke_confs():
