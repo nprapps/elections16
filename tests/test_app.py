@@ -6,18 +6,6 @@ import unittest
 import app
 import app_config
 
-class IndexTestCase(unittest.TestCase):
-    """
-    Test the index page.
-    """
-    def setUp(self):
-        app.app.config['TESTING'] = True
-        self.client = app.app.test_client()
-
-    def test_index_exists(self):
-        response = self.client.get('/')
-        assert response.status_code == 200
-
 class AppConfigTestCase(unittest.TestCase):
     """
     Testing dynamic conversion of Python app_config into Javascript.
