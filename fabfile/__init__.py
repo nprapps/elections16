@@ -106,9 +106,9 @@ def app(port='8000'):
     Serve app/app.py.
     """
     if env.get('settings'):
-        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload log-file=app.log app:wsgi_app'" % (env.settings, port))
+        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/app.log app:wsgi_app'" % (env.settings, port))
     else:
-        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload log-file=app.log app:wsgi_app' % port)
+        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/app.log app:wsgi_app' % port)
 
 @task
 def admin(port='8001'):
@@ -116,9 +116,9 @@ def admin(port='8001'):
     Serve admin/app.py.
     """
     if env.get('settings'):
-        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload log-file=admin.log admin:wsgi_app'" % (env.settings, port))
+        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/admin.log admin:wsgi_app'" % (env.settings, port))
     else:
-        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=admin.log admin:wsgi_app' % port)
+        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/admin.log admin:wsgi_app' % port)
 
 @task
 def tests():
