@@ -53,10 +53,10 @@ What's in here?
 The project contains the following folders and important files:
 
 * ``admin`` -- A [Flask](http://flask.pocoo.org/) app to be deployed to a server that provides the admin UI.
-  - ``app.py``: The admin Flask app.
+  - ``__init__.py``: The admin Flask app.
   - ``templates``: Admin app templates.
 * ``app`` -- A [Flask](http://flask.pocoo.org/) app used to build the public, static site.
-  - ``app.py``: The public Flask app.
+  - ``__init__.py``: The public Flask app.
   - ``templates``: Public app templates.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``confs`` -- Server configuration files for [nginx](https://www.nginx.com/resources/wiki/) and [uwsgi](https://uwsgi-docs.readthedocs.org/en/latest/). Edit the templates and run ``fab <dev/production/staging> servers.render_confs``, don't edit anything in ``confs/rendered`` directly.
