@@ -29,15 +29,28 @@ def bootstrap_db():
         local('dropdb --if-exists %s' % app_config.DATABASE['name'])
         local('createdb %s' % app_config.DATABASE['name'])
 
-    models.Results.create_table()
-    models.CallOverrides.create_table()
+    models.Result.create_table()
+    models.Call.create_table()
+    models.Race.create_table()
+    models.ReportingUnit.create_table()
+    models.Candidate.create_table()
+    models.BallotPosition.create_table()
 
 @task
 def bootstrap_data(election_date=None):
     """
     Bootstrap races, candidates, reporting units, and ballot positions.
     """
-    print('Not implemented')
+    if not election_date:
+        next_election = Elections().get_next_election()
+        election_date = next_election.serialize().get('electiondate')
+
+    pg_vars = _get_pg_vars()
+    with shell_env(**pg_vars):
+        local('elex races %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        local('elex reporting-units %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        local('elex candidates %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        local('elex ballot-measures %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
 
 
 @task
@@ -50,7 +63,7 @@ def load_results(election_date=None):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('elex results %s | psql %s -c "COPY results FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        local('elex results %s | psql %s -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
 
 
 def _get_pg_vars():

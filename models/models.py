@@ -20,7 +20,7 @@ class BaseModel(Model):
         database = db
 
 
-class Results(BaseModel):
+class Result(BaseModel):
     id = CharField(primary_key=True)
     unique_id = CharField(null=True)
     raceid = CharField(null=True)
@@ -61,7 +61,79 @@ class Results(BaseModel):
     winner = BooleanField(null=True)
 
 
-class CallOverrides(BaseModel):
-    call_id = ForeignKeyField(Results, primary_key=True, related_name='call')
+class Call(BaseModel):
+    call_id = ForeignKeyField(Result, primary_key=True, related_name='call')
     accept_ap = BooleanField(default=False)
     call_override = BooleanField(default=False)
+
+
+class Race(BaseModel):
+    id = CharField(null=True)
+    raceid = CharField(null=True)
+    racetype = CharField(null=True)
+    racetypeid = CharField(null=True)
+    description = CharField(null=True)
+    electiondate = DateField(null=True)
+    initialization_data = BooleanField(null=True)
+    lastupdated = DateField(null=True)
+    national = BooleanField(null=True)
+    officeid = CharField(null=True)
+    officename = CharField(null=True)
+    party = CharField(null=True)
+    seatname = CharField(null=True)
+    seatnum = CharField(null=True)
+    statename = CharField(null=True)
+    statepostal = CharField(null=True, max_length=2)
+    test = BooleanField(null=True)
+    uncontested = BooleanField(null=True)
+
+
+class ReportingUnit(BaseModel):
+    id = CharField(null=True)
+    reportingunitid = CharField(null=True)
+    reportingunitname = CharField(null=True)
+    description = CharField(null=True)
+    fipscode = CharField(null=True, max_length=5)
+    initialization_data = BooleanField(null=True)
+    lastupdated = DateField(null=True)
+    level = CharField(null=True)
+    national = CharField(null=True)
+    officeid = CharField(null=True)
+    officename = CharField(null=True)
+    precinctsreporting = IntegerField(null=True)
+    precinctsreportingpct = DecimalField(null=True)
+    precinctstotal = IntegerField(null=True)
+    raceid = CharField(null=True)
+    racetype = CharField(null=True)
+    racetypeid = CharField(null=True)
+    seatname = CharField(null=True)
+    seatnum = CharField(null=True)
+    statename = CharField(null=True)
+    statepostal = CharField(null=True, max_length=2)
+    test = BooleanField(null=True)
+    uncontested = BooleanField(null=True)
+    votecount = IntegerField(null=True)
+
+
+class Candidate(BaseModel):
+    id = CharField(null=True)
+    unique_id = CharField(null=True)
+    candidateid = CharField(null=True)
+    ballotorder = IntegerField(null=True)
+    first = CharField(null=True)
+    last = CharField(null=True)
+    party = CharField(null=True)
+    polid = CharField(null=True)
+    polnum = CharField(null=True)
+
+
+class BallotPosition(BaseModel):
+    id = CharField(null=True)
+    unique_id = CharField(null=True)
+    candidateid = CharField(null=True)
+    ballotorder = IntegerField(null=True)
+    description = CharField(null=True)
+    last = CharField(null=True)
+    polid = CharField(null=True)
+    polnum = CharField(null=True)
+    seatname = CharField(null=True)
