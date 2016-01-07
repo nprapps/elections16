@@ -2,6 +2,7 @@ import app_config
 import json
 
 from flask import Flask, make_response, render_template
+from models import models
 from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from static.blueprint import static
@@ -21,8 +22,7 @@ def index():
     """
     context = make_context()
 
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
+    context['results'] = models.Result.select()
 
     return make_response(render_template('index.html', **context))
 
