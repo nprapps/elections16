@@ -16,12 +16,11 @@ class IndexTestCase(unittest.TestCase):
 
     def test_index_exists(self):
         response = self.client.get('/')
-
-        assert app_config.PROJECT_SLUG in response.data
+        assert response.status_code == 200
 
 class AppConfigTestCase(unittest.TestCase):
     """
-    Testing dynamic conversion of Python app_config into Javascript. 
+    Testing dynamic conversion of Python app_config into Javascript.
     """
     def setUp(self):
         app.app.config['TESTING'] = True
@@ -38,7 +37,7 @@ class AppConfigTestCase(unittest.TestCase):
 
         data = self.parse_data(response)
 
-        assert data['DEBUG'] == True 
+        assert data['DEBUG'] == True
 
     def test_app_config_production(self):
         app_config.configure_targets('production')
@@ -47,8 +46,8 @@ class AppConfigTestCase(unittest.TestCase):
 
         data = self.parse_data(response)
 
-        assert data['DEBUG'] == False 
-        
+        assert data['DEBUG'] == False
+
         app_config.configure_targets('staging')
 
 if __name__ == '__main__':
