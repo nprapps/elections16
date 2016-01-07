@@ -120,6 +120,11 @@ Load results for specific election with a date parameter:
 fab dev data.load_results:2015-11-03
 ```
 
+To run on a server:
+
+```
+fab staging master servers.fabcast:data.load_results:2015-11-03
+```
 
 Hide project secrets
 --------------------
