@@ -9,6 +9,7 @@ from fabric.state import env
 from models import models
 
 import app_config
+import servers
 
 
 @task(default=True)
@@ -24,10 +25,17 @@ def bootstrap_db():
     """
     Build the database.
     """
+    if env.get('settings'):
+        print env.settings
+        servers.stop_service('uwsgi')
+
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
         local('dropdb --if-exists %s' % app_config.DATABASE['name'])
         local('createdb %s' % app_config.DATABASE['name'])
+
+    if env.get('settings'):
+        servers.start_service('uwsgi')
 
     models.Result.create_table()
     models.Call.create_table()

@@ -87,7 +87,7 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__) 
+    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -226,6 +226,23 @@ def deploy_confs():
                     sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
             else:
                 print '%s has not changed' % rendered_path
+
+
+@task
+def start_service(service):
+    """
+    Start a service on the server.
+    """
+    service_name = _get_installed_service_name(service)
+    sudo('service %s start' % service_name)
+
+@task
+def stop_service(service):
+    """
+    Stop a service on the server
+    """
+    service_name = _get_installed_service_name(service)
+    sudo('service %s stop' % service_name)
 
 @task
 def nuke_confs():
