@@ -92,7 +92,9 @@ cd elections16
 mkvirtualenv elections16
 pip install -r requirements.txt
 npm install
-fab update
+fab dev update
+fab dev data.bootstrap_db
+fab dev data.load_results
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
