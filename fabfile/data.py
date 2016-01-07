@@ -26,7 +26,6 @@ def bootstrap_db():
     Build the database.
     """
     if env.get('settings'):
-        print env.settings
         servers.stop_service('uwsgi')
 
     pg_vars = _get_pg_vars()
