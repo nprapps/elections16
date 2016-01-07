@@ -1,7 +1,7 @@
 import app_config
 
 from peewee import Model, PostgresqlDatabase
-from peewee import BooleanField, CharField, DateField, DecimalField, IntegerField
+from peewee import BooleanField, CharField, DateField, DecimalField, ForeignKeyField, IntegerField
 
 db = PostgresqlDatabase(
     app_config.DATABASE['name'],
@@ -59,3 +59,9 @@ class Results(BaseModel):
     votecount = IntegerField(null=True)
     votepct = DecimalField(null=True)
     winner = BooleanField(null=True)
+
+
+class CallOverrides(BaseModel):
+    call_id = ForeignKeyField(Results, primary_key=True, related_name='call')
+    accept_ap = BooleanField(default=False)
+    call_override = BooleanField(default=False)
