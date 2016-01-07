@@ -2,6 +2,7 @@ Authomatic==0.0.13
 Babel==2.2.0
 Fabric==1.10.2
 Flask==0.9
+Flask-Admin==1.4.0
 Jinja2==2.7.3
 MarkupSafe==0.23
 PyYAML==3.11
@@ -49,3 +50,4 @@ termcolor==1.1.0
 twitter==1.14.3
 wheel==0.23.0
 wsgiref==0.1.2
+wtf-peewee==0.2.6
