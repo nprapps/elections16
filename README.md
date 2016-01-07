@@ -99,6 +99,28 @@ fab dev data.load_results
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
 
+Data commands
+-------------
+
+Reset the database and rebuild from scratch:
+
+```
+fab dev data.bootstrap_db
+```
+
+Load results for next election:
+
+```
+fab dev data.load_results
+```
+
+Load results for specific election with a date parameter:
+
+```
+fab dev data.load_results:2015-11-03
+```
+
+
 Hide project secrets
 --------------------
 
