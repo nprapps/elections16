@@ -62,8 +62,6 @@ def bootstrap_data(election_date=None):
 
 @task
 def load_results(election_date=None):
-    require('settings', provided_by=['production', 'staging', 'dev'])
-
     if not election_date:
         next_election = Elections().get_next_election()
         election_date = next_election.serialize().get('electiondate')
@@ -72,6 +70,11 @@ def load_results(election_date=None):
     with shell_env(**pg_vars):
         local('elex results %s | psql %s -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
 
+@task
+def create_calls():
+    results = models.Result.select()
+    for result in results:
+        models.Call.create(call_id=result.id)
 
 def _get_pg_vars():
     """
