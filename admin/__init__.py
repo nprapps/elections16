@@ -3,6 +3,7 @@ import datetime
 import json
 import logging
 
+from . import utils
 from collections import OrderedDict
 from flask import Flask, make_response, render_template
 from flask_admin import Admin
@@ -36,15 +37,8 @@ admin.add_view(ModelView(models.Call))
 # Example application views
 @app.route('/%s/calls/' % app_config.PROJECT_SLUG, methods=['GET'])
 def calls_admin():
-    results = models.Result.select().where(
-        (models.Result.level == 'state') | (models.Result.level == None)
-    )
-    grouped = OrderedDict()
-    for result in results:
-        if result.raceid not in grouped:
-            grouped[result.raceid] = []
-
-        grouped[result.raceid].append(result)
+    results = utils.filter_results()
+    grouped = utils.group_results_by_race(results)
 
     context = make_context(asset_depth=1)
     context.update({
