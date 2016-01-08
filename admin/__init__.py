@@ -47,6 +47,25 @@ def calls_admin():
 
     return make_response(render_template('calls.html', **context))
 
+@app.route('/%s/calls/call-npr' % app_config.PROJECT_SLUG, methods=['POST'])
+def call_npr():
+    pass
+
+@app.route('/%s/calls/accept-ap' % app_config.PROJECT_SLUG, methods=['POST'])
+def accept_ap():
+    from flask import request
+
+    race_id = request.form.get('race_id')
+
+    results = models.Result.select().where(
+        (models.Result.raceid == race_id)
+    )
+
+    for result in results:
+        results.call[0].update(accept_ap=True)
+
+    return 200
+
 
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
