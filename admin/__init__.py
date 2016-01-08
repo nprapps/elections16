@@ -3,6 +3,7 @@ import datetime
 import json
 import logging
 
+from collections import OrderedDict
 from flask import Flask, make_response, render_template
 from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
@@ -35,8 +36,10 @@ admin.add_view(ModelView(models.Call))
 # Example application views
 @app.route('/%s/calls/' % app_config.PROJECT_SLUG, methods=['GET'])
 def calls_admin():
-    results = models.Result.select()
-    grouped = {}
+    results = models.Result.select().where(
+        (models.Result.level == 'state') | (models.Result.level == None)
+    )
+    grouped = OrderedDict()
     for result in results:
         if result.raceid not in grouped:
             grouped[result.raceid] = []
