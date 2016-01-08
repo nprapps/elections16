@@ -33,6 +33,24 @@ admin.add_view(ModelView(models.Result))
 admin.add_view(ModelView(models.Call))
 
 # Example application views
+@app.route('/%s/calls/' % app_config.PROJECT_SLUG, methods=['GET'])
+def calls_admin():
+    results = models.Result.select()
+    grouped = {}
+    for result in results:
+        if result.raceid not in grouped:
+            grouped[result.raceid] = []
+
+        grouped[result.raceid].append(result)
+
+    context = make_context(asset_depth=1)
+    context.update({
+        'races': grouped
+    })
+
+    return make_response(render_template('calls.html', **context))
+
+
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
     """
