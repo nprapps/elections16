@@ -18,7 +18,7 @@ class FilterResultsTestCase(unittest.TestCase):
     """
     def test_results_filtering(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
-            data.load_local_results('/tests/data/elex.csv')
+            data.load_local_results('tests/data/elex.csv')
             data.create_calls()
 
             filtered = utils.filter_results()
@@ -26,7 +26,7 @@ class FilterResultsTestCase(unittest.TestCase):
 
     def test_results_grouping(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
-            data.load_local_results('/tests/data/elex.csv')
+            data.load_local_results('tests/data/elex.csv')
             data.create_calls()
 
             filtered = utils.filter_results()
@@ -72,7 +72,7 @@ class CallRacesTestCase(unittest.TestCase):
 
     def test_accepting_ap(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
-            data.load_local_results('/tests/data/elex.csv')
+            data.load_local_results('tests/data/elex.csv')
             data.create_calls()
 
             true_results = self.send_ap_post()
@@ -81,7 +81,7 @@ class CallRacesTestCase(unittest.TestCase):
 
     def test_calling_npr(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
-            data.load_local_results('/tests/data/elex.csv')
+            data.load_local_results('tests/data/elex.csv')
             data.create_calls()
 
             called_result, race_results = self.send_npr_post()

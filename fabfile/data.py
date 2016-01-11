@@ -79,8 +79,7 @@ def load_local_results(file_path):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql elections16test -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' %
-                ''.join([os.path.abspath(os.getcwd()), file_path]))
+        local('psql elections16test -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % os.path.join(root_path, file_path))
 
 @task
 def create_calls():
