@@ -87,19 +87,19 @@
                             </button>
                         </td>
                         <td>
-                            <button class="npr-call btn btn-mini
+                            <button class="npr-call npr btn btn-mini
                                 {% if result.call[0].accept_ap == True %} hidden {% endif %}
                                 {% if result.call[0].override_winner == True %} hidden {% endif %}"
                                 data-race-id="{{ result.raceid }}"
-                                data-candidate-id="{{ result.candidateid }}">
+                                data-result-id="{{ result.id }}">
                                 Call for NPR
                             </button>
 
-                            <button class="npr-uncall btn btn-mini btn-warning
+                            <button class="npr-uncall npr btn btn-mini btn-warning
                                 {% if result.call[0].accept_ap == True %} hidden {% endif %}
                                 {% if result.call[0].override_winner == True %}{% else %} hidden {% endif %}"
                                 data-race-id="{{ result.raceid }}"
-                                data-candidate-id="{{ result.candidateid }}">
+                                data-result-id="{{ result.id }}">
                                 Uncall for NPR
                             </button>
                         </td>

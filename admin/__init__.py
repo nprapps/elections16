@@ -49,7 +49,35 @@ def calls_admin():
 
 @app.route('/%s/calls/call-npr' % app_config.PROJECT_SLUG, methods=['POST'])
 def call_npr():
-    pass
+    from flask import request
+
+    result_id = request.form.get('result_id')
+
+    result = models.Result.get(models.Result.id == result_id)
+    call = result.call[0]
+    if call.override_winner == True:
+        call.override_winner = False
+    else:
+        call.override_winner = True
+
+    call.save()
+
+    race_id = result.raceid
+    race_results = models.Result.select().where(
+        models.Result.raceid == race_id
+    )
+
+    for race_result in race_results:
+        race_call = race_result.call[0]
+        if call.override_winner == True:
+            race_call.accept_ap = False
+
+        if race_call.call_id != call.call_id:
+            race_call.override_winner = False
+
+        race_call.save()
+
+    return 'Success', 200
 
 @app.route('/%s/calls/accept-ap' % app_config.PROJECT_SLUG, methods=['POST'])
 def accept_ap():

@@ -9,8 +9,8 @@ var CALL_NPR_URL = document.location.href + 'call-npr'
 var onDocumentLoad = function() {
     $acceptAP = $('.accept-ap');
     $rejectAP = $('.reject-ap')
-    $callNPR = $('.call-npr');
-    $uncallNPR = $('.uncall-npr');
+    $callNPR = $('.npr-call');
+    $uncallNPR = $('.npr-uncall');
 
     $acceptAP.on('click', onAPClick);;
     $rejectAP.on('click', onAPClick);
@@ -22,32 +22,33 @@ var onAPClick = function(e) {
     var data = {
         race_id: $(this).data('race-id')
     }
-    var $parent = $(this).parent();
 
-    $.post(ACCEPT_AP_URL, data, function() {
-        console.log($parent);
-        var $btns = $parent.find('.ap');
-        console.log($btns);
-        $btns.toggleClass('hidden');
-    });
+    $.post(ACCEPT_AP_URL, data, refreshPage);
 }
 
 var onCallNPRClick = function(e) {
     var data = {
         race_id: $(this).data('race-id'),
-        candidate_id: $(this).data('candidate-id')
+        result_id: $(this).data('result-id')
     }
-
-    $.post(CALL_NPR_URL, data);
+    $.post(CALL_NPR_URL, data, refreshPage);
 }
 
 var onUncallNPRClick = function(e) {
+    console.log(e);
     var data = {
         race_id: $(this).data('race-id'),
-        candidate_id: $(this).data('candidate-id')
+        result_id: $(this).data('result-id')
     }
 
-    $.post(CALL_NPR_URL, data);
+    $.post(CALL_NPR_URL, data, refreshPage);
+}
+
+var refreshPage = function() {
+    $.get(window.location.href, function(data) {
+        $('body').html(data);
+        console.log(data);
+    });
 }
 
 $(onDocumentLoad);
