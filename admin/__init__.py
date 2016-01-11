@@ -15,6 +15,7 @@ from werkzeug.debug import DebuggedApplication
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
+app.secret_key = 'aegjiopahpiowahgpoiwh'
 
 try:
     file_handler = logging.FileHandler('%s/admin_app.log' % app_config.SERVER_LOG_PATH)
