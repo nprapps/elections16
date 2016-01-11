@@ -12,9 +12,6 @@ import app_config
 import os
 import servers
 
-
-TEST_DATA_FILE = '/tests/data/elex.csv'
-
 @task(default=True)
 def update():
     """
@@ -74,7 +71,7 @@ def load_results(election_date=None):
         local('elex results %s | psql %s -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
 
 @task
-def load_local_results():
+def load_local_results(file_path):
     # Force root path every time
     fab_path = os.path.realpath(os.path.dirname(__file__))
     root_path = os.path.join(fab_path, '..')
@@ -83,7 +80,7 @@ def load_local_results():
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
         local('psql elections16test -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' %
-                ''.join([os.path.abspath(os.getcwd()), TEST_DATA_FILE]))
+                ''.join([os.path.abspath(os.getcwd()), file_path]))
 
 @task
 def create_calls():
