@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AP Calls Admin</title>
+
+{{ CSS.push('less/calls.less') }}
+{{ CSS.render('css/calls.min.css') }}
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cms-nav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">AP Calls CMS</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="cms-nav">
+                <ul class="nav navbar-nav">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for id, results in races.iteritems() %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3>{{ results[0].electiondate }}: {{ results[0].statename }} {{ results[0].party }} {{ results[0].officename }}</h3>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ap-btns">
+                            <button
+                                class="btn btn-success btn-mini ap accept-ap {% if not results[0].call[0].accept_ap %} hidden {% endif %}"
+                                data-race-id="{{ results[0].raceid }}">
+                                Accepting AP calls
+                            </button>
+
+                            <button class="btn btn-warning btn-mini ap reject-ap {% if  results[0].call[0].accept_ap %} hidden {% endif %}" data-race-id="{{ results[0].raceid }}">
+                                Not accepting AP Calls
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover table-condensed">
+                    <thead class="info">
+                        <th class="col-candidate">Candidate</th>
+                        <th class="col-npr-winner">NPR Winner</th>
+                        <th class="col-ap-winner">AP Winner</th>
+                        <th class="col-call-npr">Call for NPR</th>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td class="col-candidate">
+                            <span class="candidate {{ result.party.lower() }} {% if result.call[0].accept_ap == True %}{% if result.winner == True %}called{% endif %}{% endif %}"
+                                data-first-name="{{ result.first }}"
+                                data-last-name="{{ result.last }}">
+                                {% if result.first %} {{ result.first }} {% endif %}
+                                {{ result.last }}
+                            </span>
+                        </td>
+
+                        <td class="col-npr-winner">
+                            <button class="npr-winner btn btn-mini disabled
+                                {% if result.call[0].accept_ap == True %} disabled {% endif %}
+                                {% if result.call[0].override_winner == False %} hidden {% endif %}
+                                {% if result.party == 'GOP' %} btn-danger {% endif %}
+                                {% if result.party == 'Dem' %} btn-primary {% endif %}
+                                {% if result.party == 'Other' %} btn-success {% endif %}">
+                                NPR
+                            </button>
+                        </td>
+                        <td class="col-ap-winner">
+                            <button class="ap-winner btn btn-mini disabled {% if result.winner == False %} hidden {% endif %}
+                                {% if result.party == 'GOP' %} btn-danger {% endif %}
+                                {% if result.party == 'Dem' %} btn-primary {% endif %}
+                                {% if result.party == 'Other' %} btn-success {% endif %}">
+                                AP
+                            </button>
+                        </td>
+                        <td class="col-call-npr">
+                            <button class="npr-call npr btn btn-mini
+                                {% if result.call[0].accept_ap == True %} disabled {% endif %}
+                                {% if result.call[0].override_winner == True %} hidden {% endif %}"
+                                data-race-id="{{ result.raceid }}"
+                                data-result-id="{{ result.id }}">
+                                Call for NPR
+                            </button>
+
+                            <button class="npr-uncall npr btn btn-mini btn-warning
+                                {% if result.call[0].accept_ap == True %} disabled {% endif %}
+                                {% if result.call[0].override_winner == True %}{% else %} hidden {% endif %}"
+                                data-race-id="{{ result.raceid }}"
+                                data-result-id="{{ result.id }}">
+                                Uncall for NPR
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+    {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/calls.js') }}
+    {{ JS.render('js/chamber-footer.min.js') }}
+</body>
+
+</html>

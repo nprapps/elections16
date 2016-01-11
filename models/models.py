@@ -64,7 +64,7 @@ class Result(BaseModel):
 class Call(BaseModel):
     call_id = ForeignKeyField(Result, primary_key=True, related_name='call')
     accept_ap = BooleanField(default=False)
-    call_override = BooleanField(default=False)
+    override_winner = BooleanField(default=False)
 
 
 class Race(BaseModel):

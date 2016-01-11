@@ -3,6 +3,8 @@ import datetime
 import json
 import logging
 
+from . import utils
+from collections import OrderedDict
 from flask import Flask, make_response, render_template
 from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
@@ -33,6 +35,71 @@ admin.add_view(ModelView(models.Result))
 admin.add_view(ModelView(models.Call))
 
 # Example application views
+@app.route('/%s/calls/' % app_config.PROJECT_SLUG, methods=['GET'])
+def calls_admin():
+    results = utils.filter_results()
+    grouped = utils.group_results_by_race(results)
+
+    context = make_context(asset_depth=1)
+    context.update({
+        'races': grouped
+    })
+
+    return make_response(render_template('calls.html', **context))
+
+@app.route('/%s/calls/call-npr' % app_config.PROJECT_SLUG, methods=['POST'])
+def call_npr():
+    from flask import request
+
+    result_id = request.form.get('result_id')
+
+    result = models.Result.get(models.Result.id == result_id)
+    call = result.call[0]
+    if call.override_winner == True:
+        call.override_winner = False
+    else:
+        call.override_winner = True
+
+    call.save()
+
+    race_id = result.raceid
+    race_results = models.Result.select().where(
+        models.Result.raceid == race_id
+    )
+
+    for race_result in race_results:
+        race_call = race_result.call[0]
+        if call.override_winner == True:
+            race_call.accept_ap = False
+
+        if race_call.call_id != call.call_id:
+            race_call.override_winner = False
+
+        race_call.save()
+
+    return 'Success', 200
+
+@app.route('/%s/calls/accept-ap' % app_config.PROJECT_SLUG, methods=['POST'])
+def accept_ap():
+    from flask import request
+
+    race_id = request.form.get('race_id')
+
+    results = models.Result.select().where(
+        (models.Result.raceid == race_id)
+    )
+
+    for result in results:
+        call = result.call[0]
+        if call.accept_ap == True:
+            call.accept_ap = False
+        else:
+            call.accept_ap = True
+        call.save()
+
+    return 'Success', 200
+
+
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
     """
