@@ -62,7 +62,10 @@ def accept_ap():
     )
 
     for result in results:
-        results.call[0].update(accept_ap=True)
+        call = result.call[0]
+        call.accept_ap = True
+        call.save()
+        print result.call[0].accept_ap
 
     return 200
 
