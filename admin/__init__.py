@@ -63,11 +63,13 @@ def accept_ap():
 
     for result in results:
         call = result.call[0]
-        call.accept_ap = True
+        if call.accept_ap == True:
+            call.accept_ap = False
+        else:
+            call.accept_ap = True
         call.save()
-        print result.call[0].accept_ap
 
-    return 200
+    return 'Success', 200
 
 
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])

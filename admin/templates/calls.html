@@ -37,15 +37,18 @@
             <div class="col-md-12">
                 {% for id, results in races.iteritems() %}
                 <h3>{{ results[0].electiondate }}: {{ results[0].statename }} {{ results[0].party }} {{ results[0].officename }}</h3>
-                <button
-                    class="btn {% if results[0].call[0].accept_ap == True %} btn-success {% else %} btn-warning {% endif %} btn-mini accept-ap"
-                    data-race-id="{{ results[0].raceid }}">
-                    {% if results[0].call[0].accept_ap == True %}
-                    Accepting AP calls
-                    {% else %}
-                    Not accepting AP calls
-                    {% endif %}
-                </button>
+                <div class="ap-btns">
+                    <button
+                        class="btn btn-success btn-mini ap accept-ap {% if not results[0].call[0].accept_ap %} hidden {% endif %}"
+                        data-race-id="{{ results[0].raceid }}">
+                        Accepting AP calls
+                    </button>
+
+                    <button class="btn btn-warning btn-mini ap reject-ap {% if  results[0].call[0].accept_ap %} hidden {% endif %}" data-race-id="{{ results[0].raceid }}">
+                        Not accepting AP Calls
+                    </button>
+                </div>
+
                 <table class="table table-striped table-bordered table-hover table-condensed">
                     <tr class="info">
                         <td><strong>Candidate</strong></td>
