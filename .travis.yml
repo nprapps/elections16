@@ -3,10 +3,11 @@ python:
   - "2.7"
 before_script:
     - npm install
+    - psql -c 'create database elections16test;' -U postgres
 # karma karma-jasmine jasmine-fixture jasmine-core phantomjs karma-phantomjs-launcher
 install:
   - travis_retry pip install -r requirements.txt
-script: 
+script:
   - fab tests
   - fab js_tests
   #- python -m nose2.__main__ -v
