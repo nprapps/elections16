@@ -1,20 +1,5 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<div class="container">
-  {% for result in results %}
-  <h1>{{ result.first }} {{ result.last }}</h1>
-  <table class="table attribute-table">
-    <tbody>
-      {% for key,value in result._data.items() %}
-      <tr>
-        <td>{{ key }}</td>
-        <td>{{ value }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <hr/>
-  {% endfor %}
-</div>
+{{ content|safe }}
 {% endblock %}

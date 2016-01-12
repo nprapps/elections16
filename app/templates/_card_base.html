@@ -1,3 +1,5 @@
 <div class="card" id="{{ slug }}">
-    {% block content %}{% endblock content %}
+    {% block card_content %}
+    <h1>Card slug: {{ slug }}</h1>
+    {% endblock card_content %}
 </div>
