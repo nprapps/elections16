@@ -18,13 +18,27 @@ app.add_template_filter(urlencode_filter, name='urlencode')
 @oauth_required
 def index():
     """
-    Example view demonstrating rendering a simple HTML page.
+    Main published app view
     """
     context = make_context()
 
     context['results'] = models.Result.select()
 
     return make_response(render_template('index.html', **context))
+
+@app.route('/test/')
+@oauth_required
+def test():
+    """
+    Stubby "hello world" view
+    """
+    context = make_context()
+    context['content'] = '<h1>Hola mundo</h1>'
+    context['slug'] = 'test'
+    return make_response(render_template('cards/test.html', **context))
+
+
+
 
 app.register_blueprint(static)
 app.register_blueprint(oauth)
