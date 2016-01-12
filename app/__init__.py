@@ -34,6 +34,14 @@ def index():
     """
     context = make_context()
     context['results'] = models.Result.select()
+
+    cards = ['alerts', 'donate', 'feedback']
+
+    content = ''
+    for card in cards:
+        content += app.view_functions['card'](card).data
+
+    context['content'] = content
     return make_response(render_template('index.html', **context))
 
 
