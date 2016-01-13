@@ -88,8 +88,45 @@
         th { text-align: left; }
     }
 
+    .photo-credit {
+        margin: 0;
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        .knockout();
+        font-size: 10px;
+        text-transform: none;
+        letter-spacing: 0;
+        opacity: .6;
+    }
+
     .republican { color: @republican; }
     .democrat { color: @democrat; }
+}
+
+#catch-up {
+    header {
+        // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
+        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
+        background-size: cover;
+        position: relative;
+        height: 100px;
+        margin-bottom: 22px;
+        border-bottom: 5px solid @accent2;
+
+        .content-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            content: '';
+            background: rgba(0, 0, 0, .5);
+            display: flex;
+            align-items: center;
+        }
+        .content { padding: 0 30px; }
+    }
 }
 
 #results {
