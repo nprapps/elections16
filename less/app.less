@@ -8,23 +8,23 @@
 
 //utilities
 .clearfix() {
-  &:before,
-  &:after {
-    content: " ";
-    display: table;
-  }
-  &:after {
-    clear: both;
-  }
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
 }
 
 //images
 @img-root: "/assets";
 
 .img-responsive(@display: block;) {
-  display: @display;
-  max-width: 100%;
-  height: auto;
+    display: @display;
+    max-width: 100%;
+    height: auto;
 }
 
 // colors
@@ -211,6 +211,7 @@ body { background-color: #111; }
         .knockout();
         letter-spacing: -0.02em;
         color: #fff;
+        line-height: 1.1;
     }
 
     h1 { font-size: 34px; }
@@ -218,7 +219,11 @@ body { background-color: #111; }
     h3 { font-size: 14px; }
 
     header { padding: 33px 30px; }
-    article { padding: 0 30px 30px 30px; }
+    article {
+        padding: 0 30px 30px 30px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
     a:link,
     a:visited {
@@ -335,6 +340,24 @@ body { background-color: #111; }
                 color: #fff;
                 text-shadow: 2px 2px 2px #222;
             }
+
+            .begin {
+                .knockout();
+                color: #fff;
+                text-shadow: 2px 2px 2px #222;
+                background-color: transparent;
+                border-top: 0;
+                border-right: 0;
+                border-bottom: 4px solid @accent1;
+                border-left: 0;
+                padding: 0 0 .5rem 0;
+                font-size: 1.4rem;
+
+                i {
+                    font-size: 1.6rem;
+                    padding-left: .5rem;
+                }
+            }
         }
     }
 }
@@ -365,6 +388,40 @@ body { background-color: #111; }
             align-items: center;
         }
         .content { padding: 0 30px; }
+    }
+}
+
+#newsletter {
+    header { padding-bottom: 22px; }
+    p {
+        margin: 0;
+        &.footnote {
+            color: #999;
+            font-size: 0.8rem;
+        }
+    }
+    form { padding: 22px 0; }
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        border: none;
+        line-height: 44px;
+        padding: 0 11px;
+        display: block;
+        margin-bottom: 11px;
+    }
+    button {
+        border: none;
+        padding: 0 11px;
+        .knockout();
+        line-height: 33px;
+        background-color: @accent2;
+        color: #fff;
+
+        &:hover,
+        &:active {
+            opacity: 0.7;
+        }
     }
 }
 
