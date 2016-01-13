@@ -94,90 +94,87 @@ html {
 // Overall styles
 body { background-color: #111; }
 
-
-// Card Styles
-// -------------------------
-.card-wrapper {
+// header
+.global-header {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    z-index: 2;
+    color: #fff;
+    margin-bottom: 1rem;
 
-    .global-header {
-        position: relative;
-        color: #fff;
-        margin-bottom: 1rem;
-        padding-bottom: .3rem;
+    .logo {
+        padding-top: 20px;
+        padding-left: 5px;
 
-        .logo {
-            padding-top: 20px;
-
-            h5 {
-                .knockout();
-                font-size: 1.2rem;
-                text-transform: uppercase;
-                margin: 0;
-                padding: 0;
-            }
-
-            img {
-                float: left;
-                display: block;
-                width: 3.5rem;
-                margin-right: .5rem;
-                max-width: 100%;
-                height: auto;
-            }
+        h5 {
+            .knockout();
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            margin: 0;
+            padding: 0;
         }
 
-        .branding-border {
-            position: absolute;
-            top: 0;
-            left: 0;
+        img {
+            float: left;
             display: block;
-            background-image: url('@{img-root}/branding-border.svg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 5px;
-        }
-
-        .global-controls {
-            position: absolute;
-            top: 15px;
-            right: 5px;
-
-            button {
-                .knockout();
-                letter-spacing: 0;
-                text-transform: uppercase;
-                background-color: rgba(255, 255, 255, .3);
-                border: 0;
-                color: #fff;
-
-                &.alert-button {
-                    font-size: 11px;
-                    padding: 7px;
-                    margin-right: 5px;
-
-                    i {
-                        font-size: 10px;
-                        margin-right: 5px;
-                    }
-                }
-
-                &.mute-button {
-                    font-size: 12px;
-                    padding: 6px 8px;
-                }
-            }
-
-
+            width: 3.5rem;
+            margin-right: .5rem;
+            max-width: 100%;
+            height: auto;
         }
     }
+
+    .branding-border {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        background-image: url('@{img-root}/branding-border.svg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 5px;
+    }
+
+    .global-controls {
+        position: absolute;
+        top: 15px;
+        right: 5px;
+
+        button {
+            .knockout();
+            letter-spacing: 0;
+            text-transform: uppercase;
+            background-color: rgba(255, 255, 255, .3);
+            border: 0;
+            color: #fff;
+
+            &.alert-button {
+                font-size: 11px;
+                padding: 7px;
+                margin-right: 5px;
+
+                i {
+                    font-size: 10px;
+                    margin-right: 5px;
+                }
+            }
+
+            &.mute-button {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+        }
+
+
+    }
 }
+
+
+// Card Styles
+// -------------------------
 
 .attribute-table {
   color: #000;
@@ -192,6 +189,7 @@ body { background-color: #111; }
 .card {
     .gotham();
     color: #ccc;
+    padding-top: 4.5rem;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
