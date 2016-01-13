@@ -1,8 +1,10 @@
 @import "less/lib/bootstrap/bootstrap"; //Just including normalize.css
 @import "less/lib/prefixer";
+@import "lib/font-awesome/font-awesome.less";
 
 // Global variables
 // -------------------------
+@img-root: "/assets";
 
 // colors
 @republican     : #e61e1d;
@@ -73,14 +75,26 @@ html {
 // Card Styles
 // -------------------------
 .card-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
     background-color: #111;
 
+
     .branding {
+        position: relative;
         color: #fff;
 
+
         .branding-border {
+            position: absolute;
+            top: 0;
+            left: 0;
             display: block;
-            background-image: url('/assets/branding-border.svg');
+            background-image: url('@{img-root}/branding-border.svg');
             background-size: cover;
             background-repeat: no-repeat;
             width: 100%;
@@ -100,7 +114,7 @@ html {
 }
 
 .card {
-    background-color: #333;
+    //background-color: #333;
     .gotham();
     color: #ccc;
     box-sizing: border-box;
