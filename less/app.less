@@ -4,7 +4,27 @@
 
 // Global variables
 // -------------------------
+
+//utilities
+.clearfix() {
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+//images
 @img-root: "/assets";
+
+.img-responsive(@display: block;) {
+  display: @display;
+  max-width: 100%;
+  height: auto;
+}
 
 // colors
 @republican     : #e61e1d;
@@ -85,10 +105,32 @@ body { background-color: #111; }
     height: 100%;
     overflow-y: auto;
 
-    .branding {
+    .global-header {
         position: relative;
         color: #fff;
+        margin-bottom: 1rem;
+        padding-bottom: .3rem;
 
+        .logo {
+            padding-top: 20px;
+
+            h5 {
+                .knockout();
+                font-size: 1.2rem;
+                text-transform: uppercase;
+                margin: 0;
+                padding: 0;
+            }
+
+            img {
+                float: left;
+                display: block;
+                width: 3.5rem;
+                margin-right: .5rem;
+                max-width: 100%;
+                height: auto;
+            }
+        }
 
         .branding-border {
             position: absolute;
@@ -100,6 +142,39 @@ body { background-color: #111; }
             background-repeat: no-repeat;
             width: 100%;
             height: 5px;
+        }
+
+        .global-controls {
+            position: absolute;
+            top: 15px;
+            right: 5px;
+
+            button {
+                .knockout();
+                letter-spacing: 0;
+                text-transform: uppercase;
+                background-color: rgba(255, 255, 255, .3);
+                border: 0;
+                color: #fff;
+
+                &.alert-button {
+                    font-size: 11px;
+                    padding: 7px;
+                    margin-right: 5px;
+
+                    i {
+                        font-size: 10px;
+                        margin-right: 5px;
+                    }
+                }
+
+                &.mute-button {
+                    font-size: 12px;
+                    padding: 6px 8px;
+                }
+            }
+
+
         }
     }
 }
