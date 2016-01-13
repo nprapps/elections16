@@ -180,7 +180,7 @@ body { background-color: #111; }
     .democrat { color: @democrat; }
 }
 
-#catch-up {
+#link-roundup {
     header {
         // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
         background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
@@ -198,7 +198,9 @@ body { background-color: #111; }
             left: 0;
             content: '';
             background: rgba(0, 0, 0, .5);
+            display: -webkit-flex;
             display: flex;
+            -webkit-align-items: center;
             align-items: center;
         }
         .content { padding: 0 30px; }
