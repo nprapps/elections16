@@ -1,0 +1,11 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+{{ content|safe }}
+
+<h2>Source code</h2>
+<pre>
+{{ source_code }}
+</pre>
+
+{% endblock %}

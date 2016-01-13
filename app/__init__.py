@@ -1,11 +1,15 @@
 import app_config
+import markdown
 
 from flask import Flask, make_response, render_template
 from models import models
-from oauth.blueprint import oauth, oauth_required
+from oauth.blueprint import get_credentials, oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
+
+DOC_PLAIN_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/plain'
+DOC_HTML_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -45,6 +49,30 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     return make_response(render_template('cards/%s.html' % slug, **context))
+
+
+@app.route('/gdoc_md/<key>/')
+@oauth_required
+def gdoc_md(key):
+    context = make_context()
+    credentials = get_credentials()
+    url = DOC_PLAIN_URL_TEMPLATE % key
+    response = app_config.authomatic.access(credentials, url)
+    context['source_code'] = response.content
+    context['content'] = markdown.markdown(response.content)
+    return make_response(render_template('cards/gdoc.html', **context))
+
+
+@app.route('/gdoc_html/<key>/')
+@oauth_required
+def gdoc_html(key):
+    context = make_context()
+    credentials = get_credentials()
+    url = DOC_HTML_URL_TEMPLATE % key
+    response = app_config.authomatic.access(credentials, url)
+    context['source_code'] = response.content
+    context['content'] = markdown.markdown(response.content)
+    return make_response(render_template('cards/gdoc.html', **context))
 
 
 app.register_blueprint(static)
