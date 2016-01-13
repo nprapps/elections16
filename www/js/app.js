@@ -20,6 +20,7 @@ var setupFlickity = function() {
     $cards.height($(window).height());
 
     $cards.flickity({
+        cellSelector: '.card',
         cellAlign: 'center',
         draggable: isTouch,
         imagesLoaded: true,
