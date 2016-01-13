@@ -1,4 +1,14 @@
-//@import "less/lib/bootstrap/bootstrap";
+@import "less/lib/bootstrap/bootstrap";
+
+// colors
+@republican     : #e61e1d;
+@republicanFade : #342224;
+@democrat       : #4167b0;
+@democratFade   : #1d2c40;
+@live           : #f05b4e; // red in comps
+@accent1        : #f05b4e; // red in comps
+@accent2        : #498dcb; // blue in comps
+@winner         : #f19e14;
 
 .attribute-table {
   color: #000;
@@ -33,6 +43,7 @@
 
     h1 { font-size: 34px; }
     h2 { font-size: 16px; }
+    h3 { font-size: 14px; }
 
     header { padding: 33px 30px; }
     article { padding: 0 30px 30px 30px; }
@@ -66,6 +77,9 @@
         tr { vertical-align: top; }
         th { text-align: left; }
     }
+
+    .republican { color: @republican; }
+    .democrat { color: @democrat; }
 }
 
 #results {
@@ -111,7 +125,7 @@
         }
         .winner {
             font-weight: bold;
-            color: #f19e14;
+            color: @winner;
 
             td:first-child:after {
                 content: '\00A0\2714';
