@@ -48,6 +48,15 @@ def card(slug):
     return make_response(render_template('cards/%s.html' % slug, **context))
 
 
+@app.route('/podcast/')
+@oauth_required
+def podcast():
+    context = make_context()
+    context['podcastname'] = 'npr politics podcast'
+    return make_response(render_template('cards/podcast.html', **context))
+
+
+
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
