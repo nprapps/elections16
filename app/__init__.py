@@ -21,7 +21,6 @@ def preview(path):
     path_parts = path.split('/')
     slug = path_parts[0]
     args = path_parts[1:]
-    #import ipdb; ipdb.set_trace();
     context['content'] = app.view_functions[slug](*args).data
     return make_response(render_template('index.html', **context))
 
