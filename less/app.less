@@ -24,5 +24,35 @@
             transform: translateY(-50%);
             margin: 0;
         }
+
+        &:first-child {
+            background-color: #f05b4e;
+        }
+        &:nth-child(2) {
+            background-color: #498dcb;
+        }
+        &:nth-child(3) {
+            background-color: #f19e14;
+        }
+    }
+}
+
+.flickity-prev-next-button {
+    background-color: transparent;
+    width: 60px;
+    height: 60px;
+
+    &.previous {
+        left: 0;
+    }
+    &.next {
+        right: 0;
+    }
+    &:hover {
+        background-color: transparent;
+    }
+
+    .arrow {
+        fill: white;
     }
 }
