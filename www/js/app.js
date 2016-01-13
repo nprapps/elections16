@@ -22,13 +22,11 @@ var setupFlickity = function() {
     $cards.flickity({
         cellAlign: 'center',
         draggable: isTouch,
-        wrapAround: true,
         imagesLoaded: true,
         pageDots: false
     });
 
     // bind events
-
     $cards.on('cellSelect', onCardChange);
 }
 
@@ -36,12 +34,6 @@ var onCardChange = function(e) {
     var flickity = $cards.data('flickity');
     var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
-
-    if (oldSlideIndex === 0) {
-        setTimeout(function() {
-            $cards.flickity('remove', $titlecard);
-        }, 1000)
-    }
 }
 
 var getCandidates = function() {
