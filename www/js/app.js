@@ -1,5 +1,6 @@
 // Global jQuery references
 var $cards = null;
+var $titlecard = null;
 
 // Global references
 var candidates = {}
@@ -10,6 +11,7 @@ var isTouch = Modernizr.touch;
  */
 var onDocumentLoad = function(e) {
     $cards = $('.cards');
+    $titlecard = $('.card').eq(0);
 
     setupFlickity();
 }
@@ -23,7 +25,23 @@ var setupFlickity = function() {
         wrapAround: true,
         imagesLoaded: true,
         pageDots: false
-    })
+    });
+
+    // bind events
+
+    $cards.on('cellSelect', onCardChange);
+}
+
+var onCardChange = function(e) {
+    var flickity = $cards.data('flickity');
+    var oldSlideIndex = flickity.selectedIndex - 1;
+    var newSlideIndex = flickity.selectedIndex;
+
+    if (oldSlideIndex === 0) {
+        setTimeout(function() {
+            $cards.flickity('remove', $titlecard);
+        }, 1000)
+    }
 }
 
 var getCandidates = function() {
