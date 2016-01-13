@@ -22,6 +22,7 @@ copytext==0.1.9
 docutils==0.11
 elex==0.2.0
 facebook-sdk==0.4.0
+feedparser==5.2.1
 google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9

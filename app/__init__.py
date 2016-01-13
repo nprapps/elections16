@@ -1,4 +1,5 @@
 import app_config
+import feedparser
 
 from flask import Flask, make_response, render_template
 from models import models
@@ -6,6 +7,9 @@ from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
+
+
+PODCAST_URL = 'http://npr.org/rss/podcast.php?id=510310'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -52,7 +56,11 @@ def card(slug):
 @oauth_required
 def podcast():
     context = make_context()
-    context['podcastname'] = 'npr politics podcast'
+    podcastdata = feedparser.parse(PODCAST_URL)
+    latest = podcastdata.entries[0]
+    context['podcast_title'] = latest.title
+    context['podcast_link'] = latest.enclosures[0]['href']
+    context['podcast_description'] = latest.description
     return make_response(render_template('cards/podcast.html', **context))
 
 
