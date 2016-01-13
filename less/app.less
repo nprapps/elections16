@@ -31,7 +31,7 @@
         color: #fff;
     }
 
-    h1 { font-size: 36px; }
+    h1 { font-size: 34px; }
     h2 { font-size: 16px; }
 
     header { padding: 33px 30px; }
@@ -108,6 +108,16 @@
             padding: 7px 0 7px 7px;
 
             &:first-child { padding-left: 0; }
+        }
+        .winner {
+            font-weight: bold;
+            color: #f19e14;
+
+            td:first-child:after {
+                content: '\00A0\2714';
+                font-size: 18px;
+                line-height: 12px;
+            }
         }
 
         .votes,
