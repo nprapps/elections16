@@ -1,18 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Card Preview: {{ slug }}</title>
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
-
-    <!-- CSS -->
-    {{ CSS.push('less/app.less') }}
-    {{ CSS.render('css/app.min.css') }}
-</head>
-
-<body>
-
 {% block content %}
 <div class="card" id="{{ slug }}">
     {% block card_content %}
@@ -20,6 +5,3 @@
     {% endblock card_content %}
 </div>
 {% endblock %}
-
-</body>
-</html>
