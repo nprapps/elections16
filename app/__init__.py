@@ -35,7 +35,7 @@ def index():
     context = make_context()
     context['results'] = models.Result.select()
 
-    cards = ['alerts', 'donate', 'feedback']
+    cards = ['title', 'link-roundup', 'results']
 
     content = ''
     for card in cards:
