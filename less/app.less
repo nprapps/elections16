@@ -1,5 +1,5 @@
-@import "less/lib/bootstrap/bootstrap";
-
+@import "less/lib/bootstrap/bootstrap"; //Just including normalize.css
+@import "less/lib/prefixer";
 
 // Global variables
 // -------------------------
@@ -30,6 +30,45 @@
     line-height: 1.4;
 }
 
+// Breakpoints
+@screen-jumbo-above: ~"screen and (min-width: 1920px)";
+@screen-mega-above: ~"screen and (min-width: 1600px)";
+@screen-large-above: ~"screen and (min-width: 1201px)";
+@screen-large: ~"screen and (min-width: 1200px)";
+@screen-medium-above: ~"screen and (min-width: 992px)";
+@screen-medium: ~"screen and (max-width: 991px)";
+@screen-small-above: ~"screen and (min-width: 768px)";
+@screen-small: ~"screen and (max-width: 767px)";
+@screen-tiny-above: ~"screen and (min-width: 481px)";
+@screen-tiny: ~"screen and (max-width: 480px)";
+
+// Base font size
+// -------------------------
+
+html {
+    font-size: 12px;
+
+    @media @screen-small-above {
+        font-size: 14px;
+    }
+
+    @media @screen-medium-above {
+        font-size: 14px;
+    }
+
+    @media @screen-large-above {
+        font-size: 18px;
+    }
+
+    @media @screen-mega-above {
+        font-size: 21px;
+    }
+
+    @media @screen-jumbo-above {
+        font-size: 24px;
+    }
+}
+
 
 // Card Styles
 // -------------------------
@@ -37,6 +76,8 @@
     background-color: #111;
 
     .branding {
+        color: #fff;
+
         .branding-border {
             display: block;
             background-image: url('/assets/branding-border.svg');
@@ -59,10 +100,8 @@
 }
 
 .card {
-    width: 320px;
     background-color: #333;
     .gotham();
-    font-size: 13px;
     color: #ccc;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
