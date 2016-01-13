@@ -10,6 +10,21 @@
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
 
+// fonts
+.knockout() {
+    font-family: 'Knockout 31 4r', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    text-transform: uppercase;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+}
+.gotham() {
+    font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+
 .attribute-table {
   color: #000;
   font-family: Courier, monospace;
@@ -23,20 +38,15 @@
 .card {
     width: 320px;
     background-color: #333;
+    .gotham();
     font-size: 13px;
-    font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
-    font-weight: 400;
-    line-height: 1.4;
     color: #ccc;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
-        font-family: 'Knockout 31 4r', Helvetica, Arial, sans-serif;
-        font-weight: normal;
-        text-transform: uppercase;
-        line-height: 1.2;
+        .knockout();
         letter-spacing: -0.02em;
         color: #fff;
     }
@@ -92,11 +102,7 @@
         > li {
             margin: 0 0 3px 0;
             color: #787878;
-            font-family: 'Knockout 31 4r', Helvetica, Arial, sans-serif;
-            font-weight: normal;
-            text-transform: uppercase;
-            line-height: 1.2;
-            letter-spacing: 0.05em;
+            .knockout();
             font-size: 11px;
         }
     }
@@ -104,15 +110,20 @@
         border-bottom: 1px solid #fff;
         margin-bottom: 11px;
 
+        caption {
+            margin-bottom: 11px;
+            .knockout();
+            font-size: 16px;
+            letter-spacing: 0;
+            text-align: left;
+            color: #fff;
+        }
+
         th {
             border-bottom: 3px solid #fff;
             padding: 0 0 7px 7px;
             vertical-align: bottom;
-            font-family: 'Knockout 31 4r', Helvetica, Arial, sans-serif;
-            font-weight: normal;
-            text-transform: uppercase;
-            line-height: 1.2;
-            letter-spacing: 0.05em;
+            .knockout();
             color: #fff;
 
             &:first-child { padding-left: 0; }
