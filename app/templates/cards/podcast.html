@@ -3,6 +3,10 @@
 {% block card_content %}
 <h1>{{ podcast_title}}</h1>
 <div>{{podcast_description}}</div>
-<div>{{podcast_link}}</div>
+
+
+<script type="text/javascript">
+    var PODCAST_URL = '{{ podcast_link }}';
+</script>
 
 {% endblock %}

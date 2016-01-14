@@ -1,6 +1,7 @@
 // Global jQuery references
 var $cards = null;
 var $titlecard = null;
+var $audioPlayer = null;
 
 // Global references
 var candidates = {}
@@ -12,8 +13,11 @@ var isTouch = Modernizr.touch;
 var onDocumentLoad = function(e) {
     $cards = $('.cards');
     $titlecard = $('.card').eq(0);
+    $audioPlayer = $('.audio-player');
 
     setupFlickity();
+    AUDIO.setupAudio();
+
     $cards.css({
         'opacity': 1,
         'visibility': 'visible'
@@ -49,6 +53,10 @@ var onCardChange = function(e) {
         $('.global-controls').hide();
         $('.global-header').removeClass('bg-header');
 
+    }
+
+    if ($('.is-selected').is('#podcast')) {
+        AUDIO.playAudio(PODCAST_URL);
     }
 }
 
