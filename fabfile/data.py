@@ -37,6 +37,9 @@ def bootstrap_db():
     with shell_env(**pg_vars):
         local('dropdb --if-exists %s' % app_config.DATABASE['name'])
         local('createdb %s' % app_config.DATABASE['name'])
+        local('dropdb --if-exists %s' % app_config.DATABASE['test_name'])
+        local('createdb %s' % app_config.DATABASE['test_name'])
+
 
     if env.get('settings'):
         servers.start_service('uwsgi')
@@ -86,7 +89,7 @@ def load_local_results(file_path):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql elections16test -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % os.path.join(root_path, file_path))
+        local('psql %s -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % (app_config.DATABASE['test_name'], os.path.join(root_path, file_path)))
 
 
 @task
