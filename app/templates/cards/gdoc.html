@@ -1,17 +1,27 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
+<style>
+body {
+  background-color: #fff;
+}
+.container { 
+  max-height: 40vh;
+  overflow: auto;
+  border: 1rem solid #eee;
+  background-color: #eee;
+}
+</style>
+
 {{ content|safe }}
 
-<h2>Original source</h2>
-<pre>
-{{ source }}
-</pre>
+<hr/>
 
 <h2>Parsed source</h2>
-<pre>
-{{ content }}
-</pre>
+<pre class="container">{{ content }}</pre>
+
+<h2>Original source</h2>
+<pre class="container">{{ source }}</pre>
 
 
 {% endblock %}
