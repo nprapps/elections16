@@ -14,26 +14,23 @@ var onDocumentLoad = function(e) {
     $titlecard = $('.card').eq(0);
 
     setupFlickity();
+    $cards.css({
+        'opacity': 1,
+        'visibility': 'visible'
+    });
 }
 
 var setupFlickity = function() {
     $cards.height($(window).height());
 
-
-    // make it harder to start the card transition so we can
-
-    Flickity.prototype.hasDragStarted = function( moveVector ) {
-      return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
-    };
-
     $cards.flickity({
         cellSelector: '.card',
         cellAlign: 'center',
         draggable: isTouch,
+        dragThreshold: 20,
         imagesLoaded: true,
         pageDots: false,
-        friction: 0.8,
-        selectedAttraction: 0.1
+        setGallerySize: false,
     });
 
     // bind events
@@ -50,12 +47,18 @@ var onCardChange = function(e) {
         $('.global-controls').show();
     } else {
         $('.global-controls').hide();
+        $('.global-header').removeClass('bg-header');
+
     }
 }
 
 var onCardAnimationFinish = function(e) {
     var flickity = $cards.data('flickity');
     var newSlideIndex = flickity.selectedIndex;
+
+    if (newSlideIndex > 0) {
+        $('.global-header').addClass('bg-header');
+    }
 }
 
 var getCandidates = function() {
