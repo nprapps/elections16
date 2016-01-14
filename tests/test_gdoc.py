@@ -41,12 +41,38 @@ class DocParserTestCase(unittest.TestCase):
     def test_ignore_html(self):
         self._contains_tag(self.contents[6], 'strong', 0)
 
+    def test_a(self):
+        self._contains_tag(self.contents[7], 'a')
+
+    def test_ahref(self):
+        href = self.contents[7].a.attrs['href'][0]
+        self.assertEqual(href, 'http://npr.org')
+
+    def test_ul(self):
+        self._test_tag(self.contents[8], 'ul')
+
+    def test_ul_li(self):
+        count_li = len(self.contents[8].find_all('li'))
+        self.assertEqual(count_li, 3)
+
+    def test_ol(self):
+        self._test_tag(self.contents[9], 'ol')
+
+    def test_ol_li(self):
+        count_li = len(self.contents[9].find_all('li'))
+        self.assertEqual(count_li, 3)
+
+    def test_img(self):
+        self._contains_tag(self.contents[11], 'img')
+
     def _test_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 
     def _contains_tag(self, tag, tag_name, count=1):
         child_length = len(tag.findAll(tag_name))
         self.assertEqual(child_length, count)
+
+
 
 
 if __name__ == '__main__':
