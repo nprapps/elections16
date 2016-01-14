@@ -487,6 +487,60 @@ body { background-color: #111; }
     }
 }
 
+#delegates {
+    .needed {
+        margin-bottom: 11px;
+        text-align: right;
+        color: #787878;
+        font-size: 1rem;
+    }
+    .delegates {
+        list-style-type: none;
+        margin: 0 0 22px 0;
+        padding: 0;
+
+        > li {
+            display: -webkit-flex;
+            display: flex;
+            margin: 0 0 3px 0;
+            line-height: 33px;
+            color: #f1f1f1;
+
+            .candidate {
+                -webkit-flex-basis: auto;
+                flex-basis: auto;
+                width: 6.5rem;
+            }
+            .bar-wrapper {
+                -webkit-flex-grow: 1;
+                flex-grow: 1;
+                height: 33px;
+            }
+            .bar {
+                height: 100%;
+                width: 20px;
+                display: block;
+                float: left;
+            }
+            .amt {
+                display: block;
+                float: left;
+                font-size: 0.8rem;
+                margin-left: 0.5rem;
+            }
+        }
+
+        &.democrat > li {
+            .bar-wrapper { background-color: @democratFade; }
+            .bar { background-color: @democrat; }
+        }
+        &.republican > li {
+            .bar-wrapper { background-color: @republicanFade; }
+            .bar { background-color: @republican; }
+        }
+    }
+}
+
 #link-roundup {
     header {
         // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
