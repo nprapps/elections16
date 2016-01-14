@@ -14,20 +14,25 @@ var onDocumentLoad = function(e) {
     $titlecard = $('.card').eq(0);
 
     setupFlickity();
+    $cards.css({
+        'opacity': 1,
+        'visibility': 'visible'
+    });
 }
 
 var setupFlickity = function() {
     $cards.height($(window).height());
 
-    // make it harder to start the card transition so we can scroll
-    Flickity.prototype.hasDragStarted = function( moveVector ) {
-      return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
-    };
+    // // make it harder to start the card transition so we can scroll
+    // Flickity.prototype.hasDragStarted = function( moveVector ) {
+    //   return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
+    // };
 
     $cards.flickity({
         cellSelector: '.card',
         cellAlign: 'center',
         draggable: isTouch,
+        dragThreshold: 20,
         imagesLoaded: true,
         pageDots: false,
         setGallerySize: false,
