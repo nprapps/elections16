@@ -28,6 +28,18 @@ var AUDIO = (function() {
         $playToggleBtn.removeClass('pause').addClass('play');
     }
 
+    var rewindAudio = function() {
+        var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
+        var seekTime =  currentTime > 15 ? currentTime - 15 : 0;
+        $audioPlayer.jPlayer('play', seekTime);
+    }
+
+    var forwardAudio = function() {
+        var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
+        var seekTime =  currentTime + 15;
+        $audioPlayer.jPlayer('play', seekTime);
+    };
+
     var toggleAudio = function() {
         if ($playToggleBtn.hasClass('play')) {
             playAudio();
@@ -43,6 +55,8 @@ var AUDIO = (function() {
     return {
         'setupAudio': setupAudio,
         'setMedia': setMedia,
+        'rewindAudio': rewindAudio,
+        'forwardAudio': forwardAudio,
         'toggleAudio': toggleAudio
     }
 })();

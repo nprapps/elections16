@@ -16,9 +16,13 @@ var onDocumentLoad = function(e) {
     $cards = $('.cards');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $playToggleBtn = $('.play-toggle-btn');
+    $playToggleBtn = $('.segment-play');
+    $rewindBtn = $('.segment-rewind');
+    $forwardBtn = $('.segment-forward');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $rewindBtn.on('click', AUDIO.rewindAudio);
+    $forwardBtn.on('click', AUDIO.forwardAudio);
 
     setupFlickity();
     AUDIO.setupAudio();
