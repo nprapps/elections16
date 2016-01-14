@@ -1,8 +1,9 @@
 {% block content %}
     <div class="card" id="{{ slug }}">
-
-        {% block card_content %}
-        <h1>Card slug: {{ slug }}</h1>
-        {% endblock card_content %}
+        <div class="card-inner">
+            {% block card_content %}
+                <h1>Card slug: {{ slug }}</h1>
+            {% endblock card_content %}
+        </div>
     </div>
 {% endblock %}

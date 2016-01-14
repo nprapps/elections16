@@ -119,6 +119,8 @@ body { background-color: #111; }
     z-index: 2;
     color: #fff;
     margin-bottom: 1rem;
+    min-height: 4rem;
+    background-color: rgba(0, 0, 0, .8);
     &.bg-header {
         background-color: black;
     }
@@ -222,12 +224,17 @@ body { background-color: #111; }
 .card {
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    //padding-top: 4.5rem;
     .gotham();
     color: #ccc;
-    padding-top: 4.5rem;
+
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
+
+    .card-inner {
+        padding-top: 4rem;
+    }
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -305,13 +312,13 @@ body { background-color: #111; }
     height: 100%;
 
     .title-inner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, .3);
-        padding-top: 50px;
+        //position: absolute;
+        //top: 0;
+        //left: 0;
+        //width: 100%;
+        //height: 100%;
+        //background: rgba(0, 0, 0, .3);
+        //padding-top: 50px;
 
         @media @screen-small-above {
             padding-top: 0;
