@@ -1,8 +1,20 @@
+import app_config
 import urlparse
 
 from bs4 import BeautifulSoup
+from oauth.blueprint import get_credentials
 
-WHITELIST_ATTRIBUTES = ['href']
+DOC_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
+
+
+def get_google_doc(key):
+    """
+    Return the HTML string for a Google doc.
+    """
+    credentials = get_credentials()
+    url = DOC_URL_TEMPLATE % key
+    response = app_config.authomatic.access(credentials, url)
+    return response.content
 
 
 class DocParser:

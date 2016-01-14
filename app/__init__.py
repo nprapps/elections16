@@ -1,16 +1,12 @@
 import app_config
 
-from bs4 import BeautifulSoup
-from gdoc import DocParser
+from gdoc import get_google_doc, DocParser
 from flask import Flask, make_response, render_template
 from models import models
-from oauth.blueprint import get_credentials, oauth, oauth_required
+from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
-
-DOC_PLAIN_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/plain'
-DOC_HTML_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -55,14 +51,12 @@ def card(slug):
 @app.route('/gdoc/<key>/')
 @oauth_required
 def gdoc(key):
+    """
+    Get a Google doc and parse for use in template.
+    """
     context = make_context()
-    credentials = get_credentials()
-    url = DOC_HTML_URL_TEMPLATE % key
-    response = app_config.authomatic.access(credentials, url)
-    parser = DocParser(response.content)
-    context['content'] = unicode(parser)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    context['source'] = soup.body.prettify()
+    html_string = get_google_doc(key)
+    context['content'] = DocParser(html_string)
     return make_response(render_template('cards/gdoc.html', **context))
 
 

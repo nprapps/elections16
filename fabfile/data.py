@@ -3,14 +3,19 @@
 """
 Commands that update or process the application data.
 """
+from app.gdoc import get_google_doc
 from elex.api.api import Elections
-from fabric.api import local, task, require, run, shell_env
+from fabric.api import local, task, shell_env
 from fabric.state import env
 from models import models
 
 import app_config
+import codecs
 import os
 import servers
+
+TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
+
 
 @task(default=True)
 def update():
@@ -43,6 +48,7 @@ def bootstrap_db():
     models.Candidate.create_table()
     models.BallotPosition.create_table()
 
+
 @task
 def bootstrap_data(election_date=None):
     """
@@ -70,6 +76,7 @@ def load_results(election_date=None):
     with shell_env(**pg_vars):
         local('elex results %s | psql %s -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
 
+
 @task
 def load_local_results(file_path):
     # Force root path every time
@@ -81,11 +88,23 @@ def load_local_results(file_path):
     with shell_env(**pg_vars):
         local('psql elections16test -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % os.path.join(root_path, file_path))
 
+
 @task
 def create_calls():
     results = models.Result.select()
     for result in results:
         models.Call.create(call_id=result.id)
+
+
+@task
+def download_test_gdoc():
+    """
+    Get the latest testing Google Doc and write to 'tests/data/testdoc.html'.
+    """
+    html_string = get_google_doc(TEST_GOOGLE_DOC_KEY)
+    with codecs.open('tests/data/testdoc.html', 'w', 'utf-8') as f:
+        f.write(html_string)
+
 
 def _get_pg_vars():
     """
