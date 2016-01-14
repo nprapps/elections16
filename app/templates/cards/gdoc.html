@@ -3,9 +3,15 @@
 {% block card_content %}
 {{ content|safe }}
 
-<h2>Source code</h2>
+<h2>Original source</h2>
 <pre>
-{{ source_code }}
+{{ source }}
 </pre>
+
+<h2>Parsed source</h2>
+<pre>
+{{ content }}
+</pre>
+
 
 {% endblock %}

@@ -1,6 +1,7 @@
 import app_config
-import markdown
 
+from bs4 import BeautifulSoup
+from gdoc import DocParser
 from flask import Flask, make_response, render_template
 from models import models
 from oauth.blueprint import get_credentials, oauth, oauth_required
@@ -51,27 +52,17 @@ def card(slug):
     return make_response(render_template('cards/%s.html' % slug, **context))
 
 
-@app.route('/gdoc_md/<key>/')
+@app.route('/gdoc/<key>/')
 @oauth_required
-def gdoc_md(key):
-    context = make_context()
-    credentials = get_credentials()
-    url = DOC_PLAIN_URL_TEMPLATE % key
-    response = app_config.authomatic.access(credentials, url)
-    context['source_code'] = response.content
-    context['content'] = markdown.markdown(response.content)
-    return make_response(render_template('cards/gdoc.html', **context))
-
-
-@app.route('/gdoc_html/<key>/')
-@oauth_required
-def gdoc_html(key):
+def gdoc(key):
     context = make_context()
     credentials = get_credentials()
     url = DOC_HTML_URL_TEMPLATE % key
     response = app_config.authomatic.access(credentials, url)
-    context['source_code'] = response.content
-    context['content'] = markdown.markdown(response.content)
+    parser = DocParser(response.content)
+    context['content'] = unicode(parser)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    context['source'] = soup.body.prettify()
     return make_response(render_template('cards/gdoc.html', **context))
 
 
