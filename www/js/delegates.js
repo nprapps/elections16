@@ -1,41 +1,45 @@
 var dataDelegates = null;
 var $delegateSlide = $('#delegates')
-var $delegateChart = $delegateSlide.find('ul.delegates');
 
-var loadDelegateData = function(url) {
-    $.getJSON(url, function(data) {
-        var parties = Object.keys(data);
+// don't run any of this unless the slide actually exists
+if ($delegateSlide) {
+    var $delegateChart = $delegateSlide.find('ul.delegates');
 
-        dataDelegates = data;
+    var loadDelegateData = function(url) {
+        $.getJSON(url, function(data) {
+            var parties = Object.keys(data);
 
-        parties.forEach(function(d, i) {
-            // cast delegate totals as numbers
-            dataDelegates[d]['candidates'].forEach(function(a, b) {
-                a['del_total'] = Number(a['del_total']);
+            dataDelegates = data;
+
+            parties.forEach(function(d, i) {
+                // cast delegate totals as numbers
+                dataDelegates[d]['candidates'].forEach(function(a, b) {
+                    a['del_total'] = Number(a['del_total']);
+                });
+
+                // sort list by # of delegates
+                dataDelegates[d]['candidates'] = _.sortBy(dataDelegates[d]['candidates'], 'del_total');
+                dataDelegates[d]['candidates'].reverse();
             });
 
-            // sort list by # of delegates
-            dataDelegates[d]['candidates'] = _.sortBy(dataDelegates[d]['candidates'], 'del_total');
-            dataDelegates[d]['candidates'].reverse();
+            // TODO: filling in the republican delegate card as an example
+            renderDelegates('republicans');
+        })
+    }
+
+    var renderDelegates = function(party) {
+        var delegatesNeeded = dataDelegates[party]['del_needed'];
+        var candidates = dataDelegates[party]['candidates'];
+        var delegateHTML = '';
+
+        $delegateChart.empty();
+
+        candidates.forEach(function(d, i) {
+            delegateHTML += JST.delegate({ candidate: d });
         });
 
-        // TODO: filling in the republican delegate card as an example
-        renderDelegates('republicans');
-    })
+        $delegateChart.append(delegateHTML);
+    }
+
+    loadDelegateData('/delegates.json');
 }
-
-var renderDelegates = function(party) {
-    var delegatesNeeded = dataDelegates[party]['del_needed'];
-    var candidates = dataDelegates[party]['candidates'];
-    var delegateHTML = '';
-
-    $delegateChart.empty();
-
-    candidates.forEach(function(d, i) {
-        delegateHTML += JST.delegate({ candidate: d });
-    });
-
-    $delegateChart.append(delegateHTML);
-}
-
-loadDelegateData('/delegates.json');
