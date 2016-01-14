@@ -2,6 +2,8 @@
 var $cards = null;
 var $titlecard = null;
 var $audioPlayer = null;
+var $playToggleBtn = null;
+
 
 // Global references
 var candidates = {}
@@ -14,6 +16,9 @@ var onDocumentLoad = function(e) {
     $cards = $('.cards');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
+    $playToggleBtn = $('.play-toggle-btn');
+
+    $playToggleBtn.on('click', AUDIO.toggleAudio);
 
     setupFlickity();
     AUDIO.setupAudio();
@@ -56,7 +61,7 @@ var onCardChange = function(e) {
     }
 
     if ($('.is-selected').is('#podcast')) {
-        AUDIO.playAudio(PODCAST_URL);
+        AUDIO.setMedia(PODCAST_URL);
     }
 }
 

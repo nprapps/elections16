@@ -11,10 +11,29 @@ var AUDIO = (function() {
         });
     }
 
-    var playAudio = function(url) {
+    var setMedia = function(url) {
         $audioPlayer.jPlayer('setMedia', {
             'mp3': url
-        }).jPlayer('play');
+        });
+        playAudio();
+    }
+
+    var playAudio = function() {
+        $audioPlayer.jPlayer('play');
+        $playToggleBtn.removeClass('play').addClass('pause');
+    }
+
+    var pauseAudio = function() {
+        $audioPlayer.jPlayer('pause');
+        $playToggleBtn.removeClass('pause').addClass('play');
+    }
+
+    var toggleAudio = function() {
+        if ($playToggleBtn.hasClass('play')) {
+            playAudio();
+        } else {
+            pauseAudio();
+        }
     }
 
     var onTimeupdate = function() {
@@ -23,7 +42,8 @@ var AUDIO = (function() {
 
     return {
         'setupAudio': setupAudio,
-        'playAudio': playAudio
+        'setMedia': setMedia,
+        'toggleAudio': toggleAudio
     }
 })();
 
