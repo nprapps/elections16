@@ -53,6 +53,7 @@ class DocParser:
         for tag in self.soup.findAll('span'):
             self.create_italic(tag)
             self.create_strong(tag)
+            self.create_underline(tag)
             self.unwrap_span(tag)
 
         for tag in self.soup.findAll():
@@ -72,6 +73,13 @@ class DocParser:
         """
         if tag.get('style') == 'font-weight:bold':
             tag.wrap(self.soup.new_tag('strong'))
+
+    def create_underline(self, tag):
+        """
+        See if span tag has underline style and wrap with u tag.
+        """
+        if tag.get('style') == 'text-decoration:underline':
+            tag.wrap(self.soup.new_tag('u'))
 
     def unwrap_span(self, tag):
         """
