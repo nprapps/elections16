@@ -1,9 +1,11 @@
 {% block content %}
     <div class="card" id="{{ slug }}">
+
         <div class="card-inner">
             {% block card_content %}
                 <h1>Card slug: {{ slug }}</h1>
             {% endblock card_content %}
         </div>
+        <span class="card-background"></span>
     </div>
 {% endblock %}
