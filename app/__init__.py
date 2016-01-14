@@ -62,8 +62,6 @@ def card(slug):
     context['slug'] = slug
     return make_response(render_template('cards/%s.html' % slug, **context))
 
-
-<<<<<<< HEAD
 @app.route('/podcast/')
 @oauth_required
 def podcast():
@@ -74,9 +72,6 @@ def podcast():
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
     return make_response(render_template('cards/podcast.html', **context))
-=======
-
->>>>>>> master
 
 
 
