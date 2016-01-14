@@ -78,6 +78,7 @@ def podcast():
     context['podcast_title'] = latest.title
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
+    context['slug'] = 'podcast'
     return make_response(render_template('cards/podcast.html', **context))
 
 
