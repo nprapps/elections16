@@ -59,6 +59,10 @@ def card(slug):
     return make_response(render_template('cards/%s.html' % slug, **context))
 
 
+
+
+
+
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 

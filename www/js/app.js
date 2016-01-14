@@ -19,22 +19,42 @@ var onDocumentLoad = function(e) {
 var setupFlickity = function() {
     $cards.height($(window).height());
 
+
+    // make it harder to start the card transition so we can
+
+    Flickity.prototype.hasDragStarted = function( moveVector ) {
+      return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
+    };
+
     $cards.flickity({
         cellSelector: '.card',
         cellAlign: 'center',
         draggable: isTouch,
         imagesLoaded: true,
-        pageDots: false
+        pageDots: false,
+        friction: 0.8,
+        selectedAttraction: 0.1
     });
 
     // bind events
     $cards.on('cellSelect', onCardChange);
+    $cards.on('settle', onCardAnimationFinish);
 }
 
 var onCardChange = function(e) {
     var flickity = $cards.data('flickity');
     var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
+
+    if (newSlideIndex > 0) {
+        $('.global-header').addClass('bg-header');
+    } else {
+        $('.global-header').removeClass('bg-header');
+    }
+}
+
+var onCardAnimationFinish = function(e) {
+    var flickity = $cards.data('flickity');
 }
 
 var getCandidates = function() {
