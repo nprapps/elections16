@@ -1,4 +1,4 @@
-Authomatic==0.0.13
+Authomatic==0.1.0.post1
 Babel==2.2.0
 Fabric==1.10.2
 Flask==0.9
