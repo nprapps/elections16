@@ -139,7 +139,8 @@ body { background-color: #111; }
     margin-bottom: 1rem;
     min-height: 4rem;
     &.bg-header {
-        background-color: black;
+        background-color: rgba(0, 0, 0, .6);
+        width: 100%;
     }
 
     @media @screen-small-above {
@@ -177,42 +178,39 @@ body { background-color: #111; }
             }
         }
     }
+}
 
+.global-controls {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    display: none;
+    z-index: 3;
 
+    button {
+        .knockout();
+        letter-spacing: 0;
+        text-transform: uppercase;
+        background-color: rgba(255, 255, 255, .3);
+        border: 0;
+        color: #fff;
 
-    .global-controls {
-        position: absolute;
-        top: 15px;
-        right: 5px;
-        display: none;
+        &.alert-button {
+            font-size: 11px;
+            padding: 7px;
+            margin-right: 5px;
 
-        button {
-            .knockout();
-            letter-spacing: 0;
-            text-transform: uppercase;
-            background-color: rgba(255, 255, 255, .3);
-            border: 0;
-            color: #fff;
-
-            &.alert-button {
-                font-size: 11px;
-                padding: 7px;
+            i {
+                font-size: 10px;
                 margin-right: 5px;
-
-                i {
-                    font-size: 10px;
-                    margin-right: 5px;
-                }
-            }
-
-            &.mute-button {
-                font-size: 12px;
-                padding: 6px 8px 7px 6px;
-                i {padding-left: 2px;}
             }
         }
 
-
+        &.mute-button {
+            font-size: 12px;
+            padding: 6px 8px 7px 6px;
+            i {padding-left: 2px;}
+        }
     }
 }
 
