@@ -325,6 +325,7 @@ body { background-color: #111; }
             .box-shadow(2px 2px 10px #333);
 
 
+
             @media @screen-small-above {
                 position: absolute;
                 top: 0;
@@ -332,7 +333,21 @@ body { background-color: #111; }
                 margin: 0;
                 z-index: 2;
                 background-color: rgba(117, 152, 201, 1);
+                max-width: 500px;
             }
+
+            @media @screen-large-above {
+                max-width: 600px;
+            }
+
+            @media @screen-mega-above {
+                max-width: 700px;
+            }
+
+            @media @screen-jumbo-above {
+                max-width: 800px;
+            }
+
 
             p {
                 color: #fff;
@@ -361,6 +376,38 @@ body { background-color: #111; }
 
                 i {
                     padding-right: 3px;
+                }
+            }
+
+            &.live-banner {
+                background-color: rgba(214, 87, 81, 1);
+
+                &:before {
+                    display: block;
+                    content: ' ';
+                    position: absolute;
+                    top: 35%;
+                    left: 10px;
+                    right: 0;
+                    bottom: 0;
+                    width: 1.3rem;
+                    height: 1rem;
+                    z-index: 1;
+                    background: transparent url('http://media.npr.org/infiniteplayer/img/bounce.gif') no-repeat;
+                    .background-size(cover);
+                }
+
+                p {
+                    padding: 1rem 7.4rem 1rem 3rem;
+
+                    @media @screen-small-above {
+                        padding: .5rem 7.4rem .5rem 2.4rem;
+                    }
+
+                }
+
+                .get-alerts {
+                    background-color: @live;
                 }
             }
         }
