@@ -127,8 +127,10 @@ body { background-color: #111; }
             .knockout();
             font-size: 1.2rem;
             text-transform: uppercase;
+            line-height: 1;
             margin: 0;
             padding: 0;
+            text-shadow: 2px 2px 2px #333;
         }
 
         img {
@@ -306,12 +308,26 @@ body { background-color: #111; }
             .box-shadow(2px 2px 10px #333);
 
 
+            @media @screen-small-above {
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 0;
+                z-index: 2;
+                background-color: rgba(117, 152, 201, 1);
+            }
+
             p {
                 color: #fff;
-                font-size: 1rem;
+                font-size: .9rem;
                 line-height: 1;
-                padding: 1rem 6rem 1rem 1rem;
+                padding: 1rem 7.4rem 1rem 1rem;
                 text-transform: uppercase;
+
+                @media @screen-small-above {
+                    padding: .5rem 7.4rem .5rem .5rem;
+                }
+
             }
 
             .get-alerts {
@@ -323,17 +339,12 @@ body { background-color: #111; }
                 color: #fff;
                 text-transform: uppercase;
                 border: 0;
+                font-size: .9rem;
+
 
                 i {
                     padding-right: 3px;
                 }
-            }
-
-            @media @screen-small-above {
-                position: absolute;
-                top: 0;
-                right: 0;
-                margin: 0;
             }
         }
 
@@ -353,6 +364,10 @@ body { background-color: #111; }
                 font-size: 2rem;
                 line-height: 1;
                 text-shadow: 2px 2px 2px #222;
+
+                @media @screen-small-above {
+                    font-size: 3.7rem;
+                }
             }
 
             p {
@@ -361,6 +376,10 @@ body { background-color: #111; }
                 line-height: 1.7;
                 color: #fff;
                 text-shadow: 2px 2px 2px #222;
+
+                @media @screen-small-above {
+                    font-size: 1.3rem;
+                }
             }
 
             .begin {
@@ -378,6 +397,12 @@ body { background-color: #111; }
                 i {
                     font-size: 1.6rem;
                     padding-left: .5rem;
+                }
+
+                @media @screen-small-above {
+                    font-size: 1.7rem;
+
+                    i {font-size: 1.9rem;}
                 }
             }
         }
