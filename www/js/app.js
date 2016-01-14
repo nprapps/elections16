@@ -19,9 +19,7 @@ var onDocumentLoad = function(e) {
 var setupFlickity = function() {
     $cards.height($(window).height());
 
-
-    // make it harder to start the card transition so we can
-
+    // make it harder to start the card transition so we can scroll
     Flickity.prototype.hasDragStarted = function( moveVector ) {
       return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
     };
