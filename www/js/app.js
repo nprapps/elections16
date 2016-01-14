@@ -23,11 +23,6 @@ var onDocumentLoad = function(e) {
 var setupFlickity = function() {
     $cards.height($(window).height());
 
-    // // make it harder to start the card transition so we can scroll
-    // Flickity.prototype.hasDragStarted = function( moveVector ) {
-    //   return !this.isTouchScrolling && Math.abs( moveVector.x ) > 10;
-    // };
-
     $cards.flickity({
         cellSelector: '.card',
         cellAlign: 'center',
@@ -36,8 +31,6 @@ var setupFlickity = function() {
         imagesLoaded: true,
         pageDots: false,
         setGallerySize: false,
-        friction: 0.8,
-        selectedAttraction: 0.1
     });
 
     // bind events
