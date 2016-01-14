@@ -2008,6 +2008,7 @@ Flickity.defaults = {
   cellAlign: 'center',
   // cellSelector: undefined,
   // contain: false,
+  dragThreshold: 3,
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.28, // friction when selecting
   // initialIndex: 0,
@@ -3524,7 +3525,7 @@ Flickity.prototype.pointerMove = function( event, pointer ) {
 };
 
 Flickity.prototype.hasDragStarted = function( moveVector ) {
-  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+  return !this.isTouchScrolling && Math.abs( moveVector.x ) > this.options.dragThreshold;
 };
 
 // ----- up ----- //
