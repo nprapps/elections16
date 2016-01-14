@@ -62,6 +62,7 @@ def card(slug):
     context['slug'] = slug
     return make_response(render_template('cards/%s.html' % slug, **context))
 
+
 @app.route('/podcast/')
 @oauth_required
 def podcast():
