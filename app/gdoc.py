@@ -5,6 +5,11 @@ from bs4 import BeautifulSoup
 from oauth.blueprint import get_credentials
 
 DOC_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
+ATTR_WHITELIST = {
+    'a': ['href'],
+    'img': ['src', 'alt'],
+}
+
 
 
 def get_google_doc(key):
@@ -89,17 +94,16 @@ class DocParser:
 
     def parse_attrs(self, tag):
         """
-        Preserve and parse hrefs.
-
-        Preserve src attributes.
-
-        Throw the rest away.
+        Reject attributes not defined in ATTR_WHITELIST.
         """
-        for k, v in tag.attrs.items():
-            if k == 'href':
-                tag.attrs[k] = self.parse_href(v)
-            elif k != 'src':
-                del tag.attrs[k]
+        if tag.name in ATTR_WHITELIST.keys():
+            for attr, value in tag.attrs.items():
+                if attr in ATTR_WHITELIST[tag.name]:
+                    tag.attrs[attr] = self._parse_attr(tag.name, attr, value)
+                else:
+                    del tag.attrs[attr]
+        else:
+            tag.attrs = {}
 
     def remove_empty(self, tag):
         """
@@ -110,13 +114,23 @@ class DocParser:
         if not has_children and not has_text and not tag.is_empty_element:
             tag.extract()
 
-    def parse_href(self, href):
+    def _parse_href(self, href):
         """
         Extract "real" URL from Google redirected url by getting `q` querystring
         parameter.
         """
         params = urlparse.parse_qs(urlparse.urlsplit(href).query)
         return params.get('q')
+
+    def _parse_attr(self, tagname, attr, value):
+        """
+        Parse attribute. Delegate to href parser for hrefs, otherwise return
+        value.
+        """
+        if tagname == 'a' and attr == 'href':
+            return self._parse_href(value)
+        else:
+            return value
 
     def __unicode__(self):
         return '\n'.join([unicode(tag) for tag in self.soup.body.children])
