@@ -2,27 +2,36 @@
 
 {% block card_content %}
 
-<div class="segment-audio-player">
-    <h2>NPR Politics Podcast</h2>
-    <ul>
-        <li>rewind</li>
-        <li>
-            play
-            <span class="druation">
-                35:31
-            </span>
-        </li>
-        <li>forward</li>
-    </ul>
-</div>
+<div class="segment-audio-content">
 
-<div class="podcast-description">
-    <h1>{{ podcast_title}}</h1>
-    <p>{{podcast_description}}</p>
-    <ul>
-        <li>Subscribe</li>
-        <li>{{podcast_link}}</li>
-    </ul>
+        <h2 class="segment-source">NPR Politics Podcast</h2>
+
+        <ul class="segment-audio-player">
+            <li class="segment-rewind">rewind</li>
+            <li class="segment-play">
+                play
+                <span class="duration">
+                    35:31
+                </span>
+            </li>
+            <li class="segment-forward">forward</li>
+        </ul>
+
+    <div class="podcast-description">
+        <h1>{{ podcast_title}}
+            Weekly Roundup Thursday, February 4th
+        </h1>
+        <p> {{podcast_description}}
+            Sed ut perspiciatis unde omnis iste natus error sit <a href="http://npr.org">voluptatem accusantium doloremque</a> laudantium, totam rem aperiam.
+        </p>
+
+        <ul>
+            <li>Subscribe</li>
+            <li>{{podcast_link}}</li>
+        </ul>
+
+    </div>
+
 </div>
 
 <p class="photo-credit">Photo Credit</p>
