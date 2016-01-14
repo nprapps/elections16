@@ -111,6 +111,19 @@ html {
 body { background-color: #111; }
 
 // header
+.branding-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    background-image: url('@{img-root}/branding-border.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 5px;
+    z-index: 2;
+}
+
 .global-header {
     position: absolute;
     top: 0;
@@ -122,6 +135,10 @@ body { background-color: #111; }
     min-height: 4rem;
     &.bg-header {
         background-color: black;
+    }
+
+    @media @screen-small-above {
+        width: 22rem;
     }
 
     .logo {
@@ -136,6 +153,10 @@ body { background-color: #111; }
             margin: 0;
             padding: 0;
             text-shadow: 2px 2px 2px #333;
+
+            @media @screen-small-above {
+                font-size: 1.6rem;
+            }
         }
 
         img {
@@ -145,20 +166,14 @@ body { background-color: #111; }
             margin-right: .5rem;
             max-width: 100%;
             height: auto;
+
+            @media @screen-small-above {
+                width: 4.5rem;
+            }
         }
     }
 
-    .branding-border {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: block;
-        background-image: url('@{img-root}/branding-border.svg');
-        background-size: cover;
-        background-repeat: no-repeat;
-        width: 100%;
-        height: 5px;
-    }
+
 
     .global-controls {
         position: absolute;
