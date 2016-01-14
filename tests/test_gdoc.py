@@ -38,28 +38,31 @@ class DocParserTestCase(unittest.TestCase):
     def test_em(self):
         self._contains_tag(self.contents[5], 'em')
 
+    def test_u(self):
+        self._contains_tag(self.contents[6], 'u')
+
     def test_ignore_html(self):
-        self._contains_tag(self.contents[6], 'strong', 0)
+        self._contains_tag(self.contents[7], 'strong', 0)
 
     def test_a(self):
-        self._contains_tag(self.contents[7], 'a')
+        self._contains_tag(self.contents[8], 'a')
 
     def test_ahref(self):
-        href = self.contents[7].a.attrs['href'][0]
+        href = self.contents[8].a.attrs['href'][0]
         self.assertEqual(href, 'http://npr.org')
 
     def test_ul(self):
-        self._is_tag(self.contents[8], 'ul')
+        self._is_tag(self.contents[9], 'ul')
 
     def test_ul_li(self):
-        count_li = len(self.contents[8].find_all('li'))
+        count_li = len(self.contents[9].find_all('li'))
         self.assertEqual(count_li, 3)
 
     def test_ol(self):
-        self._is_tag(self.contents[9], 'ol')
+        self._is_tag(self.contents[10], 'ol')
 
     def test_ol_li(self):
-        count_li = len(self.contents[9].find_all('li'))
+        count_li = len(self.contents[10].find_all('li'))
         self.assertEqual(count_li, 3)
 
     def test_img(self):
@@ -84,6 +87,7 @@ class DocParserTestCase(unittest.TestCase):
     def _contains_tag(self, tag, tag_name, count=1):
         child_length = len(tag.findAll(tag_name))
         self.assertEqual(child_length, count)
+
 
 if __name__ == '__main__':
     unittest.main()
