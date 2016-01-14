@@ -32,6 +32,7 @@ var setupFlickity = function() {
         draggable: isTouch,
         imagesLoaded: true,
         pageDots: false,
+        setGallerySize: false,
         friction: 0.8,
         selectedAttraction: 0.1
     });
