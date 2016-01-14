@@ -1,8 +1,29 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<h1>{{ podcast_title}}</h1>
-<div>{{podcast_description}}</div>
-<div>{{podcast_link}}</div>
 
+<div class="segment-audio-player">
+    <h2>NPR Politics Podcast</h2>
+    <ul>
+        <li>rewind</li>
+        <li>
+            play
+            <span class="druation">
+                35:31
+            </span>
+        </li>
+        <li>forward</li>
+    </ul>
+</div>
+
+<div class="podcast-description">
+    <h1>{{ podcast_title}}</h1>
+    <p>{{podcast_description}}</p>
+    <ul>
+        <li>Subscribe</li>
+        <li>{{podcast_link}}</li>
+    </ul>
+</div>
+
+<p class="photo-credit">Photo Credit</p>
 {% endblock %}
