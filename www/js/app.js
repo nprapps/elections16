@@ -47,14 +47,20 @@ var onCardChange = function(e) {
     var newSlideIndex = flickity.selectedIndex;
 
     if (newSlideIndex > 0) {
-        $('.global-header').addClass('bg-header');
+        $('.global-controls').show();
     } else {
+        $('.global-controls').hide();
         $('.global-header').removeClass('bg-header');
     }
 }
 
 var onCardAnimationFinish = function(e) {
     var flickity = $cards.data('flickity');
+    var newSlideIndex = flickity.selectedIndex;
+
+    if (newSlideIndex > 0) {
+        $('.global-header').addClass('bg-header');
+    }
 }
 
 var getCandidates = function() {
