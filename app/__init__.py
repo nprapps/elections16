@@ -38,6 +38,17 @@ def index():
     """
     context = make_context()
     context['results'] = models.Result.select()
+
+    state = context['COPY']['meta']['state']['value']
+    script = context['COPY'][state]
+
+    content = ''
+    for row in script:
+        route = row['route']
+        function, params = route.split('/')
+        content += app.view_functions[function](params).data
+
+    context['content'] = content
     return make_response(render_template('index.html', **context))
 
 
@@ -52,6 +63,7 @@ def card(slug):
     return make_response(render_template('cards/%s.html' % slug, **context))
 
 
+<<<<<<< HEAD
 @app.route('/podcast/')
 @oauth_required
 def podcast():
@@ -62,6 +74,9 @@ def podcast():
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
     return make_response(render_template('cards/podcast.html', **context))
+=======
+
+>>>>>>> master
 
 
 
