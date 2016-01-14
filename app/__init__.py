@@ -62,7 +62,7 @@ def index():
 @oauth_required
 def card(slug):
     """
-    Stubby "hello world" view
+    Render a generic card.
     """
     context = make_context()
     context['slug'] = slug
@@ -72,6 +72,9 @@ def card(slug):
 @app.route('/podcast/')
 @oauth_required
 def podcast():
+    """
+    Render the podcast card
+    """
     context = make_context()
     podcastdata = feedparser.parse(PODCAST_URL)
     latest = podcastdata.entries[0]
@@ -80,7 +83,6 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     return make_response(render_template('cards/podcast.html', **context))
-
 
 
 app.register_blueprint(static)
