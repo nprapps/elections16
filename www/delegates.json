@@ -1,0 +1,28 @@
+{
+    "republicans": {
+        "del_needed": 1400,
+        "candidates": [
+            { "name_last": "Bush", "del_total": "13" },
+            { "name_last": "Carson", "del_total": "8" },
+            { "name_last": "Christie", "del_total": "1" },
+            { "name_last": "Cruz", "del_total": "19" },
+            { "name_last": "Fiorina", "del_total": "8" },
+            { "name_last": "Gilmore", "del_total": "17" },
+            { "name_last": "Huckabee", "del_total": "12" },
+            { "name_last": "Kasich", "del_total": "11" },
+            { "name_last": "Paul", "del_total": "18" },
+            { "name_last": "Rubio", "del_total": "18" },
+            { "name_last": "Santorum", "del_total": "13" },
+            { "name_last": "Trump", "del_total": "3" }
+        ]
+    },
+    "democrats": {
+        "del_needed": 1400,
+        "candidates": [
+            { "name_last": "Clinton", "del_total": "13" },
+            { "name_last": "Sanders", "del_total": "8" },
+            { "name_last": "O'Malley", "del_total": "1" }
+        ]
+    }
+
+}
