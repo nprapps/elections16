@@ -44,9 +44,15 @@ def index():
 
     content = ''
     for row in script:
-        route = row['route']
-        function, params = route.split('/')
-        content += app.view_functions[function](params).data
+        function = row['function']
+        params = ''
+        if row['params']:
+            params = row['params']
+
+        if params:
+            content += app.view_functions[function](params).data
+        else:
+            content += app.view_functions[function]().data
 
     context['content'] = content
     return make_response(render_template('index.html', **context))
