@@ -34,6 +34,17 @@ def index():
     """
     context = make_context()
     context['results'] = models.Result.select()
+
+    state = context['COPY']['meta']['state']['value']
+    script = context['COPY'][state]
+
+    content = ''
+    for row in script:
+        route = row['route']
+        function, params = route.split('/')
+        content += app.view_functions[function](params).data
+
+    context['content'] = content
     return make_response(render_template('index.html', **context))
 
 
@@ -46,6 +57,10 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     return make_response(render_template('cards/%s.html' % slug, **context))
+
+
+
+
 
 
 app.register_blueprint(static)
