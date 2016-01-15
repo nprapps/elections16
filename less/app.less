@@ -546,7 +546,8 @@ body { background-color: #111; }
 
         .segment-audio-player {
             position: relative;
-            margin: 4rem 0;
+            margin: 2rem auto;
+            max-width: 18rem;
 
             .segment-rewind {
                 position: absolute;
@@ -554,8 +555,60 @@ body { background-color: #111; }
                 left: 0;
             }
 
+            .rewind {
+                background: transparent url('@{img-root}/rewind-15.svg') no-repeat;
+                .background-size(cover);
+                background-position: center center;
+                width: 3.6rem;
+                height: 4rem;
+                border: none;
+            }
+
+            .forward {
+                background: transparent url('@{img-root}/forward-15.svg') no-repeat;
+                .background-size(cover);
+                background-position: center center;
+                width: 3.6rem;
+                height: 4rem;
+                border: none;
+            }
+
+
             .segment-play {
                 margin: 0 2rem;
+
+                button {
+                    border: none;
+                    background-color: transparent;
+                }
+
+                .play, .pause {
+                    position: relative;
+                    width: 5rem;
+                    height: 5rem;
+                    margin-bottom: .5rem;
+                    outline: none;
+                }
+
+                .play:before {
+                    content: "\f04b";
+                    font-family: FontAwesome;
+                    color: #fff;
+                    font-size: 5rem;
+                    position: absolute;
+                    top: 0;
+                    left: 20px;
+                }
+
+                .pause:before {
+                    content: "\f04c";
+                    font-family: FontAwesome;
+                    color: #fff;
+                    font-size: 5rem;
+                    position: absolute;
+                    top: 0;
+                    left: 7px;
+                }
 
                 .duration {
                     display: block;
