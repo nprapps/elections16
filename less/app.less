@@ -818,7 +818,11 @@ body { background-color: #111; }
 
 
 #newsletter {
-    header { padding-bottom: 22px; }
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+        padding-bottom: 22px;
+    }
     p {
         margin: 0;
         &.footnote {
