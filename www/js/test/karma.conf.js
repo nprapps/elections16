@@ -17,10 +17,12 @@ module.exports = function(config) {
     files: [
       'lib/modernizr.js',
       'lib/jquery.js',
+      'lib/jquery.jplayer.js',
       'lib/bootstrap.js',
       'lib/underscore.js',
       'lib/ZeroClipboard.js',
       'lib/flickity.pkgd.js',
+      'audio.js',
       'app.js',
       '../../node_modules/jasmine-jquery/lib/jasmine-jquery.js',
       'test/spec/**/*spec.js',

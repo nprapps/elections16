@@ -1,6 +1,9 @@
 // Global jQuery references
 var $cards = null;
 var $titlecard = null;
+var $audioPlayer = null;
+var $playToggleBtn = null;
+
 
 // Global references
 var candidates = {}
@@ -12,8 +15,18 @@ var isTouch = Modernizr.touch;
 var onDocumentLoad = function(e) {
     $cards = $('.cards');
     $titlecard = $('.card').eq(0);
+    $audioPlayer = $('.audio-player');
+    $playToggleBtn = $('.toggle-btn');
+    $rewindBtn = $('.rewind');
+    $forwardBtn = $('.forward');
+
+    $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $rewindBtn.on('click', AUDIO.rewindAudio);
+    $forwardBtn.on('click', AUDIO.forwardAudio);
 
     setupFlickity();
+    AUDIO.setupAudio();
+
     $cards.css({
         'opacity': 1,
         'visibility': 'visible'
@@ -31,6 +44,8 @@ var setupFlickity = function() {
         imagesLoaded: true,
         pageDots: false,
         setGallerySize: false,
+        friction: isTouch ? 0.28 : 1,
+        selectedAttraction: isTouch ? 0.025 : 1
     });
 
     // bind events
@@ -49,6 +64,10 @@ var onCardChange = function(e) {
         $('.global-controls').hide();
         $('.global-header').removeClass('bg-header');
 
+    }
+
+    if ($('.is-selected').is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        AUDIO.setMedia(PODCAST_URL);
     }
 }
 
