@@ -78,9 +78,11 @@ var onCardChange = function(e) {
 
     if (newSlideIndex > 0) {
         $globalControls.show();
-        $globalHeader.addClass('bg-header');
+        $globalHeader.show();
+        //$globalHeader.addClass('bg-header');
     } else {
         $globalControls.hide();
+        $globalHeader.hide();
     }
 
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
