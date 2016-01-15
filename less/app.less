@@ -315,6 +315,43 @@ body { background-color: #111; }
         opacity: .6;
     }
 
+    .begin {
+        .knockout();
+        color: #fff;
+        text-shadow: 2px 2px 2px #222;
+        background-color: transparent;
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 4px solid @accent1;
+        border-left: 0;
+        padding: 0 0 .5rem 0;
+        font-size: 1.4rem;
+
+        &:hover { opacity: 0.7; }
+
+        i {
+            font-size: 1.6rem;
+            padding-left: .5rem;
+        }
+
+        @media @screen-small-above {
+            font-size: 1.7rem;
+
+            i {font-size: 1.9rem;}
+        }
+    }
+
+    .featured-links {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        > li {
+            text-align: center;
+            margin: 22px 0 0 0;
+        }
+    }
+
     .republican { color: @republican; }
     .democrat { color: @democrat; }
 }
@@ -477,30 +514,6 @@ body { background-color: #111; }
                     font-size: 1.3rem;
                 }
             }
-
-            .begin {
-                .knockout();
-                color: #fff;
-                text-shadow: 2px 2px 2px #222;
-                background-color: transparent;
-                border-top: 0;
-                border-right: 0;
-                border-bottom: 4px solid @accent1;
-                border-left: 0;
-                padding: 0 0 .5rem 0;
-                font-size: 1.4rem;
-
-                i {
-                    font-size: 1.6rem;
-                    padding-left: .5rem;
-                }
-
-                @media @screen-small-above {
-                    font-size: 1.7rem;
-
-                    i {font-size: 1.9rem;}
-                }
-            }
         }
     }
 }
@@ -532,8 +545,6 @@ body { background-color: #111; }
             padding: 0;
             list-style-type: none;
             text-align: center;
-
-            li {margin: 0;}
         }
 
         @media @screen-small-above {
@@ -548,6 +559,8 @@ body { background-color: #111; }
             position: relative;
             margin: 2rem auto;
             max-width: 18rem;
+
+            li {margin: 0;}
 
             .segment-rewind {
                 position: absolute;
