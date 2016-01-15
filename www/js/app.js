@@ -3,7 +3,8 @@ var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
-
+var $globalHeader = null;
+var $globalControls = null;
 
 // Global references
 var candidates = {}
@@ -20,6 +21,8 @@ var onDocumentLoad = function(e) {
     $playToggleBtn = $('.toggle-btn');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $globalHeader = $('.global-header');
+    $globalControls = $('.global-controls');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
@@ -55,7 +58,7 @@ var setupFlickity = function() {
 }
 
 var onCardScroll = function() {
-    $('.global-header').addClass('bg-header');
+    $globalHeader.addClass('bg-header');
     $cards.off('scroll');
 }
 
@@ -63,10 +66,17 @@ var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
-    $('.global-header').removeClass('bg-header');
+
+    var $thisSlide = $('.is-selected');
+
+    $globalHeader.removeClass('bg-header');
     $cards.on('scroll', onCardScroll);
 
-    if ($('.is-selected').is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+    if (newSlideIndex > 0) {
+        $globalControls.show();
+    }
+
+    if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
 }
