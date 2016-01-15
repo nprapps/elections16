@@ -5,6 +5,9 @@ var $audioPlayer = null;
 var $playToggleBtn = null;
 var $globalHeader = null;
 var $globalControls = null;
+var $rewindBtn = null;
+var $forwardBtn = null;
+var $duration = null;
 
 // Global references
 var candidates = {}
@@ -23,6 +26,7 @@ var onDocumentLoad = function(e) {
     $forwardBtn = $('.forward');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
+    $duration = $('.duration');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
