@@ -3,7 +3,9 @@ var $cards = null;
 var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
-
+var $rewindBtn = null;
+var $forwardBtn = null;
+var $duration = null;
 
 // Global references
 var candidates = {}
@@ -19,6 +21,7 @@ var onDocumentLoad = function(e) {
     $playToggleBtn = $('.toggle-btn');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $duration = $('.duration');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
