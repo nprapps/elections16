@@ -813,9 +813,33 @@ body { background-color: #111; }
             padding: 0 33px;
         }
     }
+    // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
+    ol {
+        counter-reset: li;
+
+        > li {
+            position: relative;
+            margin-left: 2em;
+            list-style: none;
+
+            &:before {
+                content:counter(li);
+                counter-increment:li;
+                -moz-box-sizing:border-box;
+                -webkit-box-sizing:border-box;
+                box-sizing:border-box;
+                position: absolute;
+                top: -0.07em;
+                left: -1.3em;
+                width: 1em;
+                text-align: center;
+                .knockout();
+                font-size: 3rem;
+                line-height: 1;
+            }
+        }
+    }
 }
-
-
 
 #newsletter {
     header {
