@@ -303,6 +303,19 @@ body { background-color: #111; }
         th { text-align: left; }
     }
 
+    .meta {
+        margin: 0 0 15px 0;
+        padding: 0;
+        list-style-type: none;
+
+        > li {
+            margin: 0 0 3px 0;
+            color: #787878;
+            .knockout();
+            font-size: 11px;
+        }
+    }
+
     .photo-credit {
         margin: 0;
         position: absolute;
@@ -313,6 +326,43 @@ body { background-color: #111; }
         text-transform: none;
         letter-spacing: 0;
         opacity: .6;
+    }
+
+    .begin {
+        .knockout();
+        color: #fff;
+        text-shadow: 2px 2px 2px #222;
+        background-color: transparent;
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 4px solid @accent1;
+        border-left: 0;
+        padding: 0 0 .5rem 0;
+        font-size: 1.4rem;
+
+        &:hover { opacity: 0.7; }
+
+        i {
+            font-size: 1.6rem;
+            padding-left: .5rem;
+        }
+
+        @media @screen-small-above {
+            font-size: 1.7rem;
+
+            i {font-size: 1.9rem;}
+        }
+    }
+
+    .featured-links {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        > li {
+            text-align: center;
+            margin: 22px 0 0 0;
+        }
     }
 
     .republican { color: @republican; }
@@ -477,34 +527,66 @@ body { background-color: #111; }
                     font-size: 1.3rem;
                 }
             }
-
-            .begin {
-                .knockout();
-                color: #fff;
-                text-shadow: 2px 2px 2px #222;
-                background-color: transparent;
-                border-top: 0;
-                border-right: 0;
-                border-bottom: 4px solid @accent1;
-                border-left: 0;
-                padding: 0 0 .5rem 0;
-                font-size: 1.4rem;
-
-                i {
-                    font-size: 1.6rem;
-                    padding-left: .5rem;
-                }
-
-                @media @screen-small-above {
-                    font-size: 1.7rem;
-
-                    i {font-size: 1.9rem;}
-                }
-            }
         }
     }
 }
 
+#delegates {
+    .needed {
+        margin-bottom: 11px;
+        text-align: right;
+        color: #787878;
+        font-size: 1rem;
+    }
+    .delegates {
+        list-style-type: none;
+        margin: 0 0 22px 0;
+        padding: 0;
+
+        > li {
+            display: -webkit-flex;
+            display: flex;
+            margin: 0 0 3px 0;
+            line-height: 33px;
+            color: #f1f1f1;
+
+            .candidate {
+                -webkit-flex-basis: auto;
+                flex-basis: auto;
+                width: 6.5rem;
+            }
+            .bar-wrapper {
+                -webkit-flex-grow: 1;
+                flex-grow: 1;
+                height: 33px;
+            }
+            .bar {
+                height: 100%;
+                width: 20px;
+                display: block;
+                float: left;
+            }
+            .amt {
+                display: block;
+                float: left;
+                font-size: 0.8rem;
+                margin-left: 0.5rem;
+            }
+        }
+
+        &.democrat > li {
+            .bar-wrapper { background-color: @democratFade; }
+            .bar { background-color: @democrat; }
+        }
+        &.republican > li {
+            .bar-wrapper { background-color: @republicanFade; }
+            .bar { background-color: @republican; }
+        }
+    }
+}
+
+<<<<<<< HEAD
+=======
 #podcast {
     .card-background {
         background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
@@ -604,6 +686,7 @@ body { background-color: #111; }
 
 
 
+>>>>>>> master
 #link-roundup {
     header {
         // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
@@ -667,18 +750,6 @@ body { background-color: #111; }
 
 #results {
     h3 { margin-bottom: 22px; }
-    .meta {
-        margin: 0 0 15px 0;
-        padding: 0;
-        list-style-type: none;
-
-        > li {
-            margin: 0 0 3px 0;
-            color: #787878;
-            .knockout();
-            font-size: 11px;
-        }
-    }
     table {
         border-bottom: 1px solid #fff;
         margin-bottom: 11px;
