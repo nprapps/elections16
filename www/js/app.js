@@ -64,7 +64,7 @@ var onCardChange = function(e) {
 
     }
 
-    if ($('.is-selected').is('#podcast')) {
+    if ($('.is-selected').is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
 }
