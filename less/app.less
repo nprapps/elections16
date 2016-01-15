@@ -598,6 +598,36 @@ body { background-color: #111; }
     }
 }
 
+#donate {
+    max-width: @max-width-content;
+    margin: 0 auto;
+
+    p {
+        .knockout();
+        text-transform: none;
+        font-size: 1.6rem;
+        color: #fff;
+        margin-bottom: 33px;
+    }
+
+    button {
+        border: none;
+        padding: 0 11px;
+        .knockout();
+        line-height: 33px;
+        background-color: rgba(255, 255, 255, .3);
+        color: #fff;
+        white-space: nowrap;
+
+        &:hover,
+        &:active {
+            opacity: 0.7;
+        }
+
+        .fa-heart { color: @accent1; }
+    }
+}
+
 #podcast {
     .card-background {
         background: url('http://media.npr.org/assets/img/2016/01/13/ap_922519091160_wide-fa453a52133e11e7198bae453b39878887fea880-s1200-c85.jpg') no-repeat;
