@@ -545,6 +545,10 @@ body { background-color: #111; }
 }
 
 #delegates {
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+    }
     .needed {
         margin-bottom: 11px;
         text-align: right;
@@ -784,11 +788,12 @@ body { background-color: #111; }
         background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
         background-size: cover;
         position: relative;
-        height: 100px;
+        height: 15rem;
         margin-bottom: 22px;
+        padding: 0;
         border-bottom: 5px solid @accent2;
 
-        .content-wrapper {
+        .header-screen {
             position: absolute;
             top: 0;
             right: 0;
@@ -801,7 +806,12 @@ body { background-color: #111; }
             -webkit-align-items: center;
             align-items: center;
         }
-        .content { padding: 0 30px; }
+        .header-content {
+            width: 100%;
+            max-width: @max-width-content;
+            margin: 0 auto;
+            padding: 0 33px;
+        }
     }
 }
 
@@ -846,6 +856,10 @@ body { background-color: #111; }
 }
 
 #results {
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+    }
     h3 { margin-bottom: 22px; }
     table {
         border-bottom: 1px solid #fff;
