@@ -48,8 +48,12 @@ var AUDIO = (function() {
         }
     }
 
-    var onTimeupdate = function() {
+    var onTimeupdate = function(e) {
+        var totalTime = e.jPlayer.status.duration;
+        var position = e.jPlayer.status.currentTime;
+        var remainingTime = totalTime - position;
 
+        $duration.text($.jPlayer.convertTime(remainingTime));
     }
 
     return {
