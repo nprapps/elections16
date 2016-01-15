@@ -1,5 +1,5 @@
 // Global jQuery references
-var $cards = null;
+var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
@@ -13,7 +13,8 @@ var isTouch = Modernizr.touch;
  * Run on page load.
  */
 var onDocumentLoad = function(e) {
-    $cards = $('.cards');
+    $cardsWrapper = $('.cards');
+    $cards = $('.card');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
     $playToggleBtn = $('.toggle-btn');
@@ -27,16 +28,16 @@ var onDocumentLoad = function(e) {
     setupFlickity();
     AUDIO.setupAudio();
 
-    $cards.css({
+    $cardsWrapper.css({
         'opacity': 1,
         'visibility': 'visible'
     });
 }
 
 var setupFlickity = function() {
-    $cards.height($(window).height());
+    $cardsWrapper.height($(window).height());
 
-    $cards.flickity({
+    $cardsWrapper.flickity({
         cellSelector: '.card',
         cellAlign: 'center',
         draggable: isTouch,
@@ -49,22 +50,21 @@ var setupFlickity = function() {
     });
 
     // bind events
-    $cards.on('cellSelect', onCardChange);
-    $cards.on('settle', onCardAnimationFinish);
+    $cardsWrapper.on('cellSelect', onCardChange);
+    $cardsWrapper.on('settle', onCardAnimationFinish);
+}
+
+var onCardScroll = function() {
+    $('.global-header').addClass('bg-header');
+    $cards.off('scroll');
 }
 
 var onCardChange = function(e) {
-    var flickity = $cards.data('flickity');
+    var flickity = $cardsWrapper.data('flickity');
     var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
-
-    if (newSlideIndex > 0) {
-        $('.global-controls').show();
-    } else {
-        $('.global-controls').hide();
-        $('.global-header').removeClass('bg-header');
-
-    }
+    $('.global-header').removeClass('bg-header');
+    $cards.on('scroll', onCardScroll);
 
     if ($('.is-selected').is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
@@ -72,11 +72,10 @@ var onCardChange = function(e) {
 }
 
 var onCardAnimationFinish = function(e) {
-    var flickity = $cards.data('flickity');
+    var flickity = $cardsWrapper.data('flickity');
     var newSlideIndex = flickity.selectedIndex;
 
     if (newSlideIndex > 0) {
-        $('.global-header').addClass('bg-header');
     }
 }
 
