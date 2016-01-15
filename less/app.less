@@ -262,9 +262,10 @@ body { background-color: #111; }
         line-height: 1.1;
     }
 
-    h1 { font-size: 34px; }
-    h2 { font-size: 16px; }
+    h1 { font-size: 2.7rem; }
+    h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
+
 
     header { padding: 33px 30px; }
     article {
@@ -293,6 +294,18 @@ body { background-color: #111; }
     ol {
         margin: 0 0 0 1.3em;
         padding: 0;
+    }
+
+    p {
+        .gotham();
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #aaa;
+        text-shadow: 2px 2px 2px #222;
+
+        @media @screen-small-above {
+            font-size: 1.3rem;
+        }
     }
 
     table {
@@ -587,7 +600,7 @@ body { background-color: #111; }
 
 #podcast {
     .card-background {
-        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
+        background: url('http://media.npr.org/assets/img/2016/01/13/ap_922519091160_wide-fa453a52133e11e7198bae453b39878887fea880-s1200-c85.jpg') no-repeat;
         .background-size(cover);
         background-position: center center;
         position: absolute;
@@ -762,6 +775,8 @@ body { background-color: #111; }
     }
 }
 
+
+
 #newsletter {
     header { padding-bottom: 22px; }
     p {
@@ -794,6 +809,10 @@ body { background-color: #111; }
             opacity: 0.7;
         }
     }
+}
+
+#feedback {
+    article {margin-top: 2rem;}
 }
 
 #results {
