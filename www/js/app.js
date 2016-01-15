@@ -62,7 +62,7 @@ var setupFlickity = function() {
 }
 
 var onCardScroll = function() {
-    $globalHeader.addClass('bg-header');
+    //$globalHeader.addClass('bg-header');
     $cards.off('scroll');
 }
 
@@ -78,6 +78,9 @@ var onCardChange = function(e) {
 
     if (newSlideIndex > 0) {
         $globalControls.show();
+        $globalHeader.addClass('bg-header');
+    } else {
+        $globalControls.hide();
     }
 
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
