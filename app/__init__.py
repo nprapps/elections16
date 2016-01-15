@@ -1,11 +1,16 @@
 import app_config
+import feedparser
 
+from gdoc import get_google_doc, DocParser
 from flask import Flask, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
+
+
+PODCAST_URL = 'http://npr.org/rss/podcast.php?id=510310'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -21,7 +26,6 @@ def preview(path):
     path_parts = path.split('/')
     slug = path_parts[0]
     args = path_parts[1:]
-    #import ipdb; ipdb.set_trace();
     context['content'] = app.view_functions[slug](*args).data
     return make_response(render_template('index.html', **context))
 
@@ -40,9 +44,15 @@ def index():
 
     content = ''
     for row in script:
-        route = row['route']
-        function, params = route.split('/')
-        content += app.view_functions[function](params).data
+        function = row['function']
+        params = ''
+        if row['params']:
+            params = row['params']
+
+        if params:
+            content += app.view_functions[function](params).data
+        else:
+            content += app.view_functions[function]().data
 
     context['content'] = content
     return make_response(render_template('index.html', **context))
@@ -52,15 +62,39 @@ def index():
 @oauth_required
 def card(slug):
     """
-    Stubby "hello world" view
+    Render a generic card.
     """
     context = make_context()
     context['slug'] = slug
     return make_response(render_template('cards/%s.html' % slug, **context))
 
 
+@app.route('/podcast/')
+@oauth_required
+def podcast():
+    """
+    Render the podcast card
+    """
+    context = make_context()
+    podcastdata = feedparser.parse(PODCAST_URL)
+    latest = podcastdata.entries[0]
+    context['podcast_title'] = latest.title
+    context['podcast_link'] = latest.enclosures[0]['href']
+    context['podcast_description'] = latest.description
+    context['slug'] = 'podcast'
+    return make_response(render_template('cards/podcast.html', **context))
 
 
+@app.route('/gdoc/<key>/')
+@oauth_required
+def gdoc(key):
+    """
+    Get a Google doc and parse for use in template.
+    """
+    context = make_context()
+    html_string = get_google_doc(key)
+    context['content'] = DocParser(html_string)
+    return make_response(render_template('cards/gdoc.html', **context))
 
 
 app.register_blueprint(static)

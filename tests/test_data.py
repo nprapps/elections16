@@ -8,7 +8,7 @@ from models import models
 from peewee import *
 from playhouse.test_utils import test_database
 
-test_db = PostgresqlDatabase('elections16test')
+test_db = PostgresqlDatabase(app_config.DATABASE['test_name'])
 
 class ResultsLoadingTestCase(unittest.TestCase):
     """
@@ -29,4 +29,3 @@ class ResultsLoadingTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

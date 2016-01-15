@@ -1,0 +1,24 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<style>
+body {
+  background-color: #fff;
+  padding-bottom: 40px;
+}
+.container { 
+  max-height: 40vh;
+  overflow: auto;
+  border: 1rem solid #eee;
+  background-color: #eee;
+}
+</style>
+
+{{ content|safe }}
+
+<hr/>
+
+<h2>Parsed source</h2>
+<pre class="container">{{ content }}</pre>
+
+{% endblock %}
