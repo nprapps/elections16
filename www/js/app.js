@@ -44,6 +44,8 @@ var setupFlickity = function() {
         imagesLoaded: true,
         pageDots: false,
         setGallerySize: false,
+        friction: isTouch ? 0.28 : 1,
+        selectedAttraction: isTouch ? 0.025 : 1
     });
 
     // bind events
