@@ -1,6 +1,7 @@
 import app_config
 import feedparser
 
+from gdoc import get_google_doc, DocParser
 from flask import Flask, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
@@ -25,7 +26,6 @@ def preview(path):
     path_parts = path.split('/')
     slug = path_parts[0]
     args = path_parts[1:]
-    #import ipdb; ipdb.set_trace();
     context['content'] = app.view_functions[slug](*args).data
     return make_response(render_template('index.html', **context))
 
@@ -83,6 +83,18 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     return make_response(render_template('cards/podcast.html', **context))
+
+
+@app.route('/gdoc/<key>/')
+@oauth_required
+def gdoc(key):
+    """
+    Get a Google doc and parse for use in template.
+    """
+    context = make_context()
+    html_string = get_google_doc(key)
+    context['content'] = DocParser(html_string)
+    return make_response(render_template('cards/gdoc.html', **context))
 
 
 app.register_blueprint(static)
