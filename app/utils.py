@@ -63,10 +63,10 @@ def comma_filter(value):
     """
     Format a number with commas.
     """
-    return "{:,}".format(value)
+    return '{:,}'.format(value)
 
 def percent_filter(value):
-    one_decimal = '%.1f%%' % value
+    one_decimal = '{:.1f}%'.format(value)
 
     return one_decimal
 
