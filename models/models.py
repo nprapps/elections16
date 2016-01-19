@@ -60,9 +60,6 @@ class Result(BaseModel):
     votepct = DecimalField(null=True)
     winner = BooleanField(null=True)
 
-    def lowercase_party(self):
-        if self.party:
-            return self.party.lower()
 
 class Call(BaseModel):
     call_id = ForeignKeyField(Result, related_name='call')

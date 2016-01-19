@@ -25,6 +25,17 @@ app.add_template_filter(utils.ap_date_filter, name='ap_date')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
+PARTY_MAPPING = {
+    'dem': {
+       'AP': 'Dem',
+       'long': 'Democrat',
+    },
+    'gop': {
+        'AP': 'GOP',
+        'long': 'Republican'
+    }
+}
+
 @app.route('/preview/<path:path>/')
 @oauth_required
 def preview(path):
@@ -98,18 +109,14 @@ def results(party):
     Render the results card
     """
     context = make_context()
-    all_results = models.Result.select()
-
-    party_results = []
-    for result in all_results:
-        if models.Result.lowercase_party(result) == party:
-            party_results.append(result)
+    party_results = models.Result.select().where(
+        models.Result.party == PARTY_MAPPING[party]['AP']
+    )
 
     context['results'] = party_results
     context['slug'] = 'results'
 
     return render_template('cards/results.html', **context)
-
 
 
 @app.route('/gdoc/<key>/')
