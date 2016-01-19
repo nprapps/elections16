@@ -10,7 +10,7 @@
 
 <article>
     <table>
-        <caption>New Hampshire Republican Primary</caption>
+        <caption>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %}  Primary</caption>
         <thead>
             <tr>
                 <th>Name</th>
