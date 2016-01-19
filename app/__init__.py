@@ -26,7 +26,7 @@ def preview(path):
     path_parts = path.split('/')
     slug = path_parts[0]
     args = path_parts[1:]
-    context['content'] = app.view_functions[slug](*args).data
+    context['content'] = app.view_functions[slug](*args)
     return make_response(render_template('index.html', **context))
 
 
@@ -50,9 +50,9 @@ def index():
             params = row['params']
 
         if params:
-            content += app.view_functions[function](params).data
+            content += app.view_functions[function](params)
         else:
-            content += app.view_functions[function]().data
+            content += app.view_functions[function]()
 
     context['content'] = content
     return make_response(render_template('index.html', **context))
@@ -66,8 +66,7 @@ def card(slug):
     """
     context = make_context()
     context['slug'] = slug
-    return make_response(render_template('cards/%s.html' % slug, **context))
-
+    return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
 @oauth_required
@@ -82,7 +81,8 @@ def podcast():
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
-    return make_response(render_template('cards/podcast.html', **context))
+
+    return render_template('cards/podcast.html', **context)
 
 
 @app.route('/gdoc/<key>/')
