@@ -4,6 +4,7 @@ python:
 before_script:
     - npm install
     - psql -c 'create database elections16test;' -U postgres
+    - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-en
 # karma karma-jasmine jasmine-fixture jasmine-core phantomjs karma-phantomjs-launcher
 install:
   - travis_retry pip install -r requirements.txt
