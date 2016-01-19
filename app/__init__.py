@@ -85,6 +85,27 @@ def podcast():
     return render_template('cards/podcast.html', **context)
 
 
+@app.route('/results/<party>/')
+@oauth_required
+def results(party):
+    """
+    Render the results card
+    """
+    context = make_context()
+    all_results = models.Result.select()
+
+    party_results = []
+    for result in all_results:
+        if models.Result.lowercase_party(result) == party:
+            party_results.append(result)
+
+    context['results'] = party_results
+    context['slug'] = 'results'
+
+    return render_template('cards/results.html', **context)
+
+
+
 @app.route('/gdoc/<key>/')
 @oauth_required
 def gdoc(key):
