@@ -65,6 +65,11 @@ def comma_filter(value):
     """
     return "{:,}".format(value)
 
+def percent_filter(value):
+    one_decimal = '%.1f%%' % value
+
+    return one_decimal
+
 def ordinal_filter(num):
     """
     Format a number as an ordinal.
