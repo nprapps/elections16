@@ -1,6 +1,7 @@
 import app_config
 import feedparser
 
+from . import utils
 from gdoc import get_google_doc, DocParser
 from flask import Flask, make_response, render_template
 from models import models
@@ -17,7 +18,12 @@ app.debug = app_config.DEBUG
 
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
-
+app.add_template_filter(utils.comma_filter, name='comma')
+app.add_template_filter(utils.ordinal_filter, name='ordinal')
+app.add_template_filter(utils.ap_month_filter, name='ap_month')
+app.add_template_filter(utils.ap_date_filter, name='ap_date')
+app.add_template_filter(utils.ap_state_filter, name='ap_state')
+app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
 @app.route('/preview/<path:path>/')
 @oauth_required
