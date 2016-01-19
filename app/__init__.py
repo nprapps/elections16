@@ -124,10 +124,11 @@ def results(party):
 @oauth_required
 def get_caught_up():
     key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
-    print key
     context = make_context()
-    context['content'] = get_google_doc_html(key)
-    print context['content']
+    doc = get_google_doc_html(key)
+    context['content'] = doc
+    context['headline'] = doc.headline
+    context['subhed'] = doc.subhed
     context['slug'] = 'link-roundup'
     return render_template('cards/link-roundup.html', **context)
 
