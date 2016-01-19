@@ -1,7 +1,4 @@
-import locale
 import re
-
-locale.setlocale(locale.LC_ALL, 'en_US')
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -66,7 +63,7 @@ def comma_filter(value):
     """
     Format a number with commas.
     """
-    return locale.format('%d', float(value), grouping=True)
+    return "{:,}".format(value)
 
 def ordinal_filter(num):
     """
