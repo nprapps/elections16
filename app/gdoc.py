@@ -22,6 +22,10 @@ def get_google_doc(key):
     return response.content
 
 
+def get_google_doc_html(key):
+    html_string = get_google_doc(key)
+    return DocParser(html_string)
+
 class DocParser:
     """
     Clean up Google Doc html.
