@@ -8,6 +8,8 @@ var $body;
 var ACCEPT_AP_URL = document.location.href + 'accept-ap';
 var CALL_NPR_URL = document.location.href + 'call-npr'
 
+var pageRefresh = null;
+
 var onDocumentLoad = function() {
     $acceptAP = $('.accept-ap');
     $rejectAP = $('.reject-ap')
@@ -20,6 +22,8 @@ var onDocumentLoad = function() {
     $rejectAP.on('click', onAPClick);
     $callNPR.on('click', onCallNPRClick);
     $uncallNPR.on('click', onUncallNPRClick);
+
+    pageRefresh = setInterval(refreshPage, 10000);
 }
 
 var onAPClick = function(e) {
@@ -60,6 +64,7 @@ var refreshPage = function() {
         $rejectAP.off('click');
         $callNPR.off('click');
         $uncallNPR.off('click');
+        clearInterval(pageRefresh);
 
         onDocumentLoad();
         $overlay.fadeOut();
