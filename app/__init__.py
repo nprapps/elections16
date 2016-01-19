@@ -1,6 +1,7 @@
 import app_config
 import feedparser
 
+from . import utils
 from gdoc import get_google_doc, DocParser
 from flask import Flask, make_response, render_template
 from models import models
@@ -17,7 +18,24 @@ app.debug = app_config.DEBUG
 
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
+app.add_template_filter(utils.comma_filter, name='comma')
+app.add_template_filter(utils.percent_filter, name='percent')
+app.add_template_filter(utils.ordinal_filter, name='ordinal')
+app.add_template_filter(utils.ap_month_filter, name='ap_month')
+app.add_template_filter(utils.ap_date_filter, name='ap_date')
+app.add_template_filter(utils.ap_state_filter, name='ap_state')
+app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
+PARTY_MAPPING = {
+    'dem': {
+       'AP': 'Dem',
+       'long': 'Democrat',
+    },
+    'gop': {
+        'AP': 'GOP',
+        'long': 'Republican'
+    }
+}
 
 @app.route('/preview/<path:path>/')
 @oauth_required
@@ -83,6 +101,23 @@ def podcast():
     context['slug'] = 'podcast'
 
     return render_template('cards/podcast.html', **context)
+
+
+@app.route('/results/<party>/')
+@oauth_required
+def results(party):
+    """
+    Render the results card
+    """
+    context = make_context()
+    party_results = models.Result.select().where(
+        models.Result.party == PARTY_MAPPING[party]['AP']
+    )
+
+    context['results'] = party_results
+    context['slug'] = 'results'
+
+    return render_template('cards/results.html', **context)
 
 
 @app.route('/gdoc/<key>/')
