@@ -18,7 +18,17 @@
                 <th class="pct">Percent</th>
             </tr>
         </thead>
-        <tr class="winner">
+        <tbody>
+            {% for result in results %}
+            <tr class="{% if result.winner %} winner {% endif %}">
+                <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
+                <td class="votes">{{ result.votecount }}</td>
+                <td class="pct">{{ result.votepct }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+       <!--  <tr class="winner">
             <td>Jeb Bush</td>
             <td class="votes">28,839</td>
             <td class="pct">24.6%</td>
@@ -77,7 +87,7 @@
             <td>Donald Trump</td>
             <td class="votes">28,839</td>
             <td class="pct">24.6%</td>
-        </tr>
+        </tr> -->
     </table>
     <ul class="meta">
         <li>As of Feb. 9, 2016, at 11:31 p.m. ET</li>
