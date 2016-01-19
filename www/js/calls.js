@@ -31,7 +31,9 @@ var onAPClick = function(e) {
         race_id: $(this).data('race-id')
     }
 
-    $.post(ACCEPT_AP_URL, data, refreshPage);
+    $.post(ACCEPT_AP_URL, data,function() {
+        refreshPage(true);
+    });
 }
 
 var onCallNPRClick = function(e) {
@@ -39,7 +41,9 @@ var onCallNPRClick = function(e) {
         race_id: $(this).data('race-id'),
         result_id: $(this).data('result-id')
     }
-    $.post(CALL_NPR_URL, data, refreshPage);
+    $.post(CALL_NPR_URL, data, function() {
+        refreshPage(true);
+    });
 }
 
 var onUncallNPRClick = function(e) {
@@ -48,11 +52,15 @@ var onUncallNPRClick = function(e) {
         result_id: $(this).data('result-id')
     }
 
-    $.post(CALL_NPR_URL, data, refreshPage);
+    $.post(CALL_NPR_URL, data, function() {
+        refreshPage(true);
+    });
 }
 
-var refreshPage = function() {
-    $overlay.fadeIn();
+var refreshPage = function(fadeUI) {
+    if (fadeUI) {
+        $overlay.fadeIn();
+    }
 
     $.get(window.location.href, function(data) {
         var $oldContainer = $('.container');
@@ -67,7 +75,10 @@ var refreshPage = function() {
         clearInterval(pageRefresh);
 
         onDocumentLoad();
-        $overlay.fadeOut();
+
+        if (fadeUI) {
+            $overlay.fadeOut();
+        }
     });
 }
 
