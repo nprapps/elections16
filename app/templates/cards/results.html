@@ -20,11 +20,23 @@
         </thead>
         <tbody>
             {% for result in results %}
-            <tr class="{% if result.winner and result.call[0].accept_ap %} winner {% endif %} {% if result.call[0].override_winner %} winner {% endif %}">
-                <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
-                <td class="votes">{{ result.votecount|comma }}</td>
-                <td class="pct">{{ result.votepct|percent }}</td>
-            </tr>
+            {% if (result.last != 'Other') and (result.last != 'Uncommitted') %}
+                <tr class="{% if result.winner and result.call[0].accept_ap %} winner {% endif %} {% if result.call[0].override_winner %} winner {% endif %}">
+                    <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
+                    <td class="votes">{{ result.votecount|comma }}</td>
+                    <td class="pct">{{ result.votepct|percent }}</td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+
+            {% for result in results %}
+            {% if (result.last == 'Other') or (result.last == 'Uncommitted') %}
+                <tr class="{% if result.winner and result.call[0].accept_ap %} winner {% endif %} {% if result.call[0].override_winner %} winner {% endif %}">
+                    <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
+                    <td class="votes">{{ result.votecount|comma }}</td>
+                    <td class="pct">{{ result.votepct|percent }}</td>
+                </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>
