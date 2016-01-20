@@ -123,14 +123,22 @@ class DocParser:
             tag.extract()
 
     def find_headline(self, tag):
-        if tag.string and tag.string.startswith('HEADLINE:'):
-            self.headline = tag.string.split(':', 1)[-1].strip()
-            tag.extract()
+        for elem in tag.contents:
+            try:
+                if elem and elem.startswith('HEADLINE'):
+                    self.headline = elem.split(':', 1)[-1].strip()
+                    tag.extract()
+            except:
+                pass
 
     def find_subhed(self, tag):
-        if tag.string and tag.string.startswith('SUBHED:'):
-            self.subhed = tag.string.split(':', 1)[-1].strip()
-            tag.extract()
+        for elem in tag.contents:
+            try:
+                if elem and elem.startswith('SUBHED'):
+                    self.subhed = elem.split(':', 1)[-1].strip()
+                    tag.extract()
+            except:
+                pass
 
     def _parse_href(self, href):
         """
