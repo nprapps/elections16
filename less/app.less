@@ -118,6 +118,38 @@ body { background-color: #111; }
     .transition(opacity 2s ease-in);
 }
 
+.logo {
+    padding-top: 20px;
+    padding-left: 5px;
+
+    h5 {
+        .knockout();
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        text-shadow: 2px 2px 2px #333;
+
+        @media @screen-small-above {
+            font-size: 1.6rem;
+        }
+    }
+
+    img {
+        float: left;
+        display: block;
+        width: 3.5rem;
+        margin-right: .5rem;
+        max-width: 100%;
+        height: auto;
+
+        @media @screen-small-above {
+            width: 4.5rem;
+        }
+    }
+}
+
 // header
 .branding-border {
     position: absolute;
@@ -149,38 +181,6 @@ body { background-color: #111; }
 
     @media @screen-small-above {
         width: 22rem;
-    }
-
-    .logo {
-        padding-top: 20px;
-        padding-left: 5px;
-
-        h5 {
-            .knockout();
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-            text-shadow: 2px 2px 2px #333;
-
-            @media @screen-small-above {
-                font-size: 1.6rem;
-            }
-        }
-
-        img {
-            float: left;
-            display: block;
-            width: 3.5rem;
-            margin-right: .5rem;
-            max-width: 100%;
-            height: auto;
-
-            @media @screen-small-above {
-                width: 4.5rem;
-            }
-        }
     }
 }
 
@@ -517,6 +517,10 @@ body { background-color: #111; }
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
+            }
+
+            .logo {
+                padding: 1rem 0;
             }
 
             h1 {
