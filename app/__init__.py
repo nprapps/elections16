@@ -112,7 +112,7 @@ def results(party):
     context = make_context()
     party_results = models.Result.select().where(
         models.Result.party == PARTY_MAPPING[party]['AP']
-    )
+    ).order_by(models.Result.votecount.desc(), models.Result.last)
 
     context['results'] = party_results
     context['slug'] = 'results'
