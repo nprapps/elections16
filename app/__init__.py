@@ -112,9 +112,11 @@ def results(party):
     context = make_context()
     party_results = models.Result.select().where(
         models.Result.party == PARTY_MAPPING[party]['AP']
-    ).order_by(models.Result.votecount.desc(), models.Result.last)
+    )
 
-    context['results'] = party_results
+    sorted_results = sorted(list(party_results), key=utils.candidate_sorter)
+
+    context['results'] = sorted_results
     context['slug'] = 'results'
 
     return render_template('cards/results.html', **context)

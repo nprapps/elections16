@@ -1,3 +1,4 @@
+import operator
 import re
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -124,3 +125,9 @@ def ap_time_period_filter(value):
     periods = '.'.join(value.lower()) + '.'
 
     return periods
+
+def candidate_sorter(item):
+    if item.last == 'Other' or item.last == 'Uncommitted':
+        return (item.votecount, 'zzz')
+    else:
+        return (item.votecount, item.last)
