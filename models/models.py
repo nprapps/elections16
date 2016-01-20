@@ -1,7 +1,7 @@
 import app_config
 
 from peewee import Model, PostgresqlDatabase
-from peewee import BooleanField, CharField, DateField, DecimalField, ForeignKeyField, IntegerField
+from peewee import BooleanField, CharField, DateField, DateTimeField, DecimalField, ForeignKeyField, IntegerField
 
 db = PostgresqlDatabase(
     app_config.DATABASE['name'],
@@ -36,7 +36,7 @@ class Result(BaseModel):
     initialization_data = BooleanField(null=True)
     is_ballot_measure = BooleanField(null=True)
     last = CharField(null=True)
-    lastupdated = DateField(null=True)
+    lastupdated = DateTimeField(null=True)
     level = CharField(null=True)
     national = BooleanField(null=True)
     officeid = CharField(null=True)

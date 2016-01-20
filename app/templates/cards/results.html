@@ -10,7 +10,7 @@
 
 <article>
     <table>
-        <caption>New Hampshire Republican Primary</caption>
+        <caption>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %}  Primary</caption>
         <thead>
             <tr>
                 <th>Name</th>
@@ -18,70 +18,20 @@
                 <th class="pct">Percent</th>
             </tr>
         </thead>
-        <tr class="winner">
-            <td>Jeb Bush</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Ben Carson</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Chris Christie</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Ted Cruz</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Carly Fiorina</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Jim Gilmore</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Mike Huckabee</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>John Kasich</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Rand Paul</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Marco Rubio</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Rick Santorum</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
-        <tr>
-            <td>Donald Trump</td>
-            <td class="votes">28,839</td>
-            <td class="pct">24.6%</td>
-        </tr>
+        <tbody>
+            {% for result in results %}
+                <tr class="{% if result.winner and result.call[0].accept_ap %} winner {% elif result.call[0].override_winner %} winner {% endif %}">
+                    <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
+                    <td class="votes">{{ result.votecount|comma }}</td>
+                    <td class="pct">{{ result.votepct|percent }}</td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
     </table>
     <ul class="meta">
-        <li>As of Feb. 9, 2016, at 11:31 p.m. ET</li>
-        <li>99% of precincts reporting (1,766 of 1,744)</li>
+        <li>As of {{ results[0].lastupdated.strftime('%m/%d/%Y')|ap_date }}, {{ results[0].lastupdated.strftime('%I:%M') }} <span class="ap-period">{{ results[0].lastupdated.strftime('%p')|ap_time_period }}</span> EST</li>
+        <li>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting }} of {{ results[0].precinctstotal }})</li>
         <li>Source: AP</li>
     </ul>
 </article>

@@ -20,7 +20,7 @@ TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
 @task(default=True)
 def update():
     """
-    Stub function for updating app-specific data.
+    Stub function for updating app-specific data. Not currently implemented.
     """
     pass
 
@@ -71,6 +71,9 @@ def bootstrap_data(election_date=None):
 
 @task
 def load_results(election_date=None):
+    """
+    Load AP results. Defaults to next election, or specify a date as a parameter.
+    """
     if not election_date:
         next_election = Elections().get_next_election()
         election_date = next_election.serialize().get('electiondate')
@@ -82,6 +85,10 @@ def load_results(election_date=None):
 
 @task
 def load_local_results(file_path):
+    """
+    Load AP results from local file.
+    """
+
     # Force root path every time
     fab_path = os.path.realpath(os.path.dirname(__file__))
     root_path = os.path.join(fab_path, '..')
@@ -94,6 +101,9 @@ def load_local_results(file_path):
 
 @task
 def create_calls():
+    """
+    Create database of race calls for all races in results data.
+    """
     results = models.Result.select()
     for result in results:
         models.Call.create(call_id=result.id)

@@ -1,4 +1,4 @@
-@import "less/lib/bootstrap/bootstrap"; //Just including normalize.css
+@import "less/lib/bootstrap/normalize"; //Just including normalize.css
 @import "less/lib/flickity";
 @import "less/lib/prefixer";
 @import "lib/font-awesome/font-awesome.less";
@@ -34,7 +34,7 @@
 }
 
 //images
-@img-root: "/assets";
+@img-root: "../assets";
 
 .img-responsive(@display: block;) {
     display: @display;
@@ -332,6 +332,10 @@ body { background-color: #111; }
             .knockout();
             font-size: 11px;
         }
+
+        .ap-period {
+            text-transform: none;
+        }
     }
 
     .photo-credit {
@@ -554,6 +558,10 @@ body { background-color: #111; }
 }
 
 #delegates {
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+    }
     .needed {
         margin-bottom: 11px;
         text-align: right;
@@ -604,6 +612,36 @@ body { background-color: #111; }
             .bar-wrapper { background-color: @republicanFade; }
             .bar { background-color: @republican; }
         }
+    }
+}
+
+#donate {
+    max-width: @max-width-content;
+    margin: 0 auto;
+
+    p {
+        .knockout();
+        text-transform: none;
+        font-size: 1.6rem;
+        color: #fff;
+        margin-bottom: 33px;
+    }
+
+    button {
+        border: none;
+        padding: 0 11px;
+        .knockout();
+        line-height: 33px;
+        background-color: rgba(255, 255, 255, .3);
+        color: #fff;
+        white-space: nowrap;
+
+        &:hover,
+        &:active {
+            opacity: 0.7;
+        }
+
+        .fa-heart { color: @accent1; }
     }
 }
 
@@ -763,11 +801,12 @@ body { background-color: #111; }
         background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
         background-size: cover;
         position: relative;
-        height: 100px;
+        height: 15rem;
         margin-bottom: 22px;
+        padding: 0;
         border-bottom: 5px solid @accent2;
 
-        .content-wrapper {
+        .header-screen {
             position: absolute;
             top: 0;
             right: 0;
@@ -780,14 +819,47 @@ body { background-color: #111; }
             -webkit-align-items: center;
             align-items: center;
         }
-        .content { padding: 0 30px; }
+        .header-content {
+            width: 100%;
+            max-width: @max-width-content;
+            margin: 0 auto;
+            padding: 0 33px;
+        }
+    }
+    // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
+    ol {
+        counter-reset: li;
+
+        > li {
+            position: relative;
+            margin-left: 2em;
+            list-style: none;
+
+            &:before {
+                content:counter(li);
+                counter-increment:li;
+                -moz-box-sizing:border-box;
+                -webkit-box-sizing:border-box;
+                box-sizing:border-box;
+                position: absolute;
+                top: -0.07em;
+                left: -1.3em;
+                width: 1em;
+                text-align: center;
+                .knockout();
+                font-size: 3rem;
+                line-height: 1;
+            }
+        }
     }
 }
 
-
-
 #newsletter {
-    header { padding-bottom: 22px; }
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+        padding-bottom: 22px;
+    }
     p {
         margin: 0;
         &.footnote {
@@ -825,6 +897,10 @@ body { background-color: #111; }
 }
 
 #results {
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+    }
     h3 { margin-bottom: 22px; }
     table {
         border-bottom: 1px solid #fff;

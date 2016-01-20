@@ -8,6 +8,7 @@ var $globalControls = null;
 var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
+var $begin = null;
 
 // Global references
 var candidates = {}
@@ -27,10 +28,12 @@ var onDocumentLoad = function(e) {
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
     $duration = $('.duration');
+    $begin = $('.begin');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
+    $begin.on('click', onBeginClick);
 
     setupFlickity();
     AUDIO.setupAudio();
@@ -96,6 +99,10 @@ var onCardAnimationFinish = function(e) {
 
     if (newSlideIndex > 0) {
     }
+}
+
+var onBeginClick = function(e) {
+    $cards.flickity('next');
 }
 
 var getCandidates = function() {

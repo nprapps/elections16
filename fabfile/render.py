@@ -104,7 +104,7 @@ def render_all():
         name = rule.endpoint
 
         # Skip utility views
-        if name == 'static' or name.startswith('_'):
+        if name != 'index':
             print 'Skipping %s' % name
             continue
 
