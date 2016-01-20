@@ -1,5 +1,5 @@
 // settings
-var DELEGATE_DATA_URL = '/delegates.json';
+var DELEGATE_DATA_URL = './delegates.json';
 var DELEGATE_UPDATE_INTERVAL = 120000;
 
 // objects/vars

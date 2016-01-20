@@ -30,6 +30,7 @@ pip-log.txt
 .DS_store
 
 # Rendered files
+www/podcast/
 www/*.html
 www/css/*.min.*.css
 www/css/*.min.css
