@@ -114,7 +114,9 @@ def results(party):
         models.Result.party == PARTY_MAPPING[party]['AP']
     )
 
-    context['results'] = party_results
+    sorted_results = sorted(list(party_results), key=utils.candidate_sorter)
+
+    context['results'] = sorted_results
     context['slug'] = 'results'
 
     return render_template('cards/results.html', **context)
