@@ -15,13 +15,13 @@
 
         <!-- add class of live banner to the countdown-banner in during mode -->
         <div class="countdown-banner">
-            <h6>Live Coverage of the Iowa Caucuses begins at 8pm</h6>
+            <h6>{{ banner }}</h6>
             <button class="get-alerts"><i class="fa fa-bell"></i> Get Alerts</button>
         </div>
 
-            <h1>What to know about today's Iowa Caucuses</h1>
+            <h1>{{ headline }}</h1>
 
-            <p>Welcome to your friendly guide to today's primary. Sed ut perspiciatis unde omnis iste natus error sit <a href="http://npr.org">voluptatem accusantium doloremque</a> laudantium, totam rem aperiam.
+            <p>{{ content|safe }}
             </p>
 
 
