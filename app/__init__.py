@@ -55,7 +55,6 @@ def index():
     Main published app view
     """
     context = make_context()
-    context['results'] = models.Result.select()
 
     state = context['COPY']['meta']['state']['value']
     script = context['COPY'][state]
