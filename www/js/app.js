@@ -145,7 +145,7 @@ var getCard = function(url, $card) {
 
 var checkState = function() {
     $.ajax({
-        url: APP_CONFIG.S3_BASE_URL + '/current-state/',
+        url: APP_CONFIG.S3_BASE_URL + '/current-state.json',
         dataType: 'json',
         ifModified: true,
         success: function(data) {

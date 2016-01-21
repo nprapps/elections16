@@ -161,7 +161,7 @@ def gdoc(key):
     return render_template('cards/gdoc.html', **context)
 
 
-@app.route('/current-state/')
+@app.route('/current-state.json')
 @oauth_required
 def current_state():
     context = make_context()
