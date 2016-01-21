@@ -182,6 +182,7 @@ def make_context(asset_depth=0):
 
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
+    context['refresh_rate'] = 0
 
     return context
 
