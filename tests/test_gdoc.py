@@ -81,6 +81,12 @@ class DocParserTestCase(unittest.TestCase):
     def test_tabletr(self):
         self._contains_tag(self.contents[13], 'tr', 2)
 
+    def test_headline_extraction(self):
+        self.assertEqual(self.parser.headline, 'this is a headline')
+
+    def test_subhed_extraction(self):
+        self.assertEqual(self.parser.subhed, 'this is a subhed')
+
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 
