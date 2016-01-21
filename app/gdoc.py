@@ -70,8 +70,8 @@ class DocParser:
         for tag in self.soup.findAll():
             self.remove_empty(tag)
             self.parse_attrs(tag)
-            self.find_headline(tag)
-            self.find_subhed(tag)
+            self.find_token(tag, 'HEADLINE', 'headline')
+            self.find_token(tag, 'SUBHED', 'subhed')
 
     def create_italic(self, tag):
         """
@@ -122,22 +122,13 @@ class DocParser:
         if not has_children and not has_text and not tag.is_empty_element:
             tag.extract()
 
-    def find_headline(self, tag):
+    def find_token(self, tag, token, attr):
         for elem in tag.contents:
             try:
-                if elem and elem.startswith('HEADLINE'):
-                    self.headline = elem.split(':', 1)[-1].strip()
+                if elem and elem.startswith(token):
+                    setattr(self, attr, elem.split(':', 1)[-1].strip())
                     tag.extract()
-            except:
-                pass
-
-    def find_subhed(self, tag):
-        for elem in tag.contents:
-            try:
-                if elem and elem.startswith('SUBHED'):
-                    self.subhed = elem.split(':', 1)[-1].strip()
-                    tag.extract()
-            except:
+            except TypeError:
                 pass
 
     def _parse_href(self, href):
