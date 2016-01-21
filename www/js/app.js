@@ -14,6 +14,7 @@ var $mute = null;
 // Global references
 var candidates = {}
 var isTouch = Modernizr.touch;
+var currentState = null;
 
 /*
  * Run on page load.
@@ -111,6 +112,7 @@ var onBeginClick = function(e) {
 }
 
 var setPolls = function() {
+    // set poll for cards
     for (var i = 0; i < $cards.length; i++) {
         var $thisCard = $cards.eq(i);
         var refreshRoute = $thisCard.data('refresh-route');
@@ -124,6 +126,10 @@ var setPolls = function() {
             setInterval(cardGetter, fullRefreshRate)
         }
     }
+
+    // set poll for state
+    checkState();
+    setInterval(checkState, 60000)
 }
 
 var getCard = function(url, $card) {
@@ -133,6 +139,20 @@ var getCard = function(url, $card) {
         success: function(data) {
             var $cardInner = $(data).find('.card-inner');
             $card.html($cardInner);
+        }
+    });
+}
+
+var checkState = function() {
+    $.ajax({
+        url: APP_CONFIG.S3_BASE_URL + '/current-state/',
+        dataType: 'json',
+        ifModified: true,
+        success: function(data) {
+            if (data['state'] !== currentState) {
+                currentState = data['state']
+                console.log(currentState);
+            }
         }
     });
 }
