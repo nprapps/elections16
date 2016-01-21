@@ -37,6 +37,7 @@ var onDocumentLoad = function(e) {
 
     setupFlickity();
     AUDIO.setupAudio();
+    setPolls();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -103,6 +104,29 @@ var onCardAnimationFinish = function(e) {
 
 var onBeginClick = function(e) {
     $cards.flickity('next');
+}
+
+var setPolls = function() {
+    for (var i = 0; i < $cards.length; i++) {
+        var $thisCard = $cards.eq(i);
+        var refreshRoute = $thisCard.data('refresh-route');
+        var refreshRate = $thisCard.data('refresh-rate');
+
+        if (refreshRoute && refreshRate > 0) {
+            var fullURL = APP_CONFIG.S3_BASE_URL + refreshRoute;
+            var fullRefreshRate = refreshRate * 1000;
+
+            var cardGetter = _.partial(getCard, fullURL, $thisCard)
+            setInterval(cardGetter, fullRefreshRate)
+        }
+    }
+}
+
+var getCard = function(url, $card) {
+    console.log(url, $card);
+    $.get(url, function(data) {
+        $card.html(data);
+    });
 }
 
 var getCandidates = function() {
