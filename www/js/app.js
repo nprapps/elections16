@@ -123,7 +123,6 @@ var setPolls = function() {
 }
 
 var getCard = function(url, $card) {
-    console.log(url, $card);
     $.get(url, function(data) {
         $card.html(data);
     });
