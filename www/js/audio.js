@@ -21,11 +21,13 @@ var AUDIO = (function() {
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
         $playToggleBtn.removeClass('play').addClass('pause');
+        $mute.removeClass('muted').addClass('playing');
     }
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
         $playToggleBtn.removeClass('pause').addClass('play');
+        $mute.removeClass('playing').addClass('muted');
     }
 
     var rewindAudio = function() {

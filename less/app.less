@@ -221,6 +221,19 @@ body { background-color: #111; }
         &.mute-button {
             font-size: 12px;
             padding: 6px 8px 7px 6px;
+            &.muted:before {
+                content: "\f026";
+                font-family: FontAwesome;
+                color: #fff;
+                font-size: 12px;
+            }
+            &.playing:before {
+                content: "\f028";
+                font-family: FontAwesome;
+                color: #fff;
+                font-size: 12px;
+            }
+
             i {padding-left: 2px;}
         }
     }
