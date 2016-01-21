@@ -136,6 +136,18 @@ def get_caught_up():
 
     return render_template('cards/link-roundup.html', **context)
 
+@app.route('/title/')
+@oauth_required
+def title():
+    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
+    context = make_context()
+    doc = get_google_doc_html(key)
+    context['content'] = doc
+    context['headline'] = doc.headline
+    context['banner'] = doc.banner
+    context['slug'] = 'title'
+    return render_template('cards/title.html', **context)
+
 
 @app.route('/gdoc/<key>/')
 @oauth_required

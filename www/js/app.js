@@ -9,6 +9,7 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $mute = null;
 
 // Global references
 var candidates = {}
@@ -29,11 +30,14 @@ var onDocumentLoad = function(e) {
     $globalControls = $('.global-controls');
     $duration = $('.duration');
     $begin = $('.begin');
+    $mute = $('.mute-button');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $begin.on('click', onBeginClick);
+    $(window).resize(onResize);
 
     setupFlickity();
     AUDIO.setupAudio();
@@ -131,6 +135,11 @@ var getCard = function(url, $card) {
             $card.html($cardInner);
         }
     });
+}
+
+var onResize = function() {
+    $cardsWrapper.height($(window).height());
+    $cardsWrapper.flickity('resize');
 }
 
 var getCandidates = function() {

@@ -97,7 +97,7 @@ COPY_PATH = 'data/copy.xlsx'
 
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
-    'titlecard': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q'
+    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q'
 }
 
 """
@@ -232,7 +232,7 @@ Database
 secrets = get_secrets()
 DATABASE = {
     'name': PROJECT_SLUG,
-    'test_name': '%stest' % PROJECT_SLUG, 
+    'test_name': '%stest' % PROJECT_SLUG,
     'user': secrets.get('POSTGRES_USER', None),
     'password': secrets.get('POSTGRES_PASSWORD', None),
     'host': secrets.get('POSTGRES_HOST', 'localhost'),
