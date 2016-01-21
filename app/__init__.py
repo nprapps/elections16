@@ -1,5 +1,6 @@
 import app_config
 import feedparser
+import json
 
 from . import utils
 from gdoc import get_google_doc_html
@@ -158,6 +159,20 @@ def gdoc(key):
     context = make_context()
     context['content'] = get_google_doc_html(key)
     return render_template('cards/gdoc.html', **context)
+
+
+@app.route('/current-state/')
+@oauth_required
+def current_state():
+    context = make_context()
+    state = context['COPY']['meta']['state']['value']
+
+    data = {
+        'state': state
+    }
+
+    js = json.dumps(data)
+    return js, 200, { 'Content-Type': 'application/javascript' }
 
 def never_cache_preview(response):
     """
