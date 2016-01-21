@@ -9,6 +9,7 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $newsletterForm = null;
 
 // Global references
 var candidates = {}
@@ -29,11 +30,13 @@ var onDocumentLoad = function(e) {
     $globalControls = $('.global-controls');
     $duration = $('.duration');
     $begin = $('.begin');
+    $newsletterForm = $('#newsletter-signup');
 
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $begin.on('click', onBeginClick);
+    $newsletterForm.on('submit', onNewsletterSubmit);
 
     setupFlickity();
     AUDIO.setupAudio();
@@ -123,6 +126,41 @@ var makeListOfCandidates = function(candidates) {
     }
 
     return candidateList;
+}
+
+var onNewsletterSubmit = function(e) {
+    e.preventDefault();
+
+    var $el = $(this);
+    var email = $el.find('#newsletter-email').val();
+
+    if (!email) {
+        return;
+    }
+
+    ANALYTICS.trackEvent('newsletter-signup');
+    $el.css('opacity', 0.5);
+
+    $.ajax({
+        url: APP_CONFIG.NEWSLETTER_POST_URL,
+        timeout: APP_CONFIG.NEWSLETTER_POST_TIMEOUT,
+        method: 'POST',
+        data: {
+            email: email,
+            orgId: 0,
+            isAuthenticated: false
+        },
+        success: function(response) {
+            $el.html('success');
+            $el.css('opacity', 1);
+            ANALYTICS.trackEvent('newsletter-signup-success');
+        },
+        error: function(response) {
+            $el.html('error');
+            $el.css('opacity', 1);
+            ANALYTICS.trackEvent('newsletter-signup-error');
+        }
+    });
 }
 
 $(onDocumentLoad);
