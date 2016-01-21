@@ -37,6 +37,7 @@ var onDocumentLoad = function(e) {
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $begin.on('click', onBeginClick);
+    $(window).resize(onResize);
 
     setupFlickity();
     AUDIO.setupAudio();
@@ -106,6 +107,11 @@ var onCardAnimationFinish = function(e) {
 
 var onBeginClick = function(e) {
     $cards.flickity('next');
+}
+
+var onResize = function() {
+    $cardsWrapper.height($(window).height());
+    $cardsWrapper.flickity('resize');
 }
 
 var getCandidates = function() {
