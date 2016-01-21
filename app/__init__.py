@@ -55,7 +55,6 @@ def index():
     Main published app view
     """
     context = make_context()
-    context['results'] = models.Result.select()
 
     state = context['COPY']['meta']['state']['value']
     script = context['COPY'][state]
@@ -118,6 +117,8 @@ def results(party):
 
     context['results'] = sorted_results
     context['slug'] = 'results'
+    context['route'] = '/results/%s' % party
+    context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
 
@@ -132,6 +133,7 @@ def get_caught_up():
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
     context['slug'] = 'link-roundup'
+
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/title/')
@@ -157,12 +159,22 @@ def gdoc(key):
     context['content'] = get_google_doc_html(key)
     return render_template('cards/gdoc.html', **context)
 
+def never_cache_preview(response):
+    """
+    Ensure preview is never cached
+    """
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.no_store = True
+    return response
 
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
+    app.after_request(never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app
