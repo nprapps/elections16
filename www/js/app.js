@@ -123,8 +123,13 @@ var setPolls = function() {
 }
 
 var getCard = function(url, $card) {
-    $.get(url, function(data) {
-        $card.html(data);
+    $.ajax({
+        url: url,
+        ifModified: true,
+        success: function(data) {
+            var $cardInner = $(data).find('.card-inner');
+            $card.html($cardInner);
+        }
     });
 }
 

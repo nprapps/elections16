@@ -147,12 +147,22 @@ def gdoc(key):
     context['content'] = get_google_doc_html(key)
     return render_template('cards/gdoc.html', **context)
 
+def never_cache_preview(response):
+    """
+    Ensure preview is never cached
+    """
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.no_store = True
+    return response
 
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
+    app.after_request(never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app
