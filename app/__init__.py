@@ -2,7 +2,7 @@ import app_config
 import feedparser
 
 from . import utils
-from gdoc import get_google_doc, DocParser
+from gdoc import get_google_doc_html
 from flask import Flask, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
@@ -122,6 +122,19 @@ def results(party):
     return render_template('cards/results.html', **context)
 
 
+@app.route('/get-caught-up/')
+@oauth_required
+def get_caught_up():
+    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
+    context = make_context()
+    doc = get_google_doc_html(key)
+    context['content'] = doc
+    context['headline'] = doc.headline
+    context['subhed'] = doc.subhed
+    context['slug'] = 'link-roundup'
+    return render_template('cards/link-roundup.html', **context)
+
+
 @app.route('/gdoc/<key>/')
 @oauth_required
 def gdoc(key):
@@ -129,9 +142,8 @@ def gdoc(key):
     Get a Google doc and parse for use in template.
     """
     context = make_context()
-    html_string = get_google_doc(key)
-    context['content'] = DocParser(html_string)
-    return make_response(render_template('cards/gdoc.html', **context))
+    context['content'] = get_google_doc_html(key)
+    return render_template('cards/gdoc.html', **context)
 
 
 app.register_blueprint(static)

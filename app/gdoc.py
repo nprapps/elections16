@@ -11,7 +11,6 @@ ATTR_WHITELIST = {
 }
 
 
-
 def get_google_doc(key):
     """
     Return the HTML string for a Google doc.
@@ -20,6 +19,11 @@ def get_google_doc(key):
     url = DOC_URL_TEMPLATE % key
     response = app_config.authomatic.access(credentials, url)
     return response.content
+
+
+def get_google_doc_html(key):
+    html_string = get_google_doc(key)
+    return DocParser(html_string)
 
 
 class DocParser:
@@ -48,6 +52,8 @@ class DocParser:
         """
         Constructor takes an HTML string and sets up object.
         """
+        self.headline = None
+        self.subhed = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
         self.parse()
 
@@ -64,6 +70,8 @@ class DocParser:
         for tag in self.soup.findAll():
             self.remove_empty(tag)
             self.parse_attrs(tag)
+            self.find_token(tag, 'HEADLINE', 'headline')
+            self.find_token(tag, 'SUBHED', 'subhed')
 
     def create_italic(self, tag):
         """
@@ -113,6 +121,15 @@ class DocParser:
         has_text = len(list(tag.stripped_strings))
         if not has_children and not has_text and not tag.is_empty_element:
             tag.extract()
+
+    def find_token(self, tag, token, attr):
+        for elem in tag.contents:
+            try:
+                if elem and elem.startswith(token):
+                    setattr(self, attr, elem.split(':', 1)[-1].strip())
+                    tag.extract()
+            except TypeError:
+                pass
 
     def _parse_href(self, href):
         """
