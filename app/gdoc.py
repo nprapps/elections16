@@ -54,6 +54,7 @@ class DocParser:
         """
         self.headline = None
         self.subhed = None
+        self.banner = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
         self.parse()
 
@@ -72,6 +73,7 @@ class DocParser:
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
             self.find_token(tag, 'SUBHED', 'subhed')
+            self.find_token(tag, 'BANNER', 'banner')
 
     def create_italic(self, tag):
         """
