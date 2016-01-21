@@ -4,13 +4,17 @@
 <header>
     <!-- During -->
     <h1>Current Status</h1>
+    <h2>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %}  Primary</h2>
     <!-- After -->
     <!-- <h1>The Results Are&nbsp;In</h1> -->
 </header>
 
 <article>
+    <ul class="meta">
+        <li>As of {{ results[0].lastupdated.strftime('%m/%d/%Y')|ap_date }}, {{ results[0].lastupdated.strftime('%I:%M') }} <span class="ap-period">{{ results[0].lastupdated.strftime('%p')|ap_time_period }}</span> EST</li>
+        <li>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting }} of {{ results[0].precinctstotal }})</li>
+    </ul>
     <table>
-        <caption>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %}  Primary</caption>
         <thead>
             <tr>
                 <th>Name</th>
@@ -30,8 +34,6 @@
         </tbody>
     </table>
     <ul class="meta">
-        <li>As of {{ results[0].lastupdated.strftime('%m/%d/%Y')|ap_date }}, {{ results[0].lastupdated.strftime('%I:%M') }} <span class="ap-period">{{ results[0].lastupdated.strftime('%p')|ap_time_period }}</span> EST</li>
-        <li>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting }} of {{ results[0].precinctstotal }})</li>
         <li>Source: AP</li>
     </ul>
 </article>
