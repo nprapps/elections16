@@ -37,10 +37,6 @@ with NPRElexDaemon() as app:
         end = time()
         wait = LOOP_INTERVAL - (end - start)
 
-        print('Interval: %s' % count)
-        print('Modulo: %s' % modulo)
-        print('Wait: %s' % wait)
-
         count = count + 1
 
         if wait > 0:
