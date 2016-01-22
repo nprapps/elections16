@@ -5,6 +5,7 @@ from fabric.api import execute, task
 from random import randint
 
 import app_config
+import render
 import sys
 import traceback
 
@@ -44,12 +45,13 @@ def deploy(run_once=False):
         print('results cycle hit')
         safe_execute('data.delete_results')
         safe_execute('data.load_results')
+        safe_execute('deploy_results_cards')
         card_end = time()
         print('results cycle finished in %ds' % (card_end - start))
 
         if modulo == 0:
             print('card cycle hit')
-            slack_off()
+            safe_execute('deploy_all_cards')
             print('card cycle finished in %ds' % (time() - card_end))
 
         duration = time() - start

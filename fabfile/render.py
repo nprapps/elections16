@@ -97,8 +97,7 @@ def render_simple_route(view_name):
         view = app.__dict__[view_name]
         content = view()
 
-    output_path = '.%s_html' % view_name
-    _write_file(output_path, path, content)
+    _write_file(path, content)
 
 
 @task
@@ -116,8 +115,8 @@ def render_results():
             view = app.__dict__[view_name]
             content = view(party)
 
-        output_path = '.%s_html' % view_name
-        _write_file(output_path, path, content)
+        output_path = '.cards_html'
+        _write_file(path, content)
 
 
 @task
@@ -134,12 +133,11 @@ def render_card_route(slug):
         view = app.__dict__[view_name]
         content = view(slug)
 
-    output_path = '.%s_html' % slug
-    _write_file(output_path, simplified_path, content)
+    _write_file(simplified_path, content)
 
 
-def _write_file(output_path, path, content):
-    path = '%s%s' % (output_path, path)
+def _write_file(path, content):
+    path = '.cards_html/%s' % path
 
     # Ensure path exists
     head = os.path.split(path)[0]
