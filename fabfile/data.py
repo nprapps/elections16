@@ -70,19 +70,26 @@ def bootstrap_data(election_date=None):
 
 
 @task
-def delete_results(election_date=None):
+def delete_results(election_date=None, test_db=False):
     """
     Delete results without droppping database.
     """
-    if not election_date:
-        next_election = Elections().get_next_election()
-        election_date = next_election.serialize().get('electiondate')
+
+    if not test_db:
+        db_name = app_config.DATABASE['name']
+        if not election_date:
+            next_election = Elections().get_next_election()
+            election_date = next_election.serialize().get('electiondate')
+        clause = "WHERE electiondate='%s'" % election_date
+    else:
+        db_name = app_config.DATABASE['test_name']
+        clause = ''
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % app_config.DATABASE['name'])
-        local('psql %s -c "DELETE FROM result WHERE electiondate=\'%s\' "' % (app_config.DATABASE['name'], election_date))
-        local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % app_config.DATABASE['name'])
+        local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % db_name)
+        local('psql %s -c "DELETE FROM result %s"' % (db_name, clause))
+        local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % db_name)
 
 
 @task
