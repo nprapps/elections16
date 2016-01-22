@@ -80,7 +80,9 @@ def delete_results(election_date=None):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
+        local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % app_config.DATABASE['name'])
         local('psql %s -c "DELETE FROM result WHERE electiondate=\'%s\' "' % (app_config.DATABASE['name'], election_date))
+        local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % app_config.DATABASE['name'])
 
 
 @task
