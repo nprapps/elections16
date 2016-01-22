@@ -27,5 +27,14 @@ class ResultsLoadingTestCase(unittest.TestCase):
             calls_length = models.Call.select().count()
             self.assertEqual(calls_length, 20)
 
+    def test_results_deletion(self):
+        with test_database(test_db, [models.Result, models.Call], create_tables=True):
+            data.load_local_results('tests/data/elex.csv')
+            data.create_calls()
+            data.delete_results(test_db=True)
+            results_length = models.Result.select().count()
+            self.assertEqual(results_length, 0)
+
+
 if __name__ == '__main__':
     unittest.main()
