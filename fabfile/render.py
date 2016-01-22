@@ -107,7 +107,6 @@ def render_results():
 
     view_name = 'results'
     parties = ['gop', 'dem']
-    output_path = '.results_html'
 
     for party in parties:
         with app.app.test_request_context():
@@ -117,6 +116,7 @@ def render_results():
             view = app.__dict__[view_name]
             content = view(party)
 
+        output_path = '.%s_html' % view_name
         _write_file(output_path, path, content)
 
 
