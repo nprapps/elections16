@@ -1,9 +1,10 @@
 import app_config
 import feedparser
+import json
 
 from . import utils
 from gdoc import get_google_doc_html
-from flask import Flask, make_response, render_template
+from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
@@ -158,6 +159,19 @@ def gdoc(key):
     context = make_context()
     context['content'] = get_google_doc_html(key)
     return render_template('cards/gdoc.html', **context)
+
+
+@app.route('/current-state.json')
+@oauth_required
+def current_state():
+    context = make_context()
+    state = context['COPY']['meta']['state']['value']
+
+    data = {
+        'state': state
+    }
+
+    return jsonify(**data)
 
 def never_cache_preview(response):
     """
