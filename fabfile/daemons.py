@@ -2,7 +2,6 @@
 
 from time import sleep, time
 from fabric.api import execute, task
-from random import randint
 
 import app_config
 import sys
