@@ -212,14 +212,14 @@ def deploy_confs():
 
             if service == 'nginx':
                 sudo('service nginx reload')
-            elif service == 'uwsgi':
-                service_name = _get_installed_service_name(service)
-                sudo('initctl reload-configuration')
                 sudo('service %s restart' % service_name)
             elif service == 'app':
                 run('touch %s' % app_config.UWSGI_SOCKET_PATH)
                 sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
                 sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
+            else:
+                service_name = _get_installed_service_name(service)
+                sudo('initctl reload-configuration')
 
 
 @task
@@ -254,12 +254,12 @@ def nuke_confs():
 
             if service == 'nginx':
                 sudo('service nginx reload')
-            elif service == 'uwsgi':
+            elif service == 'app':
+                sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
+            else:
                 service_name = _get_installed_service_name(service)
                 sudo('service %s stop' % service_name)
                 sudo('initctl reload-configuration')
-            elif service == 'app':
-                sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
 
 """
 Fabcasting
