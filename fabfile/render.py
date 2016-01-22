@@ -120,6 +120,24 @@ def render_results():
         _write_file(output_path, path, content)
 
 
+@task
+def render_card_route(slug):
+    from flask import url_for
+
+    view_name = 'card'
+
+    with app.app.test_request_context():
+        full_path = url_for(view_name, slug=slug)
+        simplified_path = full_path.replace('/%s' % view_name, '')
+
+    with app.app.test_request_context(path=full_path):
+        view = app.__dict__[view_name]
+        content = view(slug)
+
+    output_path = '.%s_html' % slug
+    _write_file(output_path, simplified_path, content)
+
+
 def _write_file(output_path, path, content):
     path = '%s%s' % (output_path, path)
 
