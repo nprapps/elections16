@@ -70,6 +70,29 @@ def bootstrap_data(election_date=None):
 
 
 @task
+def delete_results(election_date=None, test_db=False):
+    """
+    Delete results without droppping database.
+    """
+
+    if not test_db:
+        db_name = app_config.DATABASE['name']
+        if not election_date:
+            next_election = Elections().get_next_election()
+            election_date = next_election.serialize().get('electiondate')
+        clause = "WHERE electiondate='%s'" % election_date
+    else:
+        db_name = app_config.DATABASE['test_name']
+        clause = ''
+
+    pg_vars = _get_pg_vars()
+    with shell_env(**pg_vars):
+        local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % db_name)
+        local('psql %s -c "DELETE FROM result %s"' % (db_name, clause))
+        local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % db_name)
+
+
+@task
 def load_results(election_date=None):
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.

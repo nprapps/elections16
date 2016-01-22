@@ -42,7 +42,8 @@ def deploy(run_once=False):
         modulo = count % (app_config.CARD_DEPLOY_INTERVAL / app_config.RESULTS_DEPLOY_INTERVAL)
 
         print('results cycle hit')
-        slack_off()
+        safe_execute('data.delete_results')
+        safe_execute('data.load_results')
         card_end = time()
         print('results cycle finished in %ds' % (card_end - start))
 
