@@ -4,7 +4,7 @@ import json
 
 from . import utils
 from gdoc import get_google_doc_html
-from flask import Flask, make_response, render_template
+from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
@@ -171,8 +171,7 @@ def current_state():
         'state': state
     }
 
-    js = json.dumps(data)
-    return js, 200, { 'Content-Type': 'application/javascript' }
+    return jsonify(**data)
 
 def never_cache_preview(response):
     """
