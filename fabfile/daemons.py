@@ -9,13 +9,6 @@ import sys
 import traceback
 
 
-def slack_off():
-    """
-    Do a slow operation
-    """
-    sleep(randint(5, 15))
-
-
 def safe_execute(*args, **kwargs):
     """
     Wrap execute() so that all exceptions are caught and logged.
