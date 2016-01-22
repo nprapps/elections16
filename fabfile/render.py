@@ -4,6 +4,7 @@
 Commands for rendering various parts of the app stack.
 """
 
+import codecs
 from glob import glob
 import os
 
@@ -83,6 +84,55 @@ def copytext_js():
 
     with open('www/js/copy.js', 'w') as f:
         f.write(response.data)
+
+
+@task
+def render_simple_route(view_name):
+    from flask import url_for
+
+    with app.app.test_request_context():
+        path = url_for(view_name)
+
+    with app.app.test_request_context(path=path):
+        view = app.__dict__[view_name]
+        content = view()
+
+    output_path = '.%s_html' % view_name
+    _write_file(output_path, path, content)
+
+
+@task
+def render_results():
+    from flask import url_for
+
+    view_name = 'results'
+    parties = ['gop', 'dem']
+    output_path = '.results_html'
+
+    for party in parties:
+        with app.app.test_request_context():
+            path = url_for(view_name, party=party)
+
+        with app.app.test_request_context(path=path):
+            view = app.__dict__[view_name]
+            content = view(party)
+
+        _write_file(output_path, path, content)
+
+
+def _write_file(output_path, path, content):
+    path = '%s%s' % (output_path, path)
+
+    # Ensure path exists
+    head = os.path.split(path)[0]
+
+    try:
+        os.makedirs(head)
+    except OSError:
+        pass
+
+    with codecs.open('%sindex.html' % path, 'w', 'utf-8') as f:
+        f.write(content)
 
 @task(default=True)
 def render_all():
