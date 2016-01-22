@@ -10,6 +10,7 @@ from fabric.state import env
 from termcolor import colored
 
 import app_config
+import copytext
 
 # Other fabfiles
 import assets
@@ -210,6 +211,48 @@ def deploy(remote='origin', reload=False):
     if not check_timestamp():
         reset_browsers()
 
+@task
+def deploy_results_cards():
+    require('settings', provided_by=[production, staging])
+
+    local('rm -rf .cards_html/results')
+    render.render_results()
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html/results',
+        '%s/results' % app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
+
+@task
+def deploy_all_cards():
+    require('settings', provided_by=[production, staging])
+
+    local('rm -rf .cards_html')
+    COPY = copytext.Copy(app_config.COPY_PATH)
+    state = COPY['meta']['state']['value']
+    script = COPY[state]
+
+    for row in script:
+        if row['function'] == 'results':
+            # the daemon will do results separately
+            continue
+        elif row['function'] == 'card':
+            render.render_card_route(row['params'])
+        else:
+            render.render_simple_route(row['function'])
+
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html',
+        app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
 
 @task
 def check_timestamp():
