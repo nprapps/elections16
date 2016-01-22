@@ -5,7 +5,6 @@ from fabric.api import execute, task
 from random import randint
 
 import app_config
-import render
 import sys
 import traceback
 
