@@ -7,7 +7,7 @@ SLOW_LOOP_INTERVAL = 60
 SLOW_LOOP_MODULO = SLOW_LOOP_INTERVAL / LOOP_INTERVAL
 
 
-class NPRElexDaemon(CementApp):
+class ElectionResultsDaemon(CementApp):
     class Meta:
         label = 'nprelexdaemon'
         extensions = ['daemon']
@@ -17,7 +17,7 @@ class NPRElexDaemon(CementApp):
             random()
 
 
-with NPRElexDaemon() as app:
+with ElectionResultsDaemon() as app:
     app.daemonize()
     app.run()
 
