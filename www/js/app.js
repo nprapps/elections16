@@ -122,7 +122,7 @@ var setPolls = function() {
             var fullURL = APP_CONFIG.S3_BASE_URL + refreshRoute;
             var fullRefreshRate = refreshRate * 1000;
 
-            var cardGetter = _.partial(getCard, fullURL, $thisCard)
+            var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
             setInterval(cardGetter, fullRefreshRate)
         }
     }
@@ -132,15 +132,17 @@ var setPolls = function() {
     setInterval(checkState, 60000)
 }
 
-var getCard = function(url, $card) {
-    $.ajax({
-        url: url,
-        ifModified: true,
-        success: function(data) {
-            var $cardInner = $(data).find('.card-inner');
-            $card.html($cardInner);
-        }
-    });
+var getCard = function(url, $card, i) {
+    setTimeout(function() {
+        $.ajax({
+            url: url,
+            ifModified: true,
+            success: function(data) {
+                var $cardInner = $(data).find('.card-inner');
+                $card.html($cardInner);
+            }
+        });
+    }, i * 1000);
 }
 
 var checkState = function() {
