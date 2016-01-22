@@ -213,8 +213,6 @@ def deploy(remote='origin', reload=False):
 
 @task
 def deploy_results_cards():
-    require('settings', provided_by=[production, staging])
-
     local('rm -rf .cards_html/results')
     render.render_results()
     flat.deploy_folder(
@@ -229,8 +227,6 @@ def deploy_results_cards():
 
 @task
 def deploy_all_cards():
-    require('settings', provided_by=[production, staging])
-
     local('rm -rf .cards_html')
     COPY = copytext.Copy(app_config.COPY_PATH)
     state = COPY['meta']['state']['value']
