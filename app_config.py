@@ -77,7 +77,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 SERVER_SERVICES = [
     ('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
-    ('results', '/etc/init', 'conf'),
+    ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
 ]
 
@@ -151,6 +151,13 @@ authomatic_config = {
 }
 
 authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
+
+"""
+Daemon configuration
+"""
+RESULTS_DEPLOY_INTERVAL = 20
+CARD_DEPLOY_INTERVAL = 60
+
 
 """
 Utilities
