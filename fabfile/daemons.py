@@ -2,7 +2,7 @@
 
 from time import sleep, time
 from fabric.api import execute, task
-from random import random
+from random import randint
 
 import app_config
 import sys
@@ -13,8 +13,7 @@ def slack_off():
     """
     Do a slow operation
     """
-    for x in range(0, 130000000):
-        random()
+    sleep(randint(5, 15))
 
 
 def safe_execute(*args, **kwargs):
