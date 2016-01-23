@@ -87,9 +87,7 @@ def delete_results(election_date=None, test_db=False):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        #local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % db_name)
         local('psql %s -c "set session_replication_role = replica; DELETE FROM result %s; set session_replication_role = default;"' % (db_name, clause))
-        #local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % db_name)
 
 
 @task
