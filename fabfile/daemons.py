@@ -34,7 +34,6 @@ def deploy(run_once=False):
         modulo = count % (app_config.CARD_DEPLOY_INTERVAL / app_config.RESULTS_DEPLOY_INTERVAL)
 
         print('results cycle hit')
-        safe_execute('data.delete_results')
         safe_execute('data.load_results')
         safe_execute('deploy_results_cards')
         card_end = time()
