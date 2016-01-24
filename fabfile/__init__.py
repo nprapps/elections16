@@ -243,6 +243,8 @@ def deploy_all_cards():
         else:
             render.render_simple_route(row['function'])
 
+    render.render_index()
+
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html',
@@ -251,6 +253,7 @@ def deploy_all_cards():
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
     )
+
 
 @task
 def check_timestamp():
