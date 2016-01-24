@@ -135,6 +135,21 @@ def render_card_route(slug):
 
     _write_file(simplified_path, content)
 
+@task()
+def render_index():
+    """
+    Render HTML templates and compile assets.
+    """
+    from flask import g
+
+    with _fake_context('/'):
+        g.compile_includes = True
+        g.compiled_includes = {}
+        g.no_compress = True
+        view = _view_from_name('index')
+        content = view().data
+        _write_file('', content.decode('utf-8'))
+
 
 def _write_file(path, content):
     path = '.cards_html/%s' % path
@@ -197,9 +212,7 @@ def render_all():
             g.compiled_includes = compiled_includes
 
             view = _view_from_name(name)
-
             content = view().data
-
             compiled_includes = g.compiled_includes
 
         # Write rendered view

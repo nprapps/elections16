@@ -2,19 +2,10 @@
 
 from time import sleep, time
 from fabric.api import execute, task
-from random import randint
 
 import app_config
-import render
 import sys
 import traceback
-
-
-def slack_off():
-    """
-    Do a slow operation
-    """
-    sleep(randint(5, 15))
 
 
 def safe_execute(*args, **kwargs):
@@ -22,11 +13,15 @@ def safe_execute(*args, **kwargs):
     Wrap execute() so that all exceptions are caught and logged.
     """
     try:
+        timestamp = time()
         execute(*args, **kwargs)
     except:
-        print("ERROR [timestamp: %d]: Here's the traceback" % time())
         ex_type, ex, tb = sys.exc_info()
-        traceback.print_tb(tb)
+        if app_config.DEBUG:
+            print("ERROR [timestamp: {0}] - {1} | Traceback".format(timestamp, ex))
+            traceback.print_tb(tb)
+        else:
+            print("ERROR [timestamp: {0}] - {1}".format(timestamp, ex))
         del tb
 
 
@@ -41,30 +36,40 @@ def deploy(run_once=False):
         start = time()
 
         modulo = count % (app_config.CARD_DEPLOY_INTERVAL / app_config.RESULTS_DEPLOY_INTERVAL)
+        print modulo
 
-        print('results cycle hit')
-        safe_execute('data.delete_results')
+        print('load results')
         safe_execute('data.load_results')
+        print('deploy results')
         safe_execute('deploy_results_cards')
-        card_end = time()
-        print('results cycle finished in %ds' % (card_end - start))
+        results_end = time()
+        print('deploying results finished in %ds' % (results_end - start))
+
+        wait = app_config.RESULTS_DEPLOY_INTERVAL - (results_end - start)
 
         if modulo == 0:
-            print('card cycle hit')
+            print('deploy content cards')
             safe_execute('deploy_all_cards')
-            print('card cycle finished in %ds' % (time() - card_end))
+            card_end = time()
+            card_duration = card_end - results_end
+            next_card_time = app_config.CARD_DEPLOY_INTERVAL - (card_end - start)
+            print('deploying content cards finished in %ds' % (card_duration))
+            print('WAITING %ds till next content deployment' % next_card_time)
 
-        duration = time() - start
-        wait = app_config.RESULTS_DEPLOY_INTERVAL - duration
+        total_duration = time() - start
+        cumulative_wait = app_config.RESULTS_DEPLOY_INTERVAL - total_duration
 
-        print('Deploying cards ran in %ds (cumulative)' % duration)
+        count = count + 1
 
-        if wait < 0:
-            print('WARN: Deploying cards took %ds longer than %ds' % (abs(wait), app_config.RESULTS_DEPLOY_INTERVAL))
+        print('Deploying cards ran in %ds (cumulative)' % total_duration)
+
+        if cumulative_wait < 0:
+            print('WARN: Deploying all cards took %ds longer than %ds' % (abs(wait), app_config.RESULTS_DEPLOY_INTERVAL))
             wait = 0
 
         if run_once:
-            print 'Run once specified, exiting.'
+            print('Run once specified, exiting.')
             sys.exit()
         else:
+            print('WAITING %ds till next results deployment' % wait)
             sleep(wait)

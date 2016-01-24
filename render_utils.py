@@ -57,24 +57,17 @@ class Includer(object):
 
     def render(self, path):
         if getattr(g, 'compile_includes', False):
-            if path in g.compiled_includes:
-                timestamp_path = g.compiled_includes[path]
-            else:
-                # Add a querystring to the rendered filename to prevent caching
-                timestamp_path = '%s?%i' % (path, int(time.time()))
-
+            if path not in g.compiled_includes:
                 out_path = 'www/%s' % path
 
                 if path not in g.compiled_includes:
-                    print 'Rendering %s' % out_path
+                    if not getattr(g, 'no_compress', False):
+                        print 'Rendering %s' % out_path
+                        with codecs.open(out_path, 'w', encoding='utf-8') as f:
+                            f.write(self._compress())
 
-                    with codecs.open(out_path, 'w', encoding='utf-8') as f:
-                        f.write(self._compress())
-
-                # See "fab render"
-                g.compiled_includes[path] = timestamp_path
-
-            markup = Markup(self.tag_string % self._relativize_path(timestamp_path))
+            g.compiled_includes[path] = path
+            markup = Markup(self.tag_string % self._relativize_path(path))
         else:
             response = ','.join(self.includes)
 

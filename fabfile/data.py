@@ -5,7 +5,7 @@ Commands that update or process the application data.
 """
 from app.gdoc import get_google_doc
 from elex.api.api import Elections
-from fabric.api import local, task, shell_env
+from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
@@ -70,40 +70,40 @@ def bootstrap_data(election_date=None):
 
 
 @task
-def delete_results(election_date=None, test_db=False):
+def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
     """
     Delete results without droppping database.
     """
 
     if not test_db:
         db_name = app_config.DATABASE['name']
-        if not election_date:
-            next_election = Elections().get_next_election()
-            election_date = next_election.serialize().get('electiondate')
-        clause = "WHERE electiondate='%s'" % election_date
     else:
         db_name = app_config.DATABASE['test_name']
-        clause = ''
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql %s -c "ALTER TABLE result DISABLE TRIGGER ALL"' % db_name)
-        local('psql %s -c "DELETE FROM result %s"' % (db_name, clause))
-        local('psql %s -c "ALTER TABLE result ENABLE TRIGGER ALL"' % db_name)
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result WHERE electiondate=\'{1}\'; set session_replication_role = default;"'.format(db_name, election_date))
 
 
 @task
-def load_results(election_date=None):
+def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
-    if not election_date:
-        next_election = Elections().get_next_election()
-        election_date = next_election.serialize().get('electiondate')
-
+    local('mkdir -p .data')
     pg_vars = _get_pg_vars()
+    cmd = 'elex results {0} > .data/results.json'.format(election_date)
     with shell_env(**pg_vars):
-        local('elex results %s | psql %s -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        with settings(warn_only=True):
+            cmd_output = local(cmd, capture=True)
+
+        if cmd_output.succeeded:
+            print("LOADING RESULTS")
+            delete_results()
+            local('cat .data/results.json | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.DATABASE['name']))
+        else:
+            print("ERROR GETTING RESULTS")
+            print(cmd_output.stderr)
 
 
 @task

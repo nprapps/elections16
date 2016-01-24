@@ -153,10 +153,16 @@ authomatic_config = {
 authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 
 """
+Election configuration
+"""
+NEXT_ELECTION_DATE = '2016-02-01'
+
+
+"""
 Daemon configuration
 """
-RESULTS_DEPLOY_INTERVAL = 20
-CARD_DEPLOY_INTERVAL = 60
+RESULTS_DEPLOY_INTERVAL = 60
+CARD_DEPLOY_INTERVAL = 300
 
 
 """
