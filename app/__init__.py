@@ -134,6 +134,8 @@ def get_caught_up():
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
     context['slug'] = 'link-roundup'
+    context['route'] = '/get-caught-up'
+    context['refresh_rate'] = 60
 
     return render_template('cards/link-roundup.html', **context)
 
