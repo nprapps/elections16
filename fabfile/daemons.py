@@ -13,11 +13,15 @@ def safe_execute(*args, **kwargs):
     Wrap execute() so that all exceptions are caught and logged.
     """
     try:
+        timestamp = time()
         execute(*args, **kwargs)
     except:
-        print("ERROR [timestamp: %d]: Here's the traceback" % time())
         ex_type, ex, tb = sys.exc_info()
-        traceback.print_tb(tb)
+        if app_config.DEBUG:
+            print("ERROR [timestamp: {0}] - {1} | Traceback".format(timestamp, ex))
+            traceback.print_tb(tb)
+        else:
+            print("ERROR [timestamp: {0}] - {1}".format(timestamp, ex))
         del tb
 
 
