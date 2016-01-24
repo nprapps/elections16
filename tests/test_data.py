@@ -31,6 +31,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
             data.load_local_results('tests/data/elex.csv')
             data.create_calls()
+            data.delete_results(test_db=True)
             results_length = models.Result.select().count()
             self.assertEqual(results_length, 0)
 
