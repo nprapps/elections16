@@ -92,14 +92,18 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     """
     local('mkdir -p .data')
     pg_vars = _get_pg_vars()
+    cmd = 'elex results {0} > .data/results.json'.format(election_date)
     with shell_env(**pg_vars):
         with settings(warn_only=True):
-            cmd_output = local('elex results {0} > .data/results.json'.format(election_date))
+            cmd_output = local(cmd, capture=True)
 
         if cmd_output.succeeded:
             print("LOADING RESULTS")
             delete_results()
             local('cat .data/results.json | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.DATABASE['name']))
+        else:
+            print("ERROR GETTING RESULTS")
+            print(cmd_output.stderr)
 
 
 @task
