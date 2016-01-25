@@ -118,7 +118,7 @@ def results(party):
 
     context['results'] = sorted_results
     context['slug'] = 'results'
-    context['route'] = '/results/%s' % party
+    context['route'] = '/results/%s/' % party
     context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
@@ -134,8 +134,8 @@ def get_caught_up():
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
     context['slug'] = 'link-roundup'
-    context['route'] = '/get-caught-up'
-    context['refresh_rate'] = 60
+    context['route'] = '/get-caught-up/'
+    context['refresh_rate'] = 10
 
     return render_template('cards/link-roundup.html', **context)
 
