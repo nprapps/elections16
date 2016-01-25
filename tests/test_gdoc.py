@@ -90,6 +90,12 @@ class DocParserTestCase(unittest.TestCase):
     def test_banner_extraction(self):
         self.assertEqual(self.parser.banner, 'this is a banner')
 
+    def test_image_extractoin(self):
+        self.assertEqual(self.parser.image, 'http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg')
+
+    def test_credit_extraction(self):
+        self.assertEqual(self.parser.credit, 'this is a photo credit')
+
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 
