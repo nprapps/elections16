@@ -31,7 +31,8 @@ def bootstrap_db():
     Build the database.
     """
     if env.get('settings'):
-        servers.stop_service('uwsgi')
+        with settings(warn_only=True):
+            servers.stop_service('uwsgi')
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
@@ -42,7 +43,8 @@ def bootstrap_db():
 
 
     if env.get('settings'):
-        servers.start_service('uwsgi')
+        with settings(warn_only=True):
+            servers.start_service('uwsgi')
 
     models.Result.create_table()
     models.Call.create_table()
