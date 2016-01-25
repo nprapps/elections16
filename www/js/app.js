@@ -97,6 +97,8 @@ var onCardChange = function(e) {
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
+
+    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
 }
 
 var onCardAnimationFinish = function(e) {
