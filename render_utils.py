@@ -206,13 +206,11 @@ def smarty_filter(s):
     if type(s) is not unicode:
         s = unicode(s)
 
-
     s = s.encode('utf-8')
     s = smartypants(s)
 
     try:
         return Markup(s)
     except:
-        print 'This string failed to encode: %s' % s
-        return Markup(s)
+        return Markup(s.decode('utf-8'))
 
