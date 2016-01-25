@@ -136,10 +136,13 @@ var getCard = function(url, $card, i) {
     setTimeout(function() {
         $.ajax({
             url: url,
-            //ifModified: true,
-            success: function(data) {
-                var $cardInner = $(data).find('.card-inner');
-                $card.html($cardInner);
+            ifModified: true,
+            success: function(data, status) {
+                console.log(status);
+                if (status === 'success') {
+                    var $cardInner = $(data).find('.card-inner');
+                    $card.html($cardInner);
+                }
             }
         });
     }, i * 1000);
