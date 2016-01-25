@@ -36,8 +36,12 @@ def deploy(run_once=False):
         start = time()
 
         modulo = count % (app_config.CARD_DEPLOY_INTERVAL / app_config.RESULTS_DEPLOY_INTERVAL)
-        print modulo
 
+        print('update copy')
+        safe_execute('text.update')
+        safe_execute('render.copytext_js')
+        print('update config')
+        safe_execute('render.app_config_js')
         print('load results')
         safe_execute('data.load_results')
         print('deploy results')
