@@ -219,19 +219,23 @@ body { background-color: #111; }
         }
 
         &.mute-button {
-            font-size: 1rem;
-            padding: 7px 8px 7px 6px;
+            outline: none;
+
             &.muted:before {
+                display: block;
                 content: "\f026";
                 font-family: FontAwesome;
                 color: #fff;
-                font-size: 1rem;
+                font-size: 12px;
+                padding: 7px 8px 7px 7px;
             }
             &.playing:before {
+                display: block;
                 content: "\f028";
                 font-family: FontAwesome;
                 color: #fff;
                 font-size: 12px;
+                padding: 7px 4px 7px 5px;
             }
 
             i { padding-left: 2px; }
@@ -483,7 +487,7 @@ body { background-color: #111; }
                 color: #fff;
                 font-size: .9rem;
                 line-height: 1;
-                padding: 1rem 7.4rem 1rem 1rem;
+                padding: 1rem;
                 text-transform: uppercase;
 
                 @media @screen-small-above {
