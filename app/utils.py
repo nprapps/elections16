@@ -134,5 +134,5 @@ def candidate_sort_lastname(item):
         return item.last
 
 
-def candidate_sort_lastname(item):
+def candidate_sort_votecount(item):
     return item.votecount
