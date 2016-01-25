@@ -150,6 +150,16 @@ def render_index():
         content = view().data
         _write_file('', content.decode('utf-8'))
 
+@task()
+def render_current_state():
+    """
+    Render HTML templates and compile assets.
+    """
+    with _fake_context('/current-state.json'):
+        view = _view_from_name('current_state')
+        content = view().data
+        with codecs.open('.cards_html/current-state.json', 'w', 'utf-8') as f:
+            f.write(content)
 
 def _write_file(path, content):
     path = '.cards_html/%s' % path
