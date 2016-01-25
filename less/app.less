@@ -122,6 +122,10 @@ body { background-color: #111; }
     padding-top: 20px;
     padding-left: 5px;
 
+    @media @screen-small-above {
+        padding-left: 30px;
+    }
+
     h5 {
         .knockout();
         font-size: 1.2rem;
@@ -159,9 +163,57 @@ body { background-color: #111; }
     background-color: @live;
     width: 100%;
     z-index: 5;
+    height: 25px;
 
-    h5, p {
+    &:before {
+        display: block;
+        content: ' ';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 0;
+        bottom: 0;
+        width: 1.3rem;
+        height: 1rem;
+        z-index: 1;
+        background: transparent url('@{img-root}/bounce.gif') no-repeat;
+        .background-size(cover);
+
+        @media @screen-small-above {
+            left: 30px;
+        }
+    }
+
+    h5 {
+        position: absolute;
+        top: 5px;
+        left: 30px;
+        line-height: 1;
+        margin: 0;
         font-size: 11px;
+        text-transform: uppercase;
+        .knockout();
+
+        @media @screen-small-above {
+            font-size: 15px;
+            left: 60px;
+        }
+    }
+
+    p {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        line-height: 1;
+        margin: 0;
+        font-size: 10px;
+        .knockout();
+        text-transform: none;
+
+        @media @screen-small-above {
+            font-size: 12px;
+            right: 30px;
+        }
     }
 }
 
@@ -181,7 +233,8 @@ body { background-color: #111; }
 .global-header {
     position: absolute;
     display: none;
-    top: 0;
+    //top: 0;
+    top: 20px; //during
     left: 0;
     width: 100%;
     z-index: 2;
@@ -203,13 +256,15 @@ body { background-color: #111; }
 
 .global-controls {
     position: absolute;
-    top: 12px;
+    //top: 12px;
+    top: 30px; //during
     right: 5px;
     display: none;
     z-index: 3;
 
     @media @screen-small-above {
-        top: 20px;
+        //top: 20px;
+        top: 35px; //during
         right: 30px;
     }
 
@@ -292,7 +347,10 @@ body { background-color: #111; }
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner { padding-top: 4rem;}
+    .card-inner {
+        //padding-top: 4rem;
+        padding-top: 6rem; //during
+    }
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
