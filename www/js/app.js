@@ -33,11 +33,11 @@ var onDocumentLoad = function(e) {
     $begin = $('.begin');
     $mute = $('.mute-button');
 
+    $begin.on('click', onBeginClick);
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
-    $begin.on('click', onBeginClick);
     $(window).resize(onResize);
 
     setupFlickity();
@@ -65,7 +65,7 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
-    // bind events
+    // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
     $cardsWrapper.on('settle', onCardAnimationFinish);
 }
@@ -97,6 +97,8 @@ var onCardChange = function(e) {
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
+
+    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
 }
 
 var onCardAnimationFinish = function(e) {
@@ -108,7 +110,8 @@ var onCardAnimationFinish = function(e) {
 }
 
 var onBeginClick = function(e) {
-    $cards.flickity('next');
+    $cardsWrapper.flickity('next');
+    ANALYTICS.trackEvent('begin-btn-click');
 }
 
 var setPolls = function() {
