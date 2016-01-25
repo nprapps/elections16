@@ -15,7 +15,7 @@ var $mute = null;
 var candidates = {}
 var isTouch = Modernizr.touch;
 var currentState = null;
-
+var rem = null;
 /*
  * Run on page load.
  */
@@ -33,11 +33,13 @@ var onDocumentLoad = function(e) {
     $begin = $('.begin');
     $mute = $('.mute-button');
 
+    rem = getEmPixels();
+
+    $begin.on('click', onBeginClick);
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
-    $begin.on('click', onBeginClick);
     $(window).resize(onResize);
 
     setupFlickity();
@@ -65,7 +67,7 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
-    // bind events
+    // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
     $cardsWrapper.on('settle', onCardAnimationFinish);
 }
@@ -81,6 +83,9 @@ var onCardChange = function(e) {
     var newSlideIndex = flickity.selectedIndex;
 
     var $thisSlide = $('.is-selected');
+    var cardHeight = $thisSlide.find('.card-inner').height();
+
+    checkOverflow(cardHeight, $thisSlide);
 
     $globalHeader.removeClass('bg-header');
     $cards.on('scroll', onCardScroll);
@@ -97,6 +102,16 @@ var onCardChange = function(e) {
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
+
+    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
+}
+
+var checkOverflow = function(cardHeight, $slide) {
+    if (cardHeight > $(window).height()) {
+        $slide.find('.card-background').height(cardHeight + (6 * rem));
+    } else {
+        $slide.find('.card-background').height('100%');
+    }
 }
 
 var onCardAnimationFinish = function(e) {
@@ -108,7 +123,8 @@ var onCardAnimationFinish = function(e) {
 }
 
 var onBeginClick = function(e) {
-    $cards.flickity('next');
+    $cardsWrapper.flickity('next');
+    ANALYTICS.trackEvent('begin-btn-click');
 }
 
 var setPolls = function() {
@@ -163,6 +179,10 @@ var checkState = function() {
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
+
+    var $thisSlide = $cards.filter('.is-selected');
+    var cardHeight = $thisSlide.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisSlide);
 }
 
 var getCandidates = function() {
