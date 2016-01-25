@@ -49,7 +49,7 @@ RELOAD_TRIGGER = False
 RELOAD_CHECK_INTERVAL = 60
 
 PRODUCTION_SERVERS = ['54.244.238.237']
-STAGING_SERVERS = ['54.244.238.154']
+STAGING_SERVERS = ['54.212.140.247']
 
 
 # Should code be deployed to the web/cron servers?
