@@ -276,5 +276,10 @@ def fabcast(command):
     if not app_config.DEPLOY_TO_SERVERS:
         print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.'
 
-    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.get('branch', ''), command))
+    if env.get('branch'):
+        branch = 'branch:%s' % env.get('branch')
+    else:
+        branch = ''
+
+    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, branch, command))
 

@@ -137,9 +137,11 @@ var getCard = function(url, $card, i) {
         $.ajax({
             url: url,
             ifModified: true,
-            success: function(data) {
-                var $cardInner = $(data).find('.card-inner');
-                $card.html($cardInner);
+            success: function(data, status) {
+                if (status === 'success') {
+                    var $cardInner = $(data).find('.card-inner');
+                    $card.html($cardInner);
+                }
             }
         });
     }, i * 1000);
@@ -151,9 +153,8 @@ var checkState = function() {
         dataType: 'json',
         ifModified: true,
         success: function(data) {
-            if (data['state'] !== currentState) {
+            if (status === 'success' && data['state'] !== currentState) {
                 currentState = data['state']
-                console.log(currentState);
             }
         }
     });
