@@ -136,7 +136,7 @@ var getCard = function(url, $card, i) {
     setTimeout(function() {
         $.ajax({
             url: url,
-            ifModified: true,
+            //ifModified: true,
             success: function(data) {
                 var $cardInner = $(data).find('.card-inner');
                 $card.html($cardInner);
