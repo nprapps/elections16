@@ -688,9 +688,6 @@ body { background-color: #111; }
     }
 
 
-
-
-
     .segment-audio-content {
         margin: 2rem;
 
@@ -703,10 +700,8 @@ body { background-color: #111; }
 
         @media @screen-small-above {
             width: 40rem;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            margin: 0 auto;
+            padding-top: 2rem;
         }
 
         .segment-audio-player {
@@ -802,10 +797,7 @@ body { background-color: #111; }
             font-size: 2rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
-
-            @media @screen-small-above {
-                font-size: 3.7rem;
-            }
+            text-align: center;
         }
 
         p {
@@ -814,10 +806,10 @@ body { background-color: #111; }
             line-height: 1.7;
             color: #fff;
             text-shadow: 2px 2px 2px #222;
+        }
 
-            @media @screen-small-above {
-                font-size: 1.3rem;
-            }
+        .featured-links {
+            .begin {font-size: 1.2rem;}
         }
     }
 }
