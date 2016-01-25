@@ -149,6 +149,8 @@ def title():
     context['content'] = doc
     context['headline'] = doc.headline
     context['banner'] = doc.banner
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['slug'] = 'title'
     return render_template('cards/title.html', **context)
 
