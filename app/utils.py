@@ -126,8 +126,13 @@ def ap_time_period_filter(value):
 
     return periods
 
-def candidate_sorter(item):
+
+def candidate_sort_lastname(item):
     if item.last == 'Other' or item.last == 'Uncommitted':
-        return (item.votecount, 'zzz')
+        return 'zzz'
     else:
-        return (item.votecount, item.last)
+        return item.last
+
+
+def candidate_sort_lastname(item):
+    return item.votecount
