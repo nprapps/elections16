@@ -114,7 +114,8 @@ def results(party):
         models.Result.party == PARTY_MAPPING[party]['AP']
     )
 
-    sorted_results = sorted(list(party_results), key=utils.candidate_sorter)
+    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
 
     context['results'] = sorted_results
     context['slug'] = 'results'
