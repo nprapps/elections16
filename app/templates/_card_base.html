@@ -6,6 +6,10 @@
                 <h1>Card slug: {{ slug }}</h1>
             {% endblock card_content %}
         </div>
-        <span class="card-background"></span>
+
+        <span class="card-background">
+            {% block card_background %}
+            {% endblock %}
+        </span>
     </div>
 {% endblock %}
