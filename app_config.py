@@ -43,7 +43,7 @@ STAGING_S3_BUCKET = 'stage-apps.npr.org'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-DEFAULT_MAX_AGE = 20
+DEFAULT_MAX_AGE = 300
 
 RELOAD_TRIGGER = False
 RELOAD_CHECK_INTERVAL = 60
