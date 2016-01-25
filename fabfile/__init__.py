@@ -243,6 +243,7 @@ def deploy_all_cards():
         else:
             render.render_simple_route(row['function'])
 
+    render.render_current_state()
     render.render_index()
 
     flat.deploy_folder(
