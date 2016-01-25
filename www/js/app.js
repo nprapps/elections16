@@ -138,7 +138,6 @@ var getCard = function(url, $card, i) {
             url: url,
             ifModified: true,
             success: function(data, status) {
-                console.log(status);
                 if (status === 'success') {
                     var $cardInner = $(data).find('.card-inner');
                     $card.html($cardInner);
@@ -154,9 +153,8 @@ var checkState = function() {
         dataType: 'json',
         ifModified: true,
         success: function(data) {
-            if (data['state'] !== currentState) {
+            if (status === 'success' && data['state'] !== currentState) {
                 currentState = data['state']
-                console.log(currentState);
             }
         }
     });
