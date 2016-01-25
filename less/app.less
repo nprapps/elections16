@@ -703,10 +703,12 @@ body { background-color: #111; }
 
         @media @screen-small-above {
             width: 40rem;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            margin: 0 auto;
+            padding-top: 2rem;
+            // position: absolute;
+            // top: 50%;
+            // left: 50%;
+            // transform: translate(-50%, -50%);
         }
 
         .segment-audio-player {
@@ -804,7 +806,7 @@ body { background-color: #111; }
             text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                font-size: 3.7rem;
+                font-size: 2.7rem;
             }
         }
 
@@ -816,8 +818,12 @@ body { background-color: #111; }
             text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                font-size: 1.3rem;
+                font-size: 1rem;
             }
+        }
+
+        .featured-links {
+            .begin {font-size: 1.2rem;}
         }
     }
 }
