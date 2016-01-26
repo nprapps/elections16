@@ -92,22 +92,16 @@ var onCardChange = function(e) {
     checkOverflow(cardHeight, $thisSlide);
 
     $globalHeader.removeClass('bg-header');
-    $cards.on('scroll', onCardScroll);
 
     if (newSlideIndex > 0) {
         $globalControls.show();
         $globalHeader.show();
         $duringModeNotice.show();
-
     } else {
         $globalControls.hide();
         $globalHeader.hide();
         $duringModeNotice.hide();
         $flickityNav.show();
-    } else {
-        $globalControls.hide();
-        $globalHeader.hide();
-        $flickityNav.hide();
     }
 
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
