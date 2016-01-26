@@ -84,7 +84,7 @@ def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result WHERE electiondate=\'{1}\'; set session_replication_role = default;"'.format(db_name, election_date))
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(db_name, election_date))
 
 
 @task
