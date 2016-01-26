@@ -70,7 +70,7 @@ class DocParser:
             self.create_underline(tag)
             self.unwrap_span(tag)
 
-        for tag in self.soup.findAll():
+        for tag in self.soup.body.findAll():
             self.remove_empty(tag)
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
