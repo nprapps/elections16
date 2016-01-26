@@ -83,16 +83,16 @@ var setupFlickity = function() {
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
-    var newSlideIndex = flickity.selectedIndex;
+    var newCardIndex = flickity.selectedIndex;
 
-    var $thisSlide = $('.is-selected');
-    var cardHeight = $thisSlide.find('.card-inner').height();
+    var $thisCard = $('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
 
-    checkOverflow(cardHeight, $thisSlide);
+    checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
 
-    if (newSlideIndex > 0) {
+    if (newCardIndex > 0) {
         $globalControls.show();
         $globalHeader.show();
         $duringModeNotice.show();
@@ -103,11 +103,11 @@ var onCardChange = function(e) {
         $flickityNav.show();
     }
 
-    if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+    if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
 
-    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
+    ANALYTICS.trackEvent('card-enter', $thisCard.attr('id'));
 }
 
 var onDragStart = function(e, pointer) {
@@ -246,9 +246,9 @@ var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
 
-    var $thisSlide = $cards.filter('.is-selected');
-    var cardHeight = $thisSlide.find('.card-inner').height();
-    checkOverflow(cardHeight, $thisSlide);
+    var $thisCard = $cards.filter('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisCard);
 }
 
 var getCandidates = function() {
