@@ -143,7 +143,7 @@ var onKeydown = function(e) {
     } else if (e.which === 39) {
         var keyDirection = 'next';
     } else {
-        return false;
+        return;
     }
 
     if (e.target !== $cardsWrapper[0]) {
