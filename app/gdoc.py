@@ -130,10 +130,11 @@ class DocParser:
 
     def find_token(self, tag, token, attr):
         try:
-            text = tag.text
-            if text.startswith(token):
-                setattr(self, attr, text.split(':', 1)[-1].strip())
-                tag.extract()
+            if not getattr(self, attr):
+                text = tag.text
+                if text.startswith(token):
+                    setattr(self, attr, text.split(':', 1)[-1].strip())
+                    tag.extract()
         except TypeError:
             pass
 
