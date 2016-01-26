@@ -183,9 +183,6 @@ def deploy(remote='origin', reload=False):
     update()
     render.render_all()
 
-    # Clear files that should never be deployed
-    local('rm -rf www/live-data')
-
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www',
@@ -193,7 +190,7 @@ def deploy(remote='origin', reload=False):
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
-        ignore=['www/assets/*', 'www/live-data/*']
+        ignore=['www/assets/*']
     )
 
     flat.deploy_folder(
@@ -224,6 +221,15 @@ def deploy_results_cards():
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
     )
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        'www/live-data',
+        '%s/live-data' % app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
 
 
 @task
@@ -250,6 +256,14 @@ def deploy_all_cards():
         app_config.S3_BUCKET,
         '.cards_html',
         app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        'www/live-data',
+        '%s/live-data' % app_config.PROJECT_SLUG,
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
