@@ -83,7 +83,6 @@ var setupFlickity = function() {
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
-    var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
 
     var $thisSlide = $('.is-selected');
@@ -125,7 +124,6 @@ var onDragMove = function(e, pointer, moveVector) {
 
 var onDragEnd = function(e, pointer) {
     var flickity = $cardsWrapper.data('flickity');
-    var oldSlideIndex = flickity.selectedIndex - 1;
     var newSlideIndex = flickity.selectedIndex;
 
     if (dragDirection === 'previous') {
