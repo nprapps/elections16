@@ -143,6 +143,8 @@ def get_caught_up():
     context['subhed'] = doc.subhed
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
     context['state'] = context['COPY']['meta']['state']['value']
@@ -158,6 +160,8 @@ def title():
     context['content'] = doc
     context['headline'] = doc.headline
     context['banner'] = doc.banner
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['slug'] = 'title'
     context['template'] = 'title'
     context['state'] = context['COPY']['meta']['state']['value']
