@@ -70,7 +70,7 @@ class DocParser:
             self.create_underline(tag)
             self.unwrap_span(tag)
 
-        for tag in self.soup.findAll():
+        for tag in self.soup.body.findAll():
             self.remove_empty(tag)
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
@@ -130,10 +130,11 @@ class DocParser:
 
     def find_token(self, tag, token, attr):
         try:
-            text = tag.text
-            if text.startswith(token):
-                setattr(self, attr, text.split(':', 1)[-1].strip())
-                tag.extract()
+            if not getattr(self, attr):
+                text = tag.text
+                if text.startswith(token):
+                    setattr(self, attr, text.split(':', 1)[-1].strip())
+                    tag.extract()
         except TypeError:
             pass
 
