@@ -157,13 +157,17 @@ body {background-color: #111;}
 // header
 .during-mode-notice {
     position: absolute;
-    top: 0;
+    top: -50px;
     left: 0;
     color: #fff;
     background-color: @live;
     width: 100%;
     z-index: 5;
     height: 25px;
+
+    .during & {
+        top: 0;
+    }
 
     &:before {
         display: block;
@@ -233,8 +237,7 @@ body {background-color: #111;}
 .global-header {
     position: absolute;
     display: none;
-    //top: 0;
-    top: 20px; //during
+    top: 0;
     left: 0;
     width: 100%;
     z-index: 2;
@@ -242,6 +245,10 @@ body {background-color: #111;}
     margin-bottom: 1rem;
     min-height: 4rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2));
+
+    .during & {
+        top: 20px;
+    }
 
     &.bg-header {
         background-color: rgba(0, 0, 0, .6);
@@ -256,16 +263,22 @@ body {background-color: #111;}
 
 .global-controls {
     position: absolute;
-    //top: 12px;
-    top: 30px; //during
+    top: 12px;
     right: 5px;
     display: none;
     z-index: 3;
 
+    .during & {
+        top: 30px;
+    }
+
     @media @screen-small-above {
-        //top: 20px;
-        top: 35px; //during
+        top: 20px;
         right: 30px;
+
+        .during & {
+            top: 35px;
+        }
     }
 
     button {
@@ -340,7 +353,6 @@ body {background-color: #111;}
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    //padding-top: 4.5rem;
     .gotham();
     color: #ccc;
 
@@ -348,8 +360,11 @@ body {background-color: #111;}
     -webkit-font-smoothing: antialiased;
 
     .card-inner {
-        //padding-top: 4rem;
-        padding-top: 6rem; //during
+        padding-top: 4rem;
+
+        .during & {
+            padding-top: 6rem;
+        }
     }
 
     h1, h2, h3, h4, h5, h6 {
