@@ -81,7 +81,8 @@
 @screen-tiny: ~"screen and (max-width: 480px)";
 
 //max-width for content
-@max-width-content: 700px;
+@max-width-content: 650px;
+
 
 // Base font size
 // -------------------------
@@ -256,30 +257,31 @@ body { background-color: #111; }
     width: 40px;
     height: 40px;
     @media @screen-small-above {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 4rem;
+        height: 4rem;
     }
 
     &.previous {
-        left: 0;
-        &.previous {
-            svg {
-                left: 5px;
-                @media @screen-small-above {
-                    left: 25px;
-                }
-            }
-
+        left: 5px;
+        svg {
+            left: 0;
+        }
+        @media @screen-small-above {
+            left: 18px;
         }
     }
     &.next {
-        right: 0;
+        left: auto;
+        right: 5px;
         svg {
             left: auto;
-            right: 5px;
-            @media @screen-small-above {
-                right: 30px;
-            }
+            right: 0;
+        }
+
+        @media @screen-small-above {
+            right: 30px;
+
+
         }
     }
     &:hover {
@@ -326,6 +328,9 @@ body { background-color: #111; }
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
 
+    h4 {
+        margin-top: 3rem;
+    }
 
     header { padding: 33px 30px; }
     article {
@@ -364,7 +369,7 @@ body { background-color: #111; }
         text-shadow: 2px 2px 2px #222;
 
         @media @screen-small-above {
-            font-size: 1.3rem;
+            margin-bottom: 1.7rem;
         }
     }
 
@@ -891,6 +896,8 @@ body { background-color: #111; }
             position: relative;
             margin-left: 2em;
             list-style: none;
+            margin: 2.5rem 0 0 0;
+            line-height: 1.7;
 
             &:before {
                 content:counter(li);
@@ -924,7 +931,10 @@ body { background-color: #111; }
             font-size: 0.8rem;
         }
     }
-    form { padding: 22px 0; }
+    form {
+        padding: 22px 0;
+        max-width: 500px;
+    }
     input {
         width: 100%;
         box-sizing: border-box;
