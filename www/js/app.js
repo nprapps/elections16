@@ -17,6 +17,7 @@ var candidates = {}
 var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
+var dragDirection = null;
 /*
  * Run on page load.
  */
@@ -73,12 +74,10 @@ var setupFlickity = function() {
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
-    $cardsWrapper.on('settle', onCardAnimationFinish);
-}
-
-var onCardScroll = function() {
-    //$globalHeader.addClass('bg-header');
-    $cards.off('scroll');
+    $cardsWrapper.on('dragMove', onDragMove);
+    $cardsWrapper.on('dragEnd', onDragEnd);
+    $cardsWrapper.on('keydown', onKeydown);
+    $flickityNav.on('click', onFlickityNavClick);
 }
 
 var onCardChange = function(e) {
@@ -111,19 +110,61 @@ var onCardChange = function(e) {
     ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
 }
 
+var onDragMove = function(e, pointer, moveVector) {
+    if (moveVector.x > 0) {
+        dragDirection = 'previous';
+    } else {
+        dragDirection = 'next';
+    }
+}
+
+var onDragEnd = function(e, pointer) {
+    var flickity = $cardsWrapper.data('flickity');
+    var oldSlideIndex = flickity.selectedIndex - 1;
+    var newSlideIndex = flickity.selectedIndex;
+
+    if (dragDirection === 'previous') {
+        ANALYTICS.trackEvent('card-swipe-previous');
+    } else if (dragDirection === 'next') {
+        ANALYTICS.trackEvent('card-swipe-next');
+    } else {
+        ANALYTICS.trackEvent('card-swipe-unknown');
+    }
+}
+
+var onKeydown = function(e) {
+    if (e.which === 37) {
+        var keyDirection = 'previous';
+    }
+    else if (e.which === 39) {
+        var keyDirection = 'next';
+    }
+    else {
+        return false;
+    }
+
+    if (e.target !== $cardsWrapper[0]) {
+        ANALYTICS.trackEvent('keyboard-nav-wrong-target')
+    } else {
+        ANALYTICS.trackEvent('keyboard-nav-' + keyDirection);
+    }
+}
+
+var onFlickityNavClick = function(e) {
+    if ($(this).hasClass('previous')) {
+        ANALYTICS.trackEvent('nav-click-previous');
+    } else if ($(this).hasClass('next')) {
+        ANALYTICS.trackEvent('nav-click-next');
+    } else {
+        ANALYTICS.trackEvent('nav-click-unknown');
+    }
+}
+
 var checkOverflow = function(cardHeight, $slide) {
     if (cardHeight > $(window).height()) {
         $slide.find('.card-background').height(cardHeight + (6 * rem));
     } else {
         $slide.find('.card-background').height('100%');
-    }
-}
-
-var onCardAnimationFinish = function(e) {
-    var flickity = $cardsWrapper.data('flickity');
-    var newSlideIndex = flickity.selectedIndex;
-
-    if (newSlideIndex > 0) {
     }
 }
 
