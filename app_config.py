@@ -8,6 +8,7 @@ They will be exposed to users. Use environment variables instead.
 See get_secrets() below for a fast way to access them.
 """
 
+import logging
 import os
 
 from authomatic.providers import oauth2
@@ -166,6 +167,11 @@ CARD_DEPLOY_INTERVAL = 60
 
 
 """
+Logging
+"""
+LOG_FORMAT = '%(levelname)s:%(name)s:%(asctime)s: %(message)s'
+
+"""
 Utilities
 """
 def get_secrets():
@@ -196,6 +202,7 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
+    global LOG_LEVEL
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
@@ -207,6 +214,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
+        LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
@@ -217,6 +225,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
+        LOG_LEVEL = logging.DEBUG
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -227,6 +236,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
+        LOG_LEVEL = logging.DEBUG
 
     DEPLOYMENT_TARGET = deployment_target
 
