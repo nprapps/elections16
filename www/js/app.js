@@ -74,6 +74,7 @@ var setupFlickity = function() {
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
+    $cardsWrapper.on('dragStart', onDragStart);
     $cardsWrapper.on('dragMove', onDragMove);
     $cardsWrapper.on('dragEnd', onDragEnd);
     $cardsWrapper.on('keydown', onKeydown);
@@ -108,6 +109,10 @@ var onCardChange = function(e) {
     }
 
     ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
+}
+
+var onDragStart = function(e, pointer) {
+    dragDirection = null;
 }
 
 var onDragMove = function(e, pointer, moveVector) {
