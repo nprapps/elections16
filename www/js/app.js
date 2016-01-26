@@ -124,18 +124,23 @@ var onDragMove = function(e, pointer, moveVector) {
 
 var onDragEnd = function(e, pointer) {
     var flickity = $cardsWrapper.data('flickity');
-    var newSlideIndex = flickity.selectedIndex;
+    var newCardIndex = flickity.selectedIndex;
 
     if (dragDirection === 'previous') {
-        ANALYTICS.trackEvent('card-swipe-previous');
+        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
     } else if (dragDirection === 'next') {
-        ANALYTICS.trackEvent('card-swipe-next');
-    } else {
-        ANALYTICS.trackEvent('card-swipe-unknown');
+        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
 var onKeydown = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
     if (e.which === 37) {
         var keyDirection = 'previous';
     } else if (e.which === 39) {
@@ -147,18 +152,31 @@ var onKeydown = function(e) {
     if (e.target !== $cardsWrapper[0]) {
         ANALYTICS.trackEvent('keyboard-nav-wrong-target')
     } else {
-        ANALYTICS.trackEvent('keyboard-nav-' + keyDirection);
+        if (keyDirection === 'previous') {
+            var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+            ANALYTICS.trackEvent('keyboard-nav-previous', exitedCardID);
+        } else if (keyDirection === 'next') {
+            var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+            ANALYTICS.trackEvent('keyboard-nav-next', exitedCardID);
+        }
     }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
 var onFlickityNavClick = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
     if ($(this).hasClass('previous')) {
-        ANALYTICS.trackEvent('nav-click-previous');
+        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        ANALYTICS.trackEvent('nav-click-previous', exitedCardID);
     } else if ($(this).hasClass('next')) {
-        ANALYTICS.trackEvent('nav-click-next');
-    } else {
-        ANALYTICS.trackEvent('nav-click-unknown');
+        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
 var checkOverflow = function(cardHeight, $slide) {
@@ -172,6 +190,7 @@ var checkOverflow = function(cardHeight, $slide) {
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click');
+    ANALYTICS.trackEvent('card-exit', 'title');
 }
 
 var setPolls = function() {
