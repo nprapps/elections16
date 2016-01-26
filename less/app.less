@@ -339,25 +339,25 @@ body {background-color: #111;}
     }
 
     &.previous {
-        left: 0;
+        left: 5px;
+        @media @screen-small-above {
+            left: 25px;
+        }
         &.previous {
             svg {
-                left: 5px;
-                @media @screen-small-above {
-                    left: 25px;
-                }
+                left: 0;
             }
 
         }
     }
     &.next {
-        right: 0;
+        right: 5px;
+        @media @screen-small-above {
+            right: 30px;
+        }
         svg {
             left: auto;
-            right: 5px;
-            @media @screen-small-above {
-                right: 30px;
-            }
+            right: 0;
         }
     }
     &:hover {
