@@ -29,6 +29,7 @@ var onDocumentLoad = function(e) {
     $forwardBtn = $('.forward');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
+    $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
     $mute = $('.mute-button');
@@ -93,10 +94,12 @@ var onCardChange = function(e) {
     if (newSlideIndex > 0) {
         $globalControls.show();
         $globalHeader.show();
-        //$globalHeader.addClass('bg-header');
+        $duringModeNotice.show();
+
     } else {
         $globalControls.hide();
         $globalHeader.hide();
+        $duringModeNotice.hide();
     }
 
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
