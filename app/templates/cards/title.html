@@ -14,7 +14,7 @@
 
 
         <!-- add class of live banner to the countdown-banner in during mode -->
-        <div class="countdown-banner">
+        <div class="countdown-banner {% if state == 'during' %} live-banner {% endif %}">
             <h6>{{ banner }}</h6>
         </div>
 

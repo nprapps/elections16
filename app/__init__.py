@@ -73,6 +73,7 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
+    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -84,6 +85,7 @@ def card(slug):
     """
     context = make_context()
     context['slug'] = slug
+    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -99,6 +101,7 @@ def podcast():
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -121,6 +124,7 @@ def results(party):
     context['slug'] = 'results'
     context['route'] = '/results/%s/' % party
     context['refresh_rate'] = 20
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/results.html', **context)
 
@@ -139,6 +143,7 @@ def get_caught_up():
     context['slug'] = 'link-roundup'
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -154,6 +159,7 @@ def title():
     context['image'] = doc.image
     context['credit'] = doc.credit
     context['slug'] = 'title'
+    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 

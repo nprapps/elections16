@@ -4,7 +4,7 @@
 Commands that update or process the application data.
 """
 from app.gdoc import get_google_doc
-from elex.api.api import Elections
+from elex.api import Elections
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
