@@ -122,6 +122,10 @@ body { background-color: #111; }
     padding-top: 20px;
     padding-left: 5px;
 
+    @media @screen-small-above {
+        padding-left: 25px;
+    }
+
     h5 {
         .knockout();
         font-size: 1.2rem;
@@ -251,11 +255,21 @@ body { background-color: #111; }
     background-color: transparent;
     width: 40px;
     height: 40px;
+    @media @screen-small-above {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
 
     &.previous {
         left: 0;
         &.previous {
-            svg {left: 5px;}
+            svg {
+                left: 5px;
+                @media @screen-small-above {
+                    left: 25px;
+                }
+            }
+
         }
     }
     &.next {
@@ -263,6 +277,9 @@ body { background-color: #111; }
         svg {
             left: auto;
             right: 5px;
+            @media @screen-small-above {
+                right: 30px;
+            }
         }
     }
     &:hover {
@@ -276,6 +293,10 @@ body { background-color: #111; }
     svg {
         width: 35%;
         height: 35%;
+        @media @screen-small-above {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
     }
 
 }
