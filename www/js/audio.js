@@ -1,11 +1,5 @@
 var AUDIO = (function() {
     var NO_AUDIO = (window.location.search.indexOf('noaudio') >= 0);
-    var fiveSeconds = null;
-    var thirtySeconds = null;
-    var oneMinute = null;
-    var fiveMinutes = null;
-
-
     var timedAnalytics = [
         {
             'seconds': 5,
@@ -46,10 +40,9 @@ var AUDIO = (function() {
         });
         playAudio();
 
-        var fiveSeconds = false;
-        var thirtySeconds = false;
-        var oneMinute = false;
-        var fiveMinutes = false;
+        for (var i = 0; i < timedAnalytics.length; i++) {
+            timedAnalytics[i]['measured'] = false;
+        }
 
         ANALYTICS.trackEvent('audio-started', url);
     }
@@ -103,26 +96,6 @@ var AUDIO = (function() {
                 obj.measured = true;
             }
         }
-
-        // if (position >= 5 && !fiveSeconds) {
-        //     ANALYTICS.trackEvent('audio-five-seconds', $audioPlayer.data().jPlayer.status.src)
-        //     fiveSeconds = true;
-        // }
-
-        // if (position >= 30 && !thirtySeconds) {
-        //     ANALYTICS.trackEvent('audio-thirty-seconds', $audioPlayer.data().jPlayer.status.src)
-        //     thirtySeconds = true;
-        // }
-
-        // if (position >= 60 && !oneMinute) {
-        //     ANALYTICS.trackEvent('audio-one-minute', $audioPlayer.data().jPlayer.status.src)
-        //     oneMinute = true;
-        // }
-
-        // if (position >= 300 && !fiveMinutes) {
-        //     ANALYTICS.trackEvent('audio-five-minutes', $audioPlayer.data().jPlayer.status.src)
-        //     fiveMinutes = true;
-        // }
 
         $duration.text($.jPlayer.convertTime(remainingTime));
     }
