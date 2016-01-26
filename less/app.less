@@ -123,7 +123,7 @@ body {background-color: #111;}
     padding-left: 5px;
 
     @media @screen-small-above {
-        padding-left: 30px;
+        padding-left: 25px;
     }
 
     h5 {
@@ -331,22 +331,52 @@ body {background-color: #111;}
 
 .flickity-prev-next-button {
     background-color: transparent;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
+    @media @screen-small-above {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
 
     &.previous {
         left: 0;
+        &.previous {
+            svg {
+                left: 5px;
+                @media @screen-small-above {
+                    left: 25px;
+                }
+            }
+
+        }
     }
     &.next {
         right: 0;
+        svg {
+            left: auto;
+            right: 5px;
+            @media @screen-small-above {
+                right: 30px;
+            }
+        }
     }
     &:hover {
         background-color: transparent;
     }
 
     .arrow {
-        fill: white;
+        fill: #aaa;
     }
+
+    svg {
+        width: 35%;
+        height: 35%;
+        @media @screen-small-above {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+
 }
 
 .card {
