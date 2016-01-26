@@ -138,6 +138,8 @@ def get_caught_up():
     context['content'] = doc
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['slug'] = 'link-roundup'
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
@@ -154,6 +156,8 @@ def title():
     context['content'] = doc
     context['headline'] = doc.headline
     context['banner'] = doc.banner
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['slug'] = 'title'
     context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
