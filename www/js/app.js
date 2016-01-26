@@ -10,6 +10,7 @@ var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
 var $mute = null;
+var $flickityNav = null;
 
 // Global references
 var candidates = {}
@@ -67,6 +68,8 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
+    $flickityNav = $('.flickity-prev-next-button');
+
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
     $cardsWrapper.on('settle', onCardAnimationFinish);
@@ -93,10 +96,11 @@ var onCardChange = function(e) {
     if (newSlideIndex > 0) {
         $globalControls.show();
         $globalHeader.show();
-        //$globalHeader.addClass('bg-header');
+        $flickityNav.show();
     } else {
         $globalControls.hide();
         $globalHeader.hide();
+        $flickityNav.hide();
     }
 
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
