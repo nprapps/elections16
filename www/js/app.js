@@ -135,11 +135,9 @@ var onDragEnd = function(e, pointer) {
 var onKeydown = function(e) {
     if (e.which === 37) {
         var keyDirection = 'previous';
-    }
-    else if (e.which === 39) {
+    } else if (e.which === 39) {
         var keyDirection = 'next';
-    }
-    else {
+    } else {
         return false;
     }
 
