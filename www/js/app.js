@@ -10,11 +10,13 @@ var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
 var $newsletterForm = null;
+var $mute = null;
 
 // Global references
 var candidates = {}
 var isTouch = Modernizr.touch;
-
+var currentState = null;
+var rem = null;
 /*
  * Run on page load.
  */
@@ -31,15 +33,22 @@ var onDocumentLoad = function(e) {
     $duration = $('.duration');
     $begin = $('.begin');
     $newsletterForm = $('#newsletter-signup');
+    $mute = $('.mute-button');
 
+    rem = getEmPixels();
+
+    $begin.on('click', onBeginClick);
     $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $begin.on('click', onBeginClick);
     $newsletterForm.on('submit', onNewsletterSubmit);
+    $(window).resize(onResize);
 
     setupFlickity();
     AUDIO.setupAudio();
+    setPolls();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -62,7 +71,7 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
-    // bind events
+    // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
     $cardsWrapper.on('settle', onCardAnimationFinish);
 }
@@ -78,6 +87,9 @@ var onCardChange = function(e) {
     var newSlideIndex = flickity.selectedIndex;
 
     var $thisSlide = $('.is-selected');
+    var cardHeight = $thisSlide.find('.card-inner').height();
+
+    checkOverflow(cardHeight, $thisSlide);
 
     $globalHeader.removeClass('bg-header');
     $cards.on('scroll', onCardScroll);
@@ -94,6 +106,16 @@ var onCardChange = function(e) {
     if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
         AUDIO.setMedia(PODCAST_URL);
     }
+
+    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
+}
+
+var checkOverflow = function(cardHeight, $slide) {
+    if (cardHeight > $(window).height()) {
+        $slide.find('.card-background').height(cardHeight + (6 * rem));
+    } else {
+        $slide.find('.card-background').height('100%');
+    }
 }
 
 var onCardAnimationFinish = function(e) {
@@ -105,7 +127,66 @@ var onCardAnimationFinish = function(e) {
 }
 
 var onBeginClick = function(e) {
-    $cards.flickity('next');
+    $cardsWrapper.flickity('next');
+    ANALYTICS.trackEvent('begin-btn-click');
+}
+
+var setPolls = function() {
+    // set poll for cards
+    for (var i = 0; i < $cards.length; i++) {
+        var $thisCard = $cards.eq(i);
+        var refreshRoute = $thisCard.data('refresh-route');
+        var refreshRate = $thisCard.data('refresh-rate');
+
+        if (refreshRoute && refreshRate > 0) {
+            var fullURL = APP_CONFIG.S3_BASE_URL + refreshRoute;
+            var fullRefreshRate = refreshRate * 1000;
+
+            var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
+            setInterval(cardGetter, fullRefreshRate)
+        }
+    }
+
+    // set poll for state
+    checkState();
+    setInterval(checkState, 60000)
+}
+
+var getCard = function(url, $card, i) {
+    setTimeout(function() {
+        $.ajax({
+            url: url,
+            ifModified: true,
+            success: function(data, status) {
+                if (status === 'success') {
+                    var $cardInner = $(data).find('.card-inner');
+                    $card.html($cardInner);
+                }
+            }
+        });
+    }, i * 1000);
+}
+
+var checkState = function() {
+    $.ajax({
+        url: APP_CONFIG.S3_BASE_URL + '/current-state.json',
+        dataType: 'json',
+        ifModified: true,
+        success: function(data) {
+            if (status === 'success' && data['state'] !== currentState) {
+                currentState = data['state']
+            }
+        }
+    });
+}
+
+var onResize = function() {
+    $cardsWrapper.height($(window).height());
+    $cardsWrapper.flickity('resize');
+
+    var $thisSlide = $cards.filter('.is-selected');
+    var cardHeight = $thisSlide.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisSlide);
 }
 
 var getCandidates = function() {

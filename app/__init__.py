@@ -1,9 +1,10 @@
 import app_config
 import feedparser
+import json
 
 from . import utils
 from gdoc import get_google_doc_html
-from flask import Flask, make_response, render_template
+from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
@@ -55,7 +56,6 @@ def index():
     Main published app view
     """
     context = make_context()
-    context['results'] = models.Result.select()
 
     state = context['COPY']['meta']['state']['value']
     script = context['COPY'][state]
@@ -114,10 +114,13 @@ def results(party):
         models.Result.party == PARTY_MAPPING[party]['AP']
     )
 
-    sorted_results = sorted(list(party_results), key=utils.candidate_sorter)
+    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
 
     context['results'] = sorted_results
     context['slug'] = 'results'
+    context['route'] = '/results/%s/' % party
+    context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
 
@@ -132,7 +135,22 @@ def get_caught_up():
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
     context['slug'] = 'link-roundup'
+    context['route'] = '/get-caught-up/'
+    context['refresh_rate'] = 60
+
     return render_template('cards/link-roundup.html', **context)
+
+@app.route('/title/')
+@oauth_required
+def title():
+    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
+    context = make_context()
+    doc = get_google_doc_html(key)
+    context['content'] = doc
+    context['headline'] = doc.headline
+    context['banner'] = doc.banner
+    context['slug'] = 'title'
+    return render_template('cards/title.html', **context)
 
 
 @app.route('/gdoc/<key>/')
@@ -146,11 +164,34 @@ def gdoc(key):
     return render_template('cards/gdoc.html', **context)
 
 
+@app.route('/current-state.json')
+@oauth_required
+def current_state():
+    context = make_context()
+    state = context['COPY']['meta']['state']['value']
+
+    data = {
+        'state': state
+    }
+
+    return jsonify(**data)
+
+def never_cache_preview(response):
+    """
+    Ensure preview is never cached
+    """
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.no_store = True
+    return response
+
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
+    app.after_request(never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app

@@ -87,6 +87,9 @@ class DocParserTestCase(unittest.TestCase):
     def test_subhed_extraction(self):
         self.assertEqual(self.parser.subhed, 'this is a subhed')
 
+    def test_banner_extraction(self):
+        self.assertEqual(self.parser.banner, 'this is a banner')
+
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 

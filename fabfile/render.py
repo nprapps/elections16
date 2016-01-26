@@ -4,6 +4,7 @@
 Commands for rendering various parts of the app stack.
 """
 
+import codecs
 from glob import glob
 import os
 
@@ -84,6 +85,96 @@ def copytext_js():
     with open('www/js/copy.js', 'w') as f:
         f.write(response.data)
 
+
+@task
+def render_simple_route(view_name):
+    from flask import url_for
+
+    with app.app.test_request_context():
+        path = url_for(view_name)
+
+    with app.app.test_request_context(path=path):
+        view = app.__dict__[view_name]
+        content = view()
+
+    _write_file(path, content)
+
+
+@task
+def render_results():
+    from flask import url_for
+
+    view_name = 'results'
+    parties = ['gop', 'dem']
+
+    for party in parties:
+        with app.app.test_request_context():
+            path = url_for(view_name, party=party)
+
+        with app.app.test_request_context(path=path):
+            view = app.__dict__[view_name]
+            content = view(party)
+
+        output_path = '.cards_html'
+        _write_file(path, content)
+
+
+@task
+def render_card_route(slug):
+    from flask import url_for
+
+    view_name = 'card'
+
+    with app.app.test_request_context():
+        full_path = url_for(view_name, slug=slug)
+        simplified_path = full_path.replace('/%s' % view_name, '')
+
+    with app.app.test_request_context(path=full_path):
+        view = app.__dict__[view_name]
+        content = view(slug)
+
+    _write_file(simplified_path, content)
+
+@task()
+def render_index():
+    """
+    Render HTML templates and compile assets.
+    """
+    from flask import g
+
+    with _fake_context('/'):
+        g.compile_includes = True
+        g.compiled_includes = {}
+        g.no_compress = True
+        view = _view_from_name('index')
+        content = view().data
+        _write_file('', content.decode('utf-8'))
+
+@task()
+def render_current_state():
+    """
+    Render HTML templates and compile assets.
+    """
+    with _fake_context('/current-state.json'):
+        view = _view_from_name('current_state')
+        content = view().data
+        with codecs.open('.cards_html/current-state.json', 'w', 'utf-8') as f:
+            f.write(content)
+
+def _write_file(path, content):
+    path = '.cards_html/%s' % path
+
+    # Ensure path exists
+    head = os.path.split(path)[0]
+
+    try:
+        os.makedirs(head)
+    except OSError:
+        pass
+
+    with codecs.open('%sindex.html' % path, 'w', 'utf-8') as f:
+        f.write(content)
+
 @task(default=True)
 def render_all():
     """
@@ -131,9 +222,7 @@ def render_all():
             g.compiled_includes = compiled_includes
 
             view = _view_from_name(name)
-
             content = view().data
-
             compiled_includes = g.compiled_includes
 
         # Write rendered view

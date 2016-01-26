@@ -7,21 +7,20 @@
 
         <div class="title-branding">
             <div class="logo">
-                <img src="/assets/npr-white.png">
-                <h5>Election Party 2016</h5>
+                <img src="./assets/npr-white.png">
+                <h5>Election 2016</h5>
             </div>
         </div>
 
 
         <!-- add class of live banner to the countdown-banner in during mode -->
         <div class="countdown-banner">
-            <h6>Live Coverage of the Iowa Caucuses begins at 8pm</h6>
-            <button class="get-alerts"><i class="fa fa-bell"></i> Get Alerts</button>
+            <h6>{{ banner }}</h6>
         </div>
 
-            <h1>What to know about today's Iowa Caucuses</h1>
+            <h1>{{ headline }}</h1>
 
-            <p>Welcome to your friendly guide to today's primary. Sed ut perspiciatis unde omnis iste natus error sit <a href="http://npr.org">voluptatem accusantium doloremque</a> laudantium, totam rem aperiam.
+            <p>{{ content|safe }}
             </p>
 
 
@@ -29,6 +28,9 @@
              <button class="begin">Get Caught Up <i class="fa fa-angle-right"></i></button>
     </div>
 
-    <p class="photo-credit">Photo Credit</p>
 </div>
+{% endblock %}
+
+{% block card_background %}
+<p class="photo-credit">Photo Credit</p>
 {% endblock %}

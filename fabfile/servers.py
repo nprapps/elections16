@@ -46,6 +46,7 @@ def create_directories():
     require('settings', provided_by=['production', 'staging'])
 
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
+    run('mkdir -p %(SERVER_PROJECT_PATH)s/recordings' % app_config.__dict__)
     run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
 def create_virtualenv():
@@ -96,8 +97,9 @@ def setup_logs():
     """
     require('settings', provided_by=['production', 'staging'])
 
-    sudo('mkdir %(SERVER_LOG_PATH)s' % app_config.__dict__)
-    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_config.__dict__)
+    with settings(warn_only=True):
+        sudo('mkdir %(SERVER_LOG_PATH)s' % app_config.__dict__)
+        sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_config.__dict__)
 
 @task
 def install_crontab():
@@ -212,14 +214,14 @@ def deploy_confs():
 
             if service == 'nginx':
                 sudo('service nginx reload')
-            elif service == 'uwsgi':
-                service_name = _get_installed_service_name(service)
-                sudo('initctl reload-configuration')
                 sudo('service %s restart' % service_name)
             elif service == 'app':
                 run('touch %s' % app_config.UWSGI_SOCKET_PATH)
                 sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
                 sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
+            else:
+                service_name = _get_installed_service_name(service)
+                sudo('initctl reload-configuration')
 
 
 @task
@@ -254,12 +256,12 @@ def nuke_confs():
 
             if service == 'nginx':
                 sudo('service nginx reload')
-            elif service == 'uwsgi':
+            elif service == 'app':
+                sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
+            else:
                 service_name = _get_installed_service_name(service)
                 sudo('service %s stop' % service_name)
                 sudo('initctl reload-configuration')
-            elif service == 'app':
-                sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
 
 """
 Fabcasting
@@ -276,5 +278,10 @@ def fabcast(command):
     if not app_config.DEPLOY_TO_SERVERS:
         print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.'
 
-    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.get('branch', ''), command))
+    if env.get('branch'):
+        branch = 'branch:%s' % env.get('branch')
+    else:
+        branch = ''
+
+    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, branch, command))
 

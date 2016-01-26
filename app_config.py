@@ -43,13 +43,13 @@ STAGING_S3_BUCKET = 'stage-apps.npr.org'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-DEFAULT_MAX_AGE = 20
+DEFAULT_MAX_AGE = 300
 
 RELOAD_TRIGGER = False
 RELOAD_CHECK_INTERVAL = 60
 
 PRODUCTION_SERVERS = ['54.244.238.237']
-STAGING_SERVERS = ['54.244.238.154']
+STAGING_SERVERS = ['54.212.140.247']
 
 
 # Should code be deployed to the web/cron servers?
@@ -77,6 +77,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 SERVER_SERVICES = [
     ('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
+    ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
 ]
 
@@ -97,7 +98,7 @@ COPY_PATH = 'data/copy.xlsx'
 
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
-    'titlecard': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q'
+    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q'
 }
 
 """
@@ -157,6 +158,19 @@ authomatic_config = {
 }
 
 authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
+
+"""
+Election configuration
+"""
+NEXT_ELECTION_DATE = '2016-02-01'
+
+
+"""
+Daemon configuration
+"""
+RESULTS_DEPLOY_INTERVAL = 60
+CARD_DEPLOY_INTERVAL = 60
+
 
 """
 Utilities
@@ -243,7 +257,7 @@ Database
 secrets = get_secrets()
 DATABASE = {
     'name': PROJECT_SLUG,
-    'test_name': '%stest' % PROJECT_SLUG, 
+    'test_name': '%stest' % PROJECT_SLUG,
     'user': secrets.get('POSTGRES_USER', None),
     'password': secrets.get('POSTGRES_PASSWORD', None),
     'host': secrets.get('POSTGRES_HOST', 'localhost'),

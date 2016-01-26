@@ -87,7 +87,7 @@
 // -------------------------
 
 html {
-    font-size: 12px;
+    font-size: 13px;
 
     @media @screen-small-above {
         font-size: 14px;
@@ -208,20 +208,37 @@ body { background-color: #111; }
         color: #fff;
 
         &.alert-button {
-            font-size: 11px;
+            font-size: 1rem;
             padding: 7px;
             margin-right: 5px;
 
             i {
-                font-size: 10px;
+                font-size: 0.95rem;
                 margin-right: 5px;
             }
         }
 
         &.mute-button {
-            font-size: 12px;
-            padding: 6px 8px 7px 6px;
-            i {padding-left: 2px;}
+            outline: none;
+
+            &.muted:before {
+                display: block;
+                content: "\f026";
+                font-family: FontAwesome;
+                color: #fff;
+                font-size: 12px;
+                padding: 7px 8px 7px 7px;
+            }
+            &.playing:before {
+                display: block;
+                content: "\f028";
+                font-family: FontAwesome;
+                color: #fff;
+                font-size: 12px;
+                padding: 7px 4px 7px 5px;
+            }
+
+            i { padding-left: 2px; }
         }
     }
 }
@@ -261,7 +278,7 @@ body { background-color: #111; }
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner {padding-top: 4rem;}
+    .card-inner { padding-top: 4rem;}
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -334,7 +351,7 @@ body { background-color: #111; }
             margin: 0 0 3px 0;
             color: #787878;
             .knockout();
-            font-size: 11px;
+            font-size: 0.9rem;
         }
 
         .ap-period {
@@ -470,7 +487,7 @@ body { background-color: #111; }
                 color: #fff;
                 font-size: .9rem;
                 line-height: 1;
-                padding: 1rem 7.4rem 1rem 1rem;
+                padding: 1rem;
                 text-transform: uppercase;
 
                 @media @screen-small-above {
@@ -640,11 +657,12 @@ body { background-color: #111; }
         margin-bottom: 33px;
     }
 
-    button {
-        border: none;
-        padding: 0 11px;
+    .support {
+        display: inline-block;
+        font-size: 1.2rem;
+        padding: 0 0.9rem;
         .knockout();
-        line-height: 33px;
+        line-height: 3rem;
         background-color: rgba(255, 255, 255, .3);
         color: #fff;
         white-space: nowrap;
@@ -674,9 +692,6 @@ body { background-color: #111; }
     }
 
 
-
-
-
     .segment-audio-content {
         margin: 2rem;
 
@@ -689,10 +704,8 @@ body { background-color: #111; }
 
         @media @screen-small-above {
             width: 40rem;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            margin: 0 auto;
+            padding-top: 2rem;
         }
 
         .segment-audio-player {
@@ -788,10 +801,7 @@ body { background-color: #111; }
             font-size: 2rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
-
-            @media @screen-small-above {
-                font-size: 3.7rem;
-            }
+            text-align: center;
         }
 
         p {
@@ -800,10 +810,10 @@ body { background-color: #111; }
             line-height: 1.7;
             color: #fff;
             text-shadow: 2px 2px 2px #222;
+        }
 
-            @media @screen-small-above {
-                font-size: 1.3rem;
-            }
+        .featured-links {
+            .begin {font-size: 1.2rem;}
         }
     }
 }
@@ -917,12 +927,12 @@ body { background-color: #111; }
     h3 { margin-bottom: 22px; }
     table {
         border-bottom: 1px solid #fff;
-        margin-bottom: 11px;
+        margin-bottom: 15px;
 
         caption {
             margin-bottom: 11px;
             .knockout();
-            font-size: 16px;
+            font-size: 1.2rem;
             letter-spacing: 0;
             text-align: left;
             color: #fff;
