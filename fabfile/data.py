@@ -4,7 +4,7 @@
 Commands that update or process the application data.
 """
 from app.gdoc import get_google_doc
-from elex.api.api import Elections
+from elex.api import Elections
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
@@ -94,7 +94,7 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     """
     local('mkdir -p .data')
     pg_vars = _get_pg_vars()
-    cmd = 'elex results {0} > .data/results.json'.format(election_date)
+    cmd = 'elex results {0} > .data/results.csv'.format(election_date)
     with shell_env(**pg_vars):
         with settings(warn_only=True):
             cmd_output = local(cmd, capture=True)
@@ -102,7 +102,7 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
         if cmd_output.succeeded:
             print("LOADING RESULTS")
             delete_results()
-            local('cat .data/results.json | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.DATABASE['name']))
+            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.DATABASE['name']))
         else:
             print("ERROR GETTING RESULTS")
             print(cmd_output.stderr)

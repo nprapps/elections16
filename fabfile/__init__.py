@@ -255,7 +255,6 @@ def deploy_all_cards():
         }
     )
 
-
 @task
 def check_timestamp():
     require('settings', provided_by=[production, staging])

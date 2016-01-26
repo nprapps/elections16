@@ -115,6 +115,7 @@ html {
 body {
     background: linear-gradient(#111, #2c2c2c);
 }
+
 .cards {
     opacity: 0;
     visibility: hidden;
@@ -158,6 +159,72 @@ body {
 }
 
 // header
+.during-mode-notice {
+    position: absolute;
+    top: -50px;
+    left: 0;
+    color: #fff;
+    background-color: @live;
+    width: 100%;
+    z-index: 5;
+    height: 25px;
+
+    .during & {
+        top: 0;
+    }
+
+    &:before {
+        display: block;
+        content: ' ';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 0;
+        bottom: 0;
+        width: 1.3rem;
+        height: 1rem;
+        z-index: 1;
+        background: transparent url('@{img-root}/bounce.gif') no-repeat;
+        .background-size(cover);
+
+        @media @screen-small-above {
+            left: 30px;
+        }
+    }
+
+    h5 {
+        position: absolute;
+        top: 5px;
+        left: 30px;
+        line-height: 1;
+        margin: 0;
+        font-size: 11px;
+        text-transform: uppercase;
+        .knockout();
+
+        @media @screen-small-above {
+            font-size: 15px;
+            left: 60px;
+        }
+    }
+
+    p {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        line-height: 1;
+        margin: 0;
+        font-size: 10px;
+        .knockout();
+        text-transform: none;
+
+        @media @screen-small-above {
+            font-size: 12px;
+            right: 30px;
+        }
+    }
+}
+
 .branding-border {
     position: absolute;
     top: 0;
@@ -183,6 +250,10 @@ body {
     min-height: 4rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2));
 
+    .during & {
+        top: 20px;
+    }
+
     &.bg-header {
         background-color: rgba(0, 0, 0, .6);
         width: 100%;
@@ -201,9 +272,17 @@ body {
     display: none;
     z-index: 3;
 
+    .during & {
+        top: 30px;
+    }
+
     @media @screen-small-above {
         top: 20px;
         right: 30px;
+
+        .during & {
+            top: 35px;
+        }
     }
 
     button {
@@ -305,13 +384,10 @@ body {
 
 }
 
-
-
 .card {
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    //padding-top: 4.5rem;
     .gotham();
     color: #ccc;
 
@@ -319,7 +395,13 @@ body {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner { padding-top: 4rem;}
+    .card-inner {
+        padding-top: 4rem;
+
+        .during & {
+            padding-top: 6rem;
+        }
+    }
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -456,9 +538,9 @@ body {
     .democrat { color: @democrat; }
 }
 
-#title {
+.title {
     .card-background {
-        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
+        // background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
         .background-size(cover);
         background-position: center center;
         position: absolute;
@@ -846,6 +928,10 @@ body {
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
             text-align: center;
+
+            @media @screen-small-above {
+                text-align: left;
+            }
         }
 
         p {
@@ -862,7 +948,7 @@ body {
     }
 }
 
-#link-roundup {
+.link-roundup {
     header {
         // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
         background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
@@ -968,7 +1054,7 @@ body {
     article {margin-top: 2rem;}
 }
 
-#results {
+.results {
     header {
         max-width: @max-width-content;
         margin: 0 auto;

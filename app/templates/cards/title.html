@@ -14,7 +14,7 @@
 
 
         <!-- add class of live banner to the countdown-banner in during mode -->
-        <div class="countdown-banner">
+        <div class="countdown-banner {% if state == 'during' %} live-banner {% endif %}">
             <h6>{{ banner }}</h6>
         </div>
 
@@ -32,5 +32,7 @@
 {% endblock %}
 
 {% block card_background %}
-<p class="photo-credit">Photo Credit</p>
+<span class="card-background" style="background: url('{{ image }}') no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
+</span>
 {% endblock %}
