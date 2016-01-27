@@ -11,6 +11,9 @@ var $duration = null;
 var $begin = null;
 var $mute = null;
 var $flickityNav = null;
+var $subscribeBtn = null
+var $supportBtn = null;
+var $linkRoundupLinks = null;
 
 // Global references
 var candidates = {}
@@ -37,6 +40,9 @@ var onDocumentLoad = function(e) {
     $duration = $('.duration');
     $begin = $('.begin');
     $mute = $('.mute-button');
+    $subscribeBtn = $('.btn-subscribe');
+    $supportBtn = $('.support');
+    $linkRoundupLinks = $('.link-roundup a');
 
     rem = getEmPixels();
 
@@ -45,6 +51,10 @@ var onDocumentLoad = function(e) {
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
+    $subscribeBtn.on('click', onSubscribeBtnClick);
+    $supportBtn.on('click', onSupportBtnClick);
+    $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
+
     $(window).resize(onResize);
 
     setupFlickity();
@@ -270,6 +280,19 @@ var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
     });
+}
+
+var onSubscribeBtnClick = function() {
+    ANALYTICS.trackEvent('subscribe-btn-click');
+}
+
+var onSupportBtnClick = function(e) {
+    ANALYTICS.trackEvent('support-btn-click');
+}
+
+var onLinkRoundupLinkClick = function() {
+    var href = $(this).attr('href');
+    ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
 
 var makeListOfCandidates = function(candidates) {
