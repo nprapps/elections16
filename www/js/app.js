@@ -95,7 +95,7 @@ var setupFlickity = function() {
 
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
-    var cardHeight = $thisCard.find('.card-inner').height();
+    var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
     checkOverflow(cardHeight, $thisCard);
 }
 
@@ -106,7 +106,7 @@ var onCardChange = function(e) {
     focusCardsWrapper();
 
     var $thisCard = $('.is-selected');
-    var cardHeight = $thisCard.find('.card-inner').height();
+    var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
     checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
