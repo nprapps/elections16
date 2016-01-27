@@ -49,6 +49,7 @@
 @democratFade   : #1d2c40;
 @live           : #f05b4e; // red in comps
 @accent1        : #f05b4e; // red in comps
+@accent1a       : #EC3C2D; // brand red dark
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
 @white          : #eee;
@@ -434,9 +435,9 @@ body {
         text-decoration: none;
     }
     .no-touch & {
-        &:hover,
-        &:active {
-            color: #ccc;
+        a:hover,
+        a:active {
+            color: @accent2;
         }
     }
 
@@ -515,7 +516,8 @@ body {
         .no-touch & {
             &:hover,
             &:active {
-                opacity: 0.7;
+                color: #fff;
+                border-color: @accent1a;
             }
         }
 
@@ -540,6 +542,19 @@ body {
             text-align: center;
             margin: 22px 0 0 0;
         }
+
+        a:link,
+        a:visited {
+            color: #ccc;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .no-touch & {
+            a:hover,
+            a:active {
+                color: #fff;
+            }
+        }
     }
 
     .republican { color: @republican; }
@@ -547,6 +562,15 @@ body {
 }
 
 .title {
+
+    .card-inner {
+        padding-top: 0;
+
+        @media @screen-small-above {
+            padding-top: 5rem;
+        }
+
+    }
     .card-background {
         // background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
         .background-size(cover);
@@ -566,136 +590,133 @@ body {
         }
     }
 
-    .title-inner {
+    .title-branding {
+        h5 {
+            .knockout();
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            text-shadow: 2px 2px 2px #333;
 
-        .title-branding {
-            h5 {
-                .knockout();
-                font-size: 1.2rem;
-                text-transform: uppercase;
-                line-height: 1;
-                margin: 0;
-                padding: 0;
-                text-shadow: 2px 2px 2px #333;
+            @media @screen-small-above {
+                font-size: 1.6rem;
+            }
+        }
+    }
 
-                @media @screen-small-above {
-                    font-size: 1.6rem;
-                }
+    @media @screen-small-above {
+        padding-top: 0;
+    }
+
+
+    .countdown-banner {
+        position: relative;
+        margin: .7rem 0 2rem 0;
+        background-color: rgba(73, 141, 203, .7);
+        .knockout();
+        .box-shadow(2px 2px 10px #333);
+
+        h6 {
+            color: @white;
+            font-size: .9rem;
+            line-height: 1;
+            padding: 1rem;
+            text-transform: uppercase;
+
+            .during & {
+                padding-left: 45px;
+            }
+
+        }
+
+        .get-alerts {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            background-color: @accent2;
+            color: @white;
+            text-transform: uppercase;
+            border: 0;
+            font-size: .7rem;
+
+
+            i {
+                padding-right: 3px;
             }
         }
 
-        @media @screen-small-above {
-            padding-top: 0;
-        }
+        &.live-banner {
+            background-color: rgba(214, 87, 81, 1);
 
+            &:before {
+                display: block;
+                content: ' ';
+                position: absolute;
+                top: 35%;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 1.3rem;
+                height: 1rem;
+                z-index: 1;
+                background: transparent url('@{img-root}/bounce.gif') no-repeat;
+                .background-size(cover);
+            }
 
-        .countdown-banner {
-            position: relative;
-            margin: .7rem 0 2rem 0;
-            background-color: rgba(73, 141, 203, .7);
-            .knockout();
-            .box-shadow(2px 2px 10px #333);
+            p {
+                padding: 1rem 7.4rem 1rem 3rem;
 
-            h6 {
-                color: @white;
-                font-size: .9rem;
-                line-height: 1;
-                padding: 1rem;
-                text-transform: uppercase;
-
-                .during & {
-                    padding-left: 45px;
+                @media @screen-small-above {
+                    padding: .5rem 7.4rem .5rem 2.4rem;
                 }
 
             }
 
             .get-alerts {
-                position: absolute;
-                top: 0;
-                right: 0;
-                height: 100%;
-                background-color: @accent2;
-                color: @white;
-                text-transform: uppercase;
-                border: 0;
-                font-size: .7rem;
-
-
-                i {
-                    padding-right: 3px;
-                }
+                background-color: @live;
             }
+        }
+    }
 
-            &.live-banner {
-                background-color: rgba(214, 87, 81, 1);
+    .title-description {
+        margin: 2rem;
 
-                &:before {
-                    display: block;
-                    content: ' ';
-                    position: absolute;
-                    top: 35%;
-                    left: 10px;
-                    right: 0;
-                    bottom: 0;
-                    width: 1.3rem;
-                    height: 1rem;
-                    z-index: 1;
-                    background: transparent url('@{img-root}/bounce.gif') no-repeat;
-                    .background-size(cover);
-                }
+        @media @screen-small-above {
+            width: 40rem;
+            margin: 0 auto;
+            // position: absolute;
+            // top: 50%;
+            // left: 50%;
+            // transform: translate(-50%, -50%);
+        }
 
-                p {
-                    padding: 1rem 7.4rem 1rem 3rem;
+        .logo {
+            padding: 1rem 0;
+        }
 
-                    @media @screen-small-above {
-                        padding: .5rem 7.4rem .5rem 2.4rem;
-                    }
+        h1 {
+            .knockout();
+            font-size: 2rem;
+            line-height: 1;
+            text-shadow: 2px 2px 2px #222;
 
-                }
-
-                .get-alerts {
-                    background-color: @live;
-                }
+            @media @screen-small-above {
+                font-size: 3.7rem;
             }
         }
 
-        .title-description {
-            margin: 2rem;
+        p {
+            .gotham();
+            font-size: 1rem;
+            line-height: 1.7;
+            color: @white;
+            text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                width: 40rem;
-                margin: 0 auto;
-                // position: absolute;
-                // top: 50%;
-                // left: 50%;
-                // transform: translate(-50%, -50%);
-            }
-
-            .logo {
-                padding: 1rem 0;
-            }
-
-            h1 {
-                .knockout();
-                font-size: 2rem;
-                line-height: 1;
-                text-shadow: 2px 2px 2px #222;
-
-                @media @screen-small-above {
-                    font-size: 3.7rem;
-                }
-            }
-
-            p {
-                .gotham();
-                font-size: 1rem;
-                line-height: 1.7;
-                color: @white;
-                text-shadow: 2px 2px 2px #222;
-
-                @media @screen-small-above {
-                    font-size: 1.3rem;
-                }
+                font-size: 1.3rem;
             }
         }
     }
@@ -934,7 +955,11 @@ body {
         }
 
         .featured-links {
-            .begin {font-size: 1.2rem;}
+            .begin {
+                font-size: 1.2rem;
+            }
+
+
         }
     }
 }
@@ -948,6 +973,29 @@ body {
         margin-bottom: 22px;
         padding: 0;
         border-bottom: 5px solid @accent2;
+        border-top: 1px solid #222;
+
+        @media @screen-small-above {
+            border-top: 1px solid #444;
+        }
+
+        h1 {
+            text-transform: none;
+            font-size: 2.5rem;
+
+            @media @screen-small-above {
+                text-align: left;
+                font-size: 3.1rem;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;;
+            font-size: 1.3rem;
+            @media @screen-small-above {
+                font-size: 1.7;
+            }
+        }
 
         .header-screen {
             position: absolute;

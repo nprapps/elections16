@@ -11,6 +11,9 @@ var $duration = null;
 var $begin = null;
 var $mute = null;
 var $flickityNav = null;
+var $subscribeBtn = null
+var $supportBtn = null;
+var $linkRoundupLinks = null;
 
 // Global references
 var candidates = {}
@@ -19,6 +22,7 @@ var currentState = null;
 var rem = null;
 var dragDirection = null;
 var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
+var playedAudio = false;
 
 /*
  * Run on page load.
@@ -37,6 +41,9 @@ var onDocumentLoad = function(e) {
     $duration = $('.duration');
     $begin = $('.begin');
     $mute = $('.mute-button');
+    $subscribeBtn = $('.btn-subscribe');
+    $supportBtn = $('.support');
+    $linkRoundupLinks = $('.link-roundup a');
 
     rem = getEmPixels();
 
@@ -45,6 +52,10 @@ var onDocumentLoad = function(e) {
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
+    $subscribeBtn.on('click', onSubscribeBtnClick);
+    $supportBtn.on('click', onSupportBtnClick);
+    $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
+
     $(window).resize(onResize);
 
     setupFlickity();
@@ -104,8 +115,9 @@ var onCardChange = function(e) {
         $globalHeader.show();
         $duringModeNotice.show();
         $flickityNav.show();
-        if (currentState == 'during' && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        if (currentState == 'during' && !playedAudio) {
             AUDIO.setMedia(LIVE_AUDIO_URL);
+            playedAudio = true;
         }
     } else {
         $globalControls.hide();
@@ -270,6 +282,19 @@ var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
     });
+}
+
+var onSubscribeBtnClick = function() {
+    ANALYTICS.trackEvent('subscribe-btn-click');
+}
+
+var onSupportBtnClick = function(e) {
+    ANALYTICS.trackEvent('support-btn-click');
+}
+
+var onLinkRoundupLinkClick = function() {
+    var href = $(this).attr('href');
+    ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
 
 var makeListOfCandidates = function(candidates) {
