@@ -96,11 +96,12 @@ var onCardChange = function(e) {
         $globalControls.show();
         $globalHeader.show();
         $duringModeNotice.show();
+        $flickityNav.show();
     } else {
         $globalControls.hide();
         $globalHeader.hide();
         $duringModeNotice.hide();
-        $flickityNav.show();
+        $flickityNav.hide();
     }
 
     if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
