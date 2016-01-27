@@ -22,6 +22,7 @@ var currentState = null;
 var rem = null;
 var dragDirection = null;
 var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
+var playedAudio = false;
 
 /*
  * Run on page load.
@@ -102,9 +103,10 @@ var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
+    focusCardsWrapper();
+
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
-
     checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
@@ -114,8 +116,9 @@ var onCardChange = function(e) {
         $globalHeader.show();
         $duringModeNotice.show();
         $flickityNav.show();
-        if (currentState == 'during' && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        if (currentState == 'during' && !playedAudio) {
             AUDIO.setMedia(LIVE_AUDIO_URL);
+            playedAudio = true;
         }
     } else {
         $globalControls.hide();
@@ -276,6 +279,10 @@ var onResize = function() {
     checkOverflow(cardHeight, $thisCard);
 }
 
+var focusCardsWrapper = function() {
+    $cardsWrapper.focus();
+}
+
 var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
@@ -283,14 +290,17 @@ var getCandidates = function() {
 }
 
 var onSubscribeBtnClick = function() {
+    focusCardsWrapper();
     ANALYTICS.trackEvent('subscribe-btn-click');
 }
 
 var onSupportBtnClick = function(e) {
+    focusCardsWrapper();
     ANALYTICS.trackEvent('support-btn-click');
 }
 
 var onLinkRoundupLinkClick = function() {
+    focusCardsWrapper();
     var href = $(this).attr('href');
     ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
