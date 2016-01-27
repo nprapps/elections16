@@ -1022,6 +1022,16 @@ body {
 }
 
 #newsletter {
+
+    .card-inner {
+        @media @screen-small-above {
+            position: absolute;
+            top: 50%;
+            left: 47%;
+            transform: translate(-47%, -50%);
+        }
+    }
+
     header {
         max-width: @max-width-content;
         margin: 0 auto;
