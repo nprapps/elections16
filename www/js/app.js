@@ -338,10 +338,10 @@ var onNewsletterSubmit = function(e) {
     // wait state
     clearStatusMessage();
     var waitMsg = '<div class="message wait">'
-    waitMsg += '<p>' + COPY.newsletter.waiting_text + '</p>';
+    waitMsg += '<p><i class="fa fa-spinner fa-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
     waitMsg += '</div>'
     $el.append(waitMsg);
-    $el.css('opacity', 0.5);
+    $subscribeBtn.hide();
 
     $.ajax({
         url: APP_CONFIG.NEWSLETTER_POST_URL,
@@ -359,7 +359,6 @@ var onNewsletterSubmit = function(e) {
             successMsg += '</div>'
             clearStatusMessage();
             $el.html(successMsg);
-            $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-success');
         },
         error: function(response) { // error
@@ -369,7 +368,7 @@ var onNewsletterSubmit = function(e) {
             errorMsg += '</div>'
             clearStatusMessage();
             $el.append(errorMsg);
-            $el.css('opacity', 1);
+            $subscribeBtn.show();
             ANALYTICS.trackEvent('newsletter-signup-error');
         }
     });
