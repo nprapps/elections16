@@ -42,7 +42,7 @@ var onDocumentLoad = function(e) {
     $begin = $('.begin');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
-    $supportBtn = $('.support');
+    $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
 
     rem = getEmPixels();
