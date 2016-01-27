@@ -18,6 +18,8 @@ var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
+var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
+
 /*
  * Run on page load.
  */
@@ -46,8 +48,8 @@ var onDocumentLoad = function(e) {
     $(window).resize(onResize);
 
     setupFlickity();
-    AUDIO.setupAudio();
     setPolls();
+    AUDIO.setupAudio();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -102,6 +104,9 @@ var onCardChange = function(e) {
         $globalHeader.show();
         $duringModeNotice.show();
         $flickityNav.show();
+        if (currentState == 'during' && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+            AUDIO.setMedia(LIVE_AUDIO_URL);
+        }
     } else {
         $globalControls.hide();
         $globalHeader.hide();
@@ -110,6 +115,7 @@ var onCardChange = function(e) {
     }
 
     if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
     }
 
@@ -240,9 +246,12 @@ var checkState = function() {
         url: APP_CONFIG.S3_BASE_URL + '/current-state.json',
         dataType: 'json',
         ifModified: true,
-        success: function(data) {
+        success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
                 currentState = data['state']
+                if (currentState === 'during') {
+                    AUDIO.setLive();
+                }
             }
         }
     });
