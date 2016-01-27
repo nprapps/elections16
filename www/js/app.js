@@ -305,11 +305,17 @@ var onResize = function() {
 }
 
 var onUnload = function(e) {
+    var currentSlideId = $('.is-selected').attr('id');
+    calculateExitTime(currentSlideId);
+
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
+            console.log(slide, timeOnSlides[slide]);
             ANALYTICS.trackEvent('total-time-on-slide', slide, timeOnSlides[slide]);
         }
     }
+
+    return 'unload!';
 }
 
 var focusCardsWrapper = function() {
