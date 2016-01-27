@@ -76,7 +76,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVER_SERVICES = [
-    ('app', SERVER_REPOSITORY_PATH, 'ini'),
+    #('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
     ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
@@ -156,8 +156,8 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-01'
-
+NEXT_ELECTION_DATE = '2016-02-09'
+ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
 
 """
 Daemon configuration

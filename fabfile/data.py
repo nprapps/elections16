@@ -33,6 +33,7 @@ def bootstrap_db():
     if env.get('settings'):
         with settings(warn_only=True):
             servers.stop_service('uwsgi')
+            servers.stop_service('deploy')
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
@@ -45,6 +46,7 @@ def bootstrap_db():
     if env.get('settings'):
         with settings(warn_only=True):
             servers.start_service('uwsgi')
+            servers.start_service('deploy')
 
     models.Result.create_table()
     models.Call.create_table()
@@ -65,10 +67,10 @@ def bootstrap_data(election_date=None):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('elex races %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
-        local('elex reporting-units %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
-        local('elex candidates %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
-        local('elex ballot-measures %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.DATABASE['name']))
+        local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
+        local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
+        local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
+        local('elex ballot-measures %s %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
 
 
 @task
@@ -84,7 +86,7 @@ def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result WHERE electiondate=\'{1}\'; set session_replication_role = default;"'.format(db_name, election_date))
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(db_name, election_date))
 
 
 @task
@@ -94,7 +96,7 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     """
     local('mkdir -p .data')
     pg_vars = _get_pg_vars()
-    cmd = 'elex results {0} > .data/results.csv'.format(election_date)
+    cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**pg_vars):
         with settings(warn_only=True):
             cmd_output = local(cmd, capture=True)
