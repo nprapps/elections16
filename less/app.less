@@ -433,9 +433,11 @@ body {
         font-weight: 700;
         text-decoration: none;
     }
-    a:hover,
-    a:active {
-        color: #ccc;
+    .no-touch & {
+        &:hover,
+        &:active {
+            color: #ccc;
+        }
     }
 
     li {
@@ -510,7 +512,12 @@ body {
         padding: 0 0 .5rem 0;
         font-size: 1.4rem;
 
-        &:hover { opacity: 0.7; }
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
+        }
 
         i {
             font-size: 1.6rem;
@@ -795,9 +802,11 @@ body {
         color: @white;
         white-space: nowrap;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
         }
 
         .fa-heart { color: @accent1; }
@@ -1046,9 +1055,11 @@ body {
         background-color: @accent2;
         color: @white;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
         }
     }
 }
