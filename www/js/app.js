@@ -1,4 +1,5 @@
 // Global jQuery references
+var $window = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
@@ -23,11 +24,15 @@ var rem = null;
 var dragDirection = null;
 var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
+var globalStartTime = null;
+var slideStartTime = null;
+var timeOnSlides = {};
 
 /*
  * Run on page load.
  */
 var onDocumentLoad = function(e) {
+    $window = $(window);
     $cardsWrapper = $('.cards');
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
@@ -56,7 +61,8 @@ var onDocumentLoad = function(e) {
     $supportBtn.on('click', onSupportBtnClick);
     $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
 
-    $(window).resize(onResize);
+    $window.resize(onResize);
+    $window.on('beforeunload', onUnload);
 
     setupFlickity();
     setPolls();
@@ -82,6 +88,14 @@ var setupFlickity = function() {
         friction: isTouch ? 0.28 : 1,
         selectedAttraction: isTouch ? 0.025 : 1
     });
+
+    globalStartTime = new Date();
+    slideStartTime = new Date();
+
+    for (var i = 0; i < $cards.length; i++) {
+        var id = $cards.eq(i).attr('id');
+        timeOnSlides[id] = 0;
+    }
 
     $flickityNav = $('.flickity-prev-next-button');
 
@@ -159,6 +173,7 @@ var onDragEnd = function(e, pointer) {
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
 
+    calculateExitTime(exitedCardID);
     ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
@@ -186,6 +201,7 @@ var onKeydown = function(e) {
         }
     }
 
+    calculateExitTime(exitedCardID);
     ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
@@ -201,6 +217,7 @@ var onFlickityNavClick = function(e) {
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
 
+    calculateExitTime(exitedCardID);
     ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
@@ -215,7 +232,15 @@ var checkOverflow = function(cardHeight, $slide) {
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click');
+    calculateExitTime('title');
     ANALYTICS.trackEvent('card-exit', 'title');
+}
+
+var calculateExitTime = function(id) {
+    var currentTime = new Date();
+    var timeOnSlide = Math.abs(currentTime - slideStartTime);
+    timeOnSlides[id] += timeOnSlide;
+    slideStartTime = new Date();
 }
 
 var setPolls = function() {
@@ -277,6 +302,14 @@ var onResize = function() {
     var $thisCard = $cards.filter('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
+}
+
+var onUnload = function(e) {
+    for (slide in timeOnSlides) {
+        if (timeOnSlides.hasOwnProperty(slide)) {
+            ANALYTICS.trackEvent('total-time-on-slide', slide, timeOnSlides[slide]);
+        }
+    }
 }
 
 var focusCardsWrapper = function() {

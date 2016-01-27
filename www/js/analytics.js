@@ -242,15 +242,6 @@ var ANALYTICS = (function () {
         trackEvent('chromecast-stop');
     }
 
-    // SLIDES
-
-    var exitSlide = function(slide_index) {
-        var currentTime = new Date();
-        timeOnLastSlide = Math.abs(currentTime - slideStartTime);
-        slideStartTime = currentTime;
-        trackEvent('slide-exit', slide_index, timeOnLastSlide);
-    }
-
     setupGoogle();
     setupComscore();
     setupNielson();
@@ -272,7 +263,6 @@ var ANALYTICS = (function () {
         'completeFiftyPercent': completeFiftyPercent,
         'completeSeventyFivePercent': completeSeventyFivePercent,
         'completeOneHundredPercent': completeOneHundredPercent,
-        'exitSlide': exitSlide,
         'startFullscreen': startFullscreen,
         'stopFullscreen': stopFullscreen,
         'begin': begin,
