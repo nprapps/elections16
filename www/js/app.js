@@ -79,6 +79,11 @@ var setupFlickity = function() {
     $cardsWrapper.on('dragEnd', onDragEnd);
     $cardsWrapper.on('keydown', onKeydown);
     $flickityNav.on('click', onFlickityNavClick);
+
+    // set height on titlecard if necessary
+    var $thisCard = $('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisCard);
 }
 
 var onCardChange = function(e) {
