@@ -564,7 +564,12 @@ body {
 .title {
 
     .card-inner {
-        padding-top: 1rem;
+        padding-top: 0;
+
+        @media @screen-small-above {
+            padding-top: 5rem;
+        }
+
     }
     .card-background {
         // background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
