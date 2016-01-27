@@ -29,7 +29,7 @@
                 <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %} winner {% endif %}">
                     <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
                     <td class="votes">{{ result.votecount|comma }}</td>
-                    <td class="pct">{{ result.votepct|percent }}</td>
+                    <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
                 </tr>
             {% endfor %}
 

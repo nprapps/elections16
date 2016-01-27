@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import operator
 import re
 
@@ -67,9 +69,17 @@ def comma_filter(value):
     return '{:,}'.format(value)
 
 def percent_filter(value):
+    """
+    Format percentage
+    """
     one_decimal = '{:.1f}%'.format(value)
-
     return one_decimal
+
+def normalize_percent_filter(value):
+    """
+    Multiply value times 100
+    """
+    return Decimal(value) * Decimal(100)
 
 def ordinal_filter(num):
     """

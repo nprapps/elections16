@@ -21,6 +21,7 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 app.add_template_filter(utils.comma_filter, name='comma')
 app.add_template_filter(utils.percent_filter, name='percent')
+app.add_template_filter(utils.normalize_percent_filter, name='normalize_percent')
 app.add_template_filter(utils.ordinal_filter, name='ordinal')
 app.add_template_filter(utils.ap_month_filter, name='ap_month')
 app.add_template_filter(utils.ap_date_filter, name='ap_date')
@@ -116,7 +117,8 @@ def results(party):
     """
     context = make_context()
     party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP']
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
     )
 
     secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
