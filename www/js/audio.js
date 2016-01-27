@@ -22,6 +22,7 @@ var AUDIO = (function() {
             'measured': false
         },
     ]
+    var live = null;
 
     var setupAudio = function() {
         $audioPlayer.jPlayer({
@@ -47,11 +48,14 @@ var AUDIO = (function() {
         ANALYTICS.trackEvent('audio-started', url);
     }
 
+    var setLive = function() {
+        live = true;
+    }
+
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
         $playToggleBtn.removeClass('play').addClass('pause');
         $mute.removeClass('muted').addClass('playing');
-        ANALYTICS.trackEvent('audio-resumed', $audioPlayer.data().jPlayer.status.src);
     }
 
     var pauseAudio = function() {
@@ -59,6 +63,14 @@ var AUDIO = (function() {
         $playToggleBtn.removeClass('pause').addClass('play');
         $mute.removeClass('playing').addClass('muted');
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
+    }
+
+    var stopAudio = function() {
+        $audioPlayer
+            .jPlayer('stop')
+            .jPlayer('clearMedia');
+        $mute.removeClass('playing').addClass('muted');
+        ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
     var rewindAudio = function() {
@@ -76,10 +88,18 @@ var AUDIO = (function() {
     };
 
     var toggleAudio = function() {
-        if ($playToggleBtn.hasClass('play')) {
-            playAudio();
+        if ($audioPlayer.data('jPlayer')['status']['paused']) {
+            if (live) {
+                setMedia(LIVE_AUDIO_URL);
+            } else {
+                playAudio();
+            }
         } else {
-            pauseAudio();
+            if (live) {
+                stopAudio();
+            } else {
+                pauseAudio();
+            }
         }
     }
 
@@ -107,6 +127,7 @@ var AUDIO = (function() {
     return {
         'setupAudio': setupAudio,
         'setMedia': setMedia,
+        'setLive': setLive,
         'rewindAudio': rewindAudio,
         'forwardAudio': forwardAudio,
         'toggleAudio': toggleAudio

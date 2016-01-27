@@ -51,6 +51,7 @@
 @accent1        : #f05b4e; // red in comps
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
+@white          : #eee;
 
 
 
@@ -81,7 +82,8 @@
 @screen-tiny: ~"screen and (max-width: 480px)";
 
 //max-width for content
-@max-width-content: 700px;
+@max-width-content: 47rem;
+
 
 // Base font size
 // -------------------------
@@ -111,7 +113,10 @@ html {
 }
 
 // Overall styles
-body {background-color: #111;}
+body {
+    background: linear-gradient(#111, #2c2c2c);
+}
+
 .cards {
     opacity: 0;
     visibility: hidden;
@@ -119,11 +124,11 @@ body {background-color: #111;}
 }
 
 .logo {
-    padding-top: 20px;
+    padding-top: 1.8rem;
     padding-left: 5px;
 
     @media @screen-small-above {
-        padding-left: 25px;
+        padding-left: 1.8rem;
     }
 
     h5 {
@@ -159,7 +164,7 @@ body {background-color: #111;}
     position: absolute;
     top: -50px;
     left: 0;
-    color: #fff;
+    color: @white;
     background-color: @live;
     width: 100%;
     z-index: 5;
@@ -241,7 +246,7 @@ body {background-color: #111;}
     left: 0;
     width: 100%;
     z-index: 2;
-    color: #fff;
+    color: @white;
     margin-bottom: 1rem;
     min-height: 4rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2));
@@ -257,6 +262,7 @@ body {background-color: #111;}
 
     @media @screen-small-above {
         background: linear-gradient(to bottom,rgba(0, 0, 0, .6) 50%,rgba(0, 0, 0, 0));
+        min-height: 8rem;
 
     }
 }
@@ -269,15 +275,15 @@ body {background-color: #111;}
     z-index: 3;
 
     .during & {
-        top: 30px;
+        top: 33px;
     }
 
     @media @screen-small-above {
-        top: 20px;
-        right: 30px;
+        top: 1.5rem;
+        right: 1.7rem;
 
         .during & {
-            top: 35px;
+            top: 2.6rem;
         }
     }
 
@@ -285,9 +291,8 @@ body {background-color: #111;}
         .knockout();
         letter-spacing: 0;
         text-transform: uppercase;
-        background-color: #333;
+        background: linear-gradient(to bottom, rgba(80, 79, 79, 0.4) 50%, rgba(130, 124, 124, 0.4));
         border: 0;
-        color: #fff;
 
         &.alert-button {
             font-size: 1rem;
@@ -307,16 +312,16 @@ body {background-color: #111;}
                 display: block;
                 content: "\f026";
                 font-family: FontAwesome;
-                color: #fff;
-                font-size: 12px;
+                color: @white;
+                font-size: 1rem;
                 padding: 7px 8px 7px 7px;
             }
             &.playing:before {
                 display: block;
                 content: "\f028";
                 font-family: FontAwesome;
-                color: #fff;
-                font-size: 12px;
+                color: @white;
+                font-size: 1rem;
                 padding: 7px 4px 7px 5px;
             }
 
@@ -334,30 +339,31 @@ body {background-color: #111;}
     width: 40px;
     height: 40px;
     @media @screen-small-above {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 4rem;
+        height: 4rem;
     }
 
     &.previous {
         left: 5px;
-        @media @screen-small-above {
-            left: 25px;
+        svg {
+            left: 0;
         }
-        &.previous {
-            svg {
-                left: 0;
-            }
-
+        @media @screen-small-above {
+            left: 18px;
         }
     }
     &.next {
+        left: auto;
         right: 5px;
-        @media @screen-small-above {
-            right: 30px;
-        }
         svg {
             left: auto;
             right: 0;
+        }
+
+        @media @screen-small-above {
+            right: 30px;
+
+
         }
     }
     &:hover {
@@ -386,11 +392,12 @@ body {background-color: #111;}
     .gotham();
     color: #ccc;
 
+
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
     .card-inner {
-        padding-top: 4rem;
+        padding-top: 5rem;
 
         .during & {
             padding-top: 6rem;
@@ -401,7 +408,7 @@ body {background-color: #111;}
         margin: 0;
         .knockout();
         letter-spacing: -0.02em;
-        color: #fff;
+        color: @white;
         line-height: 1.1;
     }
 
@@ -409,23 +416,28 @@ body {background-color: #111;}
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
 
+    h4 {
+        margin-top: 3rem;
+    }
 
-    header { padding: 33px 30px; }
+    header { padding: 2rem; }
     article {
-        padding: 0 30px 30px 30px;
+        padding: 0 2rem 2rem 2rem;
         max-width: @max-width-content;
         margin: 0 auto;
     }
 
     a:link,
     a:visited {
-        color: #fff;
+        color: @white;
         font-weight: 700;
         text-decoration: none;
     }
-    a:hover,
-    a:active {
-        color: #ccc;
+    .no-touch & {
+        &:hover,
+        &:active {
+            color: #ccc;
+        }
     }
 
     li {
@@ -447,7 +459,7 @@ body {background-color: #111;}
         text-shadow: 2px 2px 2px #222;
 
         @media @screen-small-above {
-            font-size: 1.3rem;
+            margin-bottom: 1.7rem;
         }
     }
 
@@ -490,7 +502,7 @@ body {background-color: #111;}
 
     .begin {
         .knockout();
-        color: #fff;
+        color: @white;
         text-shadow: 2px 2px 2px #222;
         background-color: transparent;
         border-top: 0;
@@ -500,7 +512,12 @@ body {background-color: #111;}
         padding: 0 0 .5rem 0;
         font-size: 1.4rem;
 
-        &:hover { opacity: 0.7; }
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
+        }
 
         i {
             font-size: 1.6rem;
@@ -541,8 +558,12 @@ body {background-color: #111;}
         width: 100%;
         height: 100%;
         z-index: -1;
-        -webkit-filter: opacity(.5);
-        filter: opacity(.5);
+        opacity: .7;
+
+        .photo-credit {
+            color: #fff;
+            opacity: 1;
+        }
     }
 
     .title-inner {
@@ -601,7 +622,7 @@ body {background-color: #111;}
 
 
             h6 {
-                color: #fff;
+                color: @white;
                 font-size: .9rem;
                 line-height: 1;
                 padding: 1rem;
@@ -619,7 +640,7 @@ body {background-color: #111;}
                 right: 0;
                 height: 100%;
                 background-color: @accent2;
-                color: #fff;
+                color: @white;
                 text-transform: uppercase;
                 border: 0;
                 font-size: .7rem;
@@ -668,10 +689,11 @@ body {background-color: #111;}
 
             @media @screen-small-above {
                 width: 40rem;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
+                margin: 0 auto;
+                // position: absolute;
+                // top: 50%;
+                // left: 50%;
+                // transform: translate(-50%, -50%);
             }
 
             .logo {
@@ -693,7 +715,7 @@ body {background-color: #111;}
                 .gotham();
                 font-size: 1rem;
                 line-height: 1.7;
-                color: #fff;
+                color: @white;
                 text-shadow: 2px 2px 2px #222;
 
                 @media @screen-small-above {
@@ -770,7 +792,7 @@ body {background-color: #111;}
         .knockout();
         text-transform: none;
         font-size: 1.6rem;
-        color: #fff;
+        color: @white;
         margin-bottom: 33px;
     }
 
@@ -781,12 +803,14 @@ body {background-color: #111;}
         .knockout();
         line-height: 3rem;
         background-color: rgba(255, 255, 255, .3);
-        color: #fff;
+        color: @white;
         white-space: nowrap;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
         }
 
         .fa-heart { color: @accent1; }
@@ -876,7 +900,7 @@ body {background-color: #111;}
                 .play:before {
                     content: "\f04b";
                     font-family: FontAwesome;
-                    color: #fff;
+                    color: @white;
                     font-size: 5rem;
                     position: absolute;
                     top: 0;
@@ -886,7 +910,7 @@ body {background-color: #111;}
                 .pause:before {
                     content: "\f04c";
                     font-family: FontAwesome;
-                    color: #fff;
+                    color: @white;
                     font-size: 5rem;
                     position: absolute;
                     top: 0;
@@ -915,7 +939,8 @@ body {background-color: #111;}
 
         h1 {
             .knockout();
-            font-size: 2rem;
+            font-size: 2.5rem;
+            text-transform: none;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
             text-align: center;
@@ -929,7 +954,7 @@ body {background-color: #111;}
             .gotham();
             font-size: 1rem;
             line-height: 1.7;
-            color: #fff;
+            color: @white;
             text-shadow: 2px 2px 2px #222;
         }
 
@@ -973,11 +998,19 @@ body {background-color: #111;}
     // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
     ol {
         counter-reset: li;
+        margin-left: 3.5rem;
+
+        @media @screen-small-above {
+            margin-left: 0;
+        }
+
 
         > li {
             position: relative;
             margin-left: 2em;
             list-style: none;
+            margin: 2.5rem 0 0 0;
+            line-height: 1.7;
 
             &:before {
                 content:counter(li);
@@ -999,6 +1032,16 @@ body {background-color: #111;}
 }
 
 #newsletter {
+
+    .card-inner {
+        @media @screen-small-above {
+            position: absolute;
+            top: 50%;
+            left: 47%;
+            transform: translate(-47%, -50%);
+        }
+    }
+
     header {
         max-width: @max-width-content;
         margin: 0 auto;
@@ -1011,7 +1054,10 @@ body {background-color: #111;}
             font-size: 0.8rem;
         }
     }
-    form { padding: 22px 0; }
+    form {
+        padding: 22px 0;
+        max-width: 500px;
+    }
     input {
         width: 100%;
         box-sizing: border-box;
@@ -1027,11 +1073,13 @@ body {background-color: #111;}
         .knockout();
         line-height: 33px;
         background-color: @accent2;
-        color: #fff;
+        color: @white;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
         }
     }
 }
@@ -1044,10 +1092,29 @@ body {background-color: #111;}
     header {
         max-width: @max-width-content;
         margin: 0 auto;
+        padding: 2rem;
+
+        h1 {
+            text-transform: none;
+            font-size: 1.9rem;
+            color: #ccc;
+            @media @screen-small-above {
+                font-size: 3rem;
+            }
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: #fff;
+            @media @screen-small-above {
+                font-size: 1.6rem;
+            }
+        }
+
     }
     h3 { margin-bottom: 22px; }
     table {
-        border-bottom: 1px solid #fff;
+        border-bottom: 1px solid @white;
         margin-bottom: 15px;
 
         caption {
@@ -1056,15 +1123,15 @@ body {background-color: #111;}
             font-size: 1.2rem;
             letter-spacing: 0;
             text-align: left;
-            color: #fff;
+            color: @white;
         }
 
         th {
-            border-bottom: 3px solid #fff;
+            border-bottom: 3px solid @white;
             padding: 0 0 7px 7px;
             vertical-align: bottom;
             .knockout();
-            color: #fff;
+            color: @white;
 
             &:first-child { padding-left: 0; }
         }
