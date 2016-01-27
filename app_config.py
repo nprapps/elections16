@@ -157,13 +157,14 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 Election configuration
 """
 NEXT_ELECTION_DATE = '2016-02-09'
-ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
+#ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
+ELEX_FLAGS = '-t'
 
 """
 Daemon configuration
 """
-RESULTS_DEPLOY_INTERVAL = 60
-CARD_DEPLOY_INTERVAL = 60
+RESULTS_DEPLOY_INTERVAL = 30
+CARD_DEPLOY_INTERVAL = 120
 
 
 """
