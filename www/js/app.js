@@ -22,6 +22,7 @@ var currentState = null;
 var rem = null;
 var dragDirection = null;
 var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
+var playedAudio = false;
 
 /*
  * Run on page load.
@@ -114,8 +115,9 @@ var onCardChange = function(e) {
         $globalHeader.show();
         $duringModeNotice.show();
         $flickityNav.show();
-        if (currentState == 'during' && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        if (currentState == 'during' && !playedAudio) {
             AUDIO.setMedia(LIVE_AUDIO_URL);
+            playedAudio = true;
         }
     } else {
         $globalControls.hide();
