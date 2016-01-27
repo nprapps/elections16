@@ -328,7 +328,13 @@ var onNewsletterSubmit = function(e) {
     }
 
     ANALYTICS.trackEvent('newsletter-signup');
-    $el.css('opacity', 0.5);
+    // wait state
+    // remove error message if it exists
+    var errorMsgExists = $el.find('.error').length;
+    if (errorMsgExists > 0) {
+        $el.find('.error').remove();
+    }
+    $el.css('opacity', 0.5); // wait state
 
     $.ajax({
         url: APP_CONFIG.NEWSLETTER_POST_URL,
@@ -339,13 +345,19 @@ var onNewsletterSubmit = function(e) {
             orgId: 0,
             isAuthenticated: false
         },
-        success: function(response) {
-            $el.html('success');
+        success: function(response) { // success
+            var successMsg = '<h3>' + COPY.newsletter.success_headline + '</h3>';
+            successMsg += '<p>' + COPY.newsletter.success_text + ' ' + email + '.</p>';
+            $el.html(successMsg);
             $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-success');
         },
-        error: function(response) {
-            $el.html('error');
+        error: function(response) { // error
+            var errorMsg = '<div class="error">';
+            errorMsg += '<h3>' + COPY.newsletter.error_headline + '</h3>';
+            errorMsg += '<p>' + COPY.newsletter.error_text + '</p>';
+            errorMsg += '</div>'
+            $el.append(errorMsg);
             $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-error');
         }
