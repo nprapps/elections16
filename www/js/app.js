@@ -346,14 +346,16 @@ var onNewsletterSubmit = function(e) {
             isAuthenticated: false
         },
         success: function(response) { // success
-            var successMsg = '<h3>' + COPY.newsletter.success_headline + '</h3>';
+            var successMsg = '<div class="message success">'
+            successMsg += '<h3>' + COPY.newsletter.success_headline + '</h3>';
             successMsg += '<p>' + COPY.newsletter.success_text + ' ' + email + '.</p>';
+            successMsg += '</div>'
             $el.html(successMsg);
             $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-success');
         },
         error: function(response) { // error
-            var errorMsg = '<div class="error">';
+            var errorMsg = '<div class="message error">';
             errorMsg += '<h3>' + COPY.newsletter.error_headline + '</h3>';
             errorMsg += '<p>' + COPY.newsletter.error_text + '</p>';
             errorMsg += '</div>'
