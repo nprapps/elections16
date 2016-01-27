@@ -49,8 +49,10 @@
 @democratFade   : #1d2c40;
 @live           : #f05b4e; // red in comps
 @accent1        : #f05b4e; // red in comps
+@accent1a       : #EC3C2D; // brand red dark
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
+@white          : #eee;
 
 
 
@@ -81,7 +83,8 @@
 @screen-tiny: ~"screen and (max-width: 480px)";
 
 //max-width for content
-@max-width-content: 700px;
+@max-width-content: 47rem;
+
 
 // Base font size
 // -------------------------
@@ -111,7 +114,10 @@ html {
 }
 
 // Overall styles
-body { background-color: #111; }
+body {
+    background: linear-gradient(#111, #2c2c2c);
+}
+
 .cards {
     opacity: 0;
     visibility: hidden;
@@ -119,8 +125,12 @@ body { background-color: #111; }
 }
 
 .logo {
-    padding-top: 20px;
+    padding-top: 1.8rem;
     padding-left: 5px;
+
+    @media @screen-small-above {
+        padding-left: 1.8rem;
+    }
 
     h5 {
         .knockout();
@@ -151,6 +161,72 @@ body { background-color: #111; }
 }
 
 // header
+.during-mode-notice {
+    position: absolute;
+    top: -50px;
+    left: 0;
+    color: @white;
+    background-color: @live;
+    width: 100%;
+    z-index: 5;
+    height: 25px;
+
+    .during & {
+        top: 0;
+    }
+
+    &:before {
+        display: block;
+        content: ' ';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 0;
+        bottom: 0;
+        width: 1.3rem;
+        height: 1rem;
+        z-index: 1;
+        background: transparent url('@{img-root}/bounce.gif') no-repeat;
+        .background-size(cover);
+
+        @media @screen-small-above {
+            left: 30px;
+        }
+    }
+
+    h5 {
+        position: absolute;
+        top: 5px;
+        left: 30px;
+        line-height: 1;
+        margin: 0;
+        font-size: 11px;
+        text-transform: uppercase;
+        .knockout();
+
+        @media @screen-small-above {
+            font-size: 15px;
+            left: 60px;
+        }
+    }
+
+    p {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        line-height: 1;
+        margin: 0;
+        font-size: 10px;
+        .knockout();
+        text-transform: none;
+
+        @media @screen-small-above {
+            font-size: 12px;
+            right: 30px;
+        }
+    }
+}
+
 .branding-border {
     position: absolute;
     top: 0;
@@ -171,10 +247,14 @@ body { background-color: #111; }
     left: 0;
     width: 100%;
     z-index: 2;
-    color: #fff;
+    color: @white;
     margin-bottom: 1rem;
     min-height: 4rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2));
+
+    .during & {
+        top: 20px;
+    }
 
     &.bg-header {
         background-color: rgba(0, 0, 0, .6);
@@ -183,29 +263,37 @@ body { background-color: #111; }
 
     @media @screen-small-above {
         background: linear-gradient(to bottom,rgba(0, 0, 0, .6) 50%,rgba(0, 0, 0, 0));
+        min-height: 8rem;
 
     }
 }
 
 .global-controls {
     position: absolute;
-    top: 12px;
+    top: 15px;
     right: 5px;
     display: none;
     z-index: 3;
 
+    .during & {
+        top: 33px;
+    }
+
     @media @screen-small-above {
-        top: 20px;
-        right: 30px;
+        top: 1.5rem;
+        right: 1.7rem;
+
+        .during & {
+            top: 2.6rem;
+        }
     }
 
     button {
         .knockout();
         letter-spacing: 0;
         text-transform: uppercase;
-        background-color: #333;
+        background: linear-gradient(to bottom, rgba(80, 79, 79, 0.4) 50%, rgba(130, 124, 124, 0.4));
         border: 0;
-        color: #fff;
 
         &.alert-button {
             font-size: 1rem;
@@ -225,16 +313,16 @@ body { background-color: #111; }
                 display: block;
                 content: "\f026";
                 font-family: FontAwesome;
-                color: #fff;
-                font-size: 12px;
+                color: @white;
+                font-size: 1rem;
                 padding: 7px 8px 7px 7px;
             }
             &.playing:before {
                 display: block;
                 content: "\f028";
                 font-family: FontAwesome;
-                color: #fff;
-                font-size: 12px;
+                color: @white;
+                font-size: 1rem;
                 padding: 7px 4px 7px 5px;
             }
 
@@ -249,42 +337,79 @@ body { background-color: #111; }
 
 .flickity-prev-next-button {
     background-color: transparent;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
+    @media @screen-small-above {
+        width: 4rem;
+        height: 4rem;
+    }
 
     &.previous {
-        left: 0;
+        left: 5px;
+        svg {
+            left: 0;
+        }
+        @media @screen-small-above {
+            left: 18px;
+        }
     }
     &.next {
-        right: 0;
+        left: auto;
+        right: 5px;
+        svg {
+            left: auto;
+            right: 0;
+        }
+
+        @media @screen-small-above {
+            right: 30px;
+
+
+        }
     }
     &:hover {
         background-color: transparent;
     }
 
     .arrow {
-        fill: white;
+        fill: #aaa;
     }
+
+    svg {
+        width: 35%;
+        height: 35%;
+        @media @screen-small-above {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+
 }
 
 .card {
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    //padding-top: 4.5rem;
     .gotham();
     color: #ccc;
+
 
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner { padding-top: 4rem;}
+    .card-inner {
+        padding-top: 5rem;
+
+        .during & {
+            padding-top: 6rem;
+        }
+    }
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
         .knockout();
         letter-spacing: -0.02em;
-        color: #fff;
+        color: @white;
         line-height: 1.1;
     }
 
@@ -292,23 +417,28 @@ body { background-color: #111; }
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
 
+    h4 {
+        margin-top: 3rem;
+    }
 
-    header { padding: 33px 30px; }
+    header { padding: 2rem; }
     article {
-        padding: 0 30px 30px 30px;
+        padding: 0 2rem 2rem 2rem;
         max-width: @max-width-content;
         margin: 0 auto;
     }
 
     a:link,
     a:visited {
-        color: #fff;
+        color: @white;
         font-weight: 700;
         text-decoration: none;
     }
-    a:hover,
-    a:active {
-        color: #ccc;
+    .no-touch & {
+        a:hover,
+        a:active {
+            color: @accent2;
+        }
     }
 
     li {
@@ -330,7 +460,7 @@ body { background-color: #111; }
         text-shadow: 2px 2px 2px #222;
 
         @media @screen-small-above {
-            font-size: 1.3rem;
+            margin-bottom: 1.7rem;
         }
     }
 
@@ -373,7 +503,7 @@ body { background-color: #111; }
 
     .begin {
         .knockout();
-        color: #fff;
+        color: @white;
         text-shadow: 2px 2px 2px #222;
         background-color: transparent;
         border-top: 0;
@@ -383,7 +513,13 @@ body { background-color: #111; }
         padding: 0 0 .5rem 0;
         font-size: 1.4rem;
 
-        &:hover { opacity: 0.7; }
+        .no-touch & {
+            &:hover,
+            &:active {
+                color: #fff;
+                border-color: @accent1a;
+            }
+        }
 
         i {
             font-size: 1.6rem;
@@ -406,15 +542,37 @@ body { background-color: #111; }
             text-align: center;
             margin: 22px 0 0 0;
         }
+
+        a:link,
+        a:visited {
+            color: #ccc;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .no-touch & {
+            a:hover,
+            a:active {
+                color: #fff;
+            }
+        }
     }
 
     .republican { color: @republican; }
     .democrat { color: @democrat; }
 }
 
-#title {
+.title {
+
+    .card-inner {
+        padding-top: 0;
+
+        @media @screen-small-above {
+            padding-top: 5rem;
+        }
+
+    }
     .card-background {
-        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
+        // background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
         .background-size(cover);
         background-position: center center;
         position: absolute;
@@ -424,164 +582,141 @@ body { background-color: #111; }
         width: 100%;
         height: 100%;
         z-index: -1;
-        -webkit-filter: opacity(.5);
-        filter: opacity(.5);
+        opacity: .7;
+
+        .photo-credit {
+            color: #fff;
+            opacity: 1;
+        }
     }
 
-    .title-inner {
+    .title-branding {
+        h5 {
+            .knockout();
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            text-shadow: 2px 2px 2px #333;
 
-        .title-branding {
-            h5 {
-                .knockout();
-                font-size: 1.2rem;
-                text-transform: uppercase;
-                line-height: 1;
-                margin: 0;
-                padding: 0;
-                text-shadow: 2px 2px 2px #333;
+            @media @screen-small-above {
+                font-size: 1.6rem;
+            }
+        }
+    }
 
-                @media @screen-small-above {
-                    font-size: 1.6rem;
-                }
+    @media @screen-small-above {
+        padding-top: 0;
+    }
+
+
+    .countdown-banner {
+        position: relative;
+        margin: .7rem 0 2rem 0;
+        background-color: rgba(73, 141, 203, .7);
+        .knockout();
+        .box-shadow(2px 2px 10px #333);
+
+        h6 {
+            color: @white;
+            font-size: .9rem;
+            line-height: 1;
+            padding: 1rem;
+            text-transform: uppercase;
+
+            .during & {
+                padding-left: 45px;
+            }
+
+        }
+
+        .get-alerts {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            background-color: @accent2;
+            color: @white;
+            text-transform: uppercase;
+            border: 0;
+            font-size: .7rem;
+
+
+            i {
+                padding-right: 3px;
             }
         }
 
-        @media @screen-small-above {
-            padding-top: 0;
-        }
+        &.live-banner {
+            background-color: rgba(214, 87, 81, 1);
 
+            &:before {
+                display: block;
+                content: ' ';
+                position: absolute;
+                top: 35%;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 1.3rem;
+                height: 1rem;
+                z-index: 1;
+                background: transparent url('@{img-root}/bounce.gif') no-repeat;
+                .background-size(cover);
+            }
 
-        .countdown-banner {
-            position: relative;
-            margin: .7rem 0 2rem 0;
-            background-color: rgba(73, 141, 203, .7);
-            .knockout();
-            .box-shadow(2px 2px 10px #333);
-
-
-
-            // @media @screen-small-above {
-            //     position: absolute;
-            //     top: 0;
-            //     right: 0;
-            //     margin: 0;
-            //     z-index: 2;
-            //     background-color: rgba(117, 152, 201, 1);
-            //     max-width: 500px;
-            // }
-
-            // @media @screen-large-above {
-            //     max-width: 600px;
-            // }
-            //
-            // @media @screen-mega-above {
-            //     max-width: 700px;
-            // }
-            //
-            // @media @screen-jumbo-above {
-            //     max-width: 800px;
-            // }
-
-
-            h6 {
-                color: #fff;
-                font-size: .9rem;
-                line-height: 1;
-                padding: 1rem;
-                text-transform: uppercase;
+            p {
+                padding: 1rem 7.4rem 1rem 3rem;
 
                 @media @screen-small-above {
-                    //padding: .5rem 7.4rem .5rem .5rem;
+                    padding: .5rem 7.4rem .5rem 2.4rem;
                 }
 
             }
 
             .get-alerts {
-                position: absolute;
-                top: 0;
-                right: 0;
-                height: 100%;
-                background-color: @accent2;
-                color: #fff;
-                text-transform: uppercase;
-                border: 0;
-                font-size: .7rem;
-
-
-                i {
-                    padding-right: 3px;
-                }
+                background-color: @live;
             }
+        }
+    }
 
-            &.live-banner {
-                background-color: rgba(214, 87, 81, 1);
+    .title-description {
+        margin: 2rem;
 
-                &:before {
-                    display: block;
-                    content: ' ';
-                    position: absolute;
-                    top: 35%;
-                    left: 10px;
-                    right: 0;
-                    bottom: 0;
-                    width: 1.3rem;
-                    height: 1rem;
-                    z-index: 1;
-                    background: transparent url('@{img-root}/bounce.gif') no-repeat;
-                    .background-size(cover);
-                }
+        @media @screen-small-above {
+            width: 40rem;
+            margin: 0 auto;
+            // position: absolute;
+            // top: 50%;
+            // left: 50%;
+            // transform: translate(-50%, -50%);
+        }
 
-                p {
-                    padding: 1rem 7.4rem 1rem 3rem;
+        .logo {
+            padding: 1rem 0;
+        }
 
-                    @media @screen-small-above {
-                        padding: .5rem 7.4rem .5rem 2.4rem;
-                    }
+        h1 {
+            .knockout();
+            font-size: 2rem;
+            line-height: 1;
+            text-shadow: 2px 2px 2px #222;
 
-                }
-
-                .get-alerts {
-                    background-color: @live;
-                }
+            @media @screen-small-above {
+                font-size: 3.7rem;
             }
         }
 
-        .title-description {
-            margin: 2rem;
+        p {
+            .gotham();
+            font-size: 1rem;
+            line-height: 1.7;
+            color: @white;
+            text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                width: 40rem;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-            .logo {
-                padding: 1rem 0;
-            }
-
-            h1 {
-                .knockout();
-                font-size: 2rem;
-                line-height: 1;
-                text-shadow: 2px 2px 2px #222;
-
-                @media @screen-small-above {
-                    font-size: 3.7rem;
-                }
-            }
-
-            p {
-                .gotham();
-                font-size: 1rem;
-                line-height: 1.7;
-                color: #fff;
-                text-shadow: 2px 2px 2px #222;
-
-                @media @screen-small-above {
-                    font-size: 1.3rem;
-                }
+                font-size: 1.3rem;
             }
         }
     }
@@ -646,33 +781,78 @@ body { background-color: #111; }
 }
 
 #donate {
-    max-width: @max-width-content;
-    margin: 0 auto;
 
-    p {
-        .knockout();
-        text-transform: none;
-        font-size: 1.6rem;
-        color: #fff;
-        margin-bottom: 33px;
-    }
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    //content: '';
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
 
-    .support {
-        display: inline-block;
-        font-size: 1.2rem;
-        padding: 0 0.9rem;
-        .knockout();
-        line-height: 3rem;
-        background-color: rgba(255, 255, 255, .3);
-        color: #fff;
-        white-space: nowrap;
+    .card-background {
+        background: url('http://www.npr.org/about/aboutnpr/img/tz-intro-large.jpg') no-repeat;
+        .background-size(cover);
+        background-position: center center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: .3;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        @media @screen-small-above {
+            opacity: .8;
         }
 
-        .fa-heart { color: @accent1; }
+        .photo-credit {
+            color: #333;
+            opacity: 1;
+        }
+    }
+
+    .card-inner {
+        max-width: 37rem;
+        margin: 4rem 1rem 1rem 1rem;
+        padding: 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+            background: rgba(0, 0, 0, .7);
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-size: 3rem;
+        }
+
+        p {
+            font-size: 1.3rem;
+        }
+
+        .donate-link {
+            margin: 2rem 0;
+
+            a {
+                padding: 1rem;
+                background: rgba(73, 141, 203, 1);
+
+                @media @screen-small-above {
+                    background: rgba(73, 141, 203, 0.7);
+                }
+
+                &:hover,
+                &:active {
+                    color: #fff;
+                    background: rgba(73, 141, 203, 1);
+                }
+            }
+        }
+
     }
 }
 
@@ -687,8 +867,7 @@ body { background-color: #111; }
         width: 100%;
         height: 100%;
         z-index: -1;
-        -webkit-filter: opacity(.5);
-        filter: opacity(.5);
+        opacity: 1;
     }
 
 
@@ -759,7 +938,7 @@ body { background-color: #111; }
                 .play:before {
                     content: "\f04b";
                     font-family: FontAwesome;
-                    color: #fff;
+                    color: @white;
                     font-size: 5rem;
                     position: absolute;
                     top: 0;
@@ -769,7 +948,7 @@ body { background-color: #111; }
                 .pause:before {
                     content: "\f04c";
                     font-family: FontAwesome;
-                    color: #fff;
+                    color: @white;
                     font-size: 5rem;
                     position: absolute;
                     top: 0;
@@ -798,36 +977,67 @@ body { background-color: #111; }
 
         h1 {
             .knockout();
-            font-size: 2rem;
+            font-size: 2.5rem;
+            text-transform: none;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
             text-align: center;
+
+            @media @screen-small-above {
+                text-align: left;
+            }
         }
 
         p {
             .gotham();
             font-size: 1rem;
             line-height: 1.7;
-            color: #fff;
+            color: @white;
             text-shadow: 2px 2px 2px #222;
         }
 
         .featured-links {
-            .begin {font-size: 1.2rem;}
+            .begin {
+                font-size: 1.2rem;
+            }
+
+
         }
     }
 }
 
-#link-roundup {
+.link-roundup {
     header {
-        // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
-        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
-        background-size: cover;
+        .background-size(cover);
+        background-position: center center;
         position: relative;
-        height: 15rem;
+        min-height: 16rem;
         margin-bottom: 22px;
         padding: 0;
         border-bottom: 5px solid @accent2;
+        border-top: 1px solid #222;
+
+        @media @screen-small-above {
+            border-top: 1px solid #444;
+        }
+
+        h1 {
+            text-transform: none;
+            font-size: 2.5rem;
+
+            @media @screen-small-above {
+                text-align: left;
+                font-size: 3.1rem;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;;
+            font-size: 1.3rem;
+            @media @screen-small-above {
+                font-size: 1.7;
+            }
+        }
 
         .header-screen {
             position: absolute;
@@ -835,8 +1045,8 @@ body { background-color: #111; }
             right: 0;
             bottom: 0;
             left: 0;
-            content: '';
-            background: rgba(0, 0, 0, .5);
+            //content: '';
+            background: rgba(0, 0, 0, .3);
             display: -webkit-flex;
             display: flex;
             -webkit-align-items: center;
@@ -852,11 +1062,19 @@ body { background-color: #111; }
     // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
     ol {
         counter-reset: li;
+        margin-left: 3.5rem;
+
+        @media @screen-small-above {
+            margin-left: 0;
+        }
+
 
         > li {
             position: relative;
             margin-left: 2em;
             list-style: none;
+            margin: 2.5rem 0 0 0;
+            line-height: 1.7;
 
             &:before {
                 content:counter(li);
@@ -878,6 +1096,16 @@ body { background-color: #111; }
 }
 
 #newsletter {
+
+    .card-inner {
+        @media @screen-small-above {
+            position: absolute;
+            top: 50%;
+            left: 47%;
+            transform: translate(-47%, -50%);
+        }
+    }
+
     header {
         max-width: @max-width-content;
         margin: 0 auto;
@@ -890,7 +1118,10 @@ body { background-color: #111; }
             font-size: 0.8rem;
         }
     }
-    form { padding: 22px 0; }
+    form {
+        padding: 22px 0;
+        max-width: 500px;
+    }
     input {
         width: 100%;
         box-sizing: border-box;
@@ -906,11 +1137,13 @@ body { background-color: #111; }
         .knockout();
         line-height: 33px;
         background-color: @accent2;
-        color: #fff;
+        color: @white;
 
-        &:hover,
-        &:active {
-            opacity: 0.7;
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
         }
     }
 }
@@ -919,14 +1152,33 @@ body { background-color: #111; }
     article {margin-top: 2rem;}
 }
 
-#results {
+.results {
     header {
         max-width: @max-width-content;
         margin: 0 auto;
+        padding: 2rem;
+
+        h1 {
+            text-transform: none;
+            font-size: 1.9rem;
+            color: #ccc;
+            @media @screen-small-above {
+                font-size: 3rem;
+            }
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: #fff;
+            @media @screen-small-above {
+                font-size: 1.6rem;
+            }
+        }
+
     }
     h3 { margin-bottom: 22px; }
     table {
-        border-bottom: 1px solid #fff;
+        border-bottom: 1px solid @white;
         margin-bottom: 15px;
 
         caption {
@@ -935,15 +1187,15 @@ body { background-color: #111; }
             font-size: 1.2rem;
             letter-spacing: 0;
             text-align: left;
-            color: #fff;
+            color: @white;
         }
 
         th {
-            border-bottom: 3px solid #fff;
+            border-bottom: 3px solid @white;
             padding: 0 0 7px 7px;
             vertical-align: bottom;
             .knockout();
-            color: #fff;
+            color: @white;
 
             &:first-child { padding-left: 0; }
         }
@@ -956,17 +1208,12 @@ body { background-color: #111; }
         .winner {
             font-weight: bold;
             color: @winner;
-
-            td:first-child:after {
-                content: '\00A0\2714';
-                font-size: 18px;
-                line-height: 12px;
-            }
         }
 
         .votes,
         .pct {
             text-align: right;
+            width: 20%;
         }
     }
 }

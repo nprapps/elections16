@@ -21,6 +21,7 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 app.add_template_filter(utils.comma_filter, name='comma')
 app.add_template_filter(utils.percent_filter, name='percent')
+app.add_template_filter(utils.normalize_percent_filter, name='normalize_percent')
 app.add_template_filter(utils.ordinal_filter, name='ordinal')
 app.add_template_filter(utils.ap_month_filter, name='ap_month')
 app.add_template_filter(utils.ap_date_filter, name='ap_date')
@@ -73,6 +74,7 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
+    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -84,6 +86,8 @@ def card(slug):
     """
     context = make_context()
     context['slug'] = slug
+    context['template'] = 'basic-card'
+    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -99,6 +103,8 @@ def podcast():
     context['podcast_link'] = latest.enclosures[0]['href']
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
+    context['template'] = 'podcast'
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -111,16 +117,19 @@ def results(party):
     """
     context = make_context()
     party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP']
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
     )
 
     secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
 
     context['results'] = sorted_results
-    context['slug'] = 'results'
+    context['slug'] = 'results-%s' % party
+    context['template'] = 'results'
     context['route'] = '/results/%s/' % party
     context['refresh_rate'] = 20
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/results.html', **context)
 
@@ -134,9 +143,13 @@ def get_caught_up():
     context['content'] = doc
     context['headline'] = doc.headline
     context['subhed'] = doc.subhed
-    context['slug'] = 'link-roundup'
+    context['slug'] = 'get-caught-up'
+    context['template'] = 'link-roundup'
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
+    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -149,7 +162,11 @@ def title():
     context['content'] = doc
     context['headline'] = doc.headline
     context['banner'] = doc.banner
+    context['image'] = doc.image
+    context['credit'] = doc.credit
     context['slug'] = 'title'
+    context['template'] = 'title'
+    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 

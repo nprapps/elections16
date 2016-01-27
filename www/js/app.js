@@ -11,12 +11,20 @@ var $duration = null;
 var $begin = null;
 var $newsletterForm = null;
 var $mute = null;
+var $flickityNav = null;
+var $subscribeBtn = null
+var $supportBtn = null;
+var $linkRoundupLinks = null;
 
 // Global references
 var candidates = {}
 var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
+var dragDirection = null;
+var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
+var playedAudio = false;
+
 /*
  * Run on page load.
  */
@@ -30,10 +38,14 @@ var onDocumentLoad = function(e) {
     $forwardBtn = $('.forward');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
+    $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
     $newsletterForm = $('#newsletter-signup');
     $mute = $('.mute-button');
+    $subscribeBtn = $('.btn-subscribe');
+    $supportBtn = $('.support');
+    $linkRoundupLinks = $('.link-roundup a');
 
     rem = getEmPixels();
 
@@ -44,11 +56,14 @@ var onDocumentLoad = function(e) {
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $begin.on('click', onBeginClick);
     $newsletterForm.on('submit', onNewsletterSubmit);
+    $supportBtn.on('click', onSupportBtnClick);
+    $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
+
     $(window).resize(onResize);
 
     setupFlickity();
-    AUDIO.setupAudio();
     setPolls();
+    AUDIO.setupAudio();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -71,43 +86,125 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
+    $flickityNav = $('.flickity-prev-next-button');
+
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
-    $cardsWrapper.on('settle', onCardAnimationFinish);
-}
+    $cardsWrapper.on('dragStart', onDragStart);
+    $cardsWrapper.on('dragMove', onDragMove);
+    $cardsWrapper.on('dragEnd', onDragEnd);
+    $cardsWrapper.on('keydown', onKeydown);
+    $flickityNav.on('click', onFlickityNavClick);
 
-var onCardScroll = function() {
-    //$globalHeader.addClass('bg-header');
-    $cards.off('scroll');
+    // set height on titlecard if necessary
+    var $thisCard = $('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisCard);
 }
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
-    var oldSlideIndex = flickity.selectedIndex - 1;
-    var newSlideIndex = flickity.selectedIndex;
+    var newCardIndex = flickity.selectedIndex;
 
-    var $thisSlide = $('.is-selected');
-    var cardHeight = $thisSlide.find('.card-inner').height();
+    focusCardsWrapper();
 
-    checkOverflow(cardHeight, $thisSlide);
+    var $thisCard = $('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
-    $cards.on('scroll', onCardScroll);
 
-    if (newSlideIndex > 0) {
+    if (newCardIndex > 0) {
         $globalControls.show();
         $globalHeader.show();
-        //$globalHeader.addClass('bg-header');
+        $duringModeNotice.show();
+        $flickityNav.show();
+        if (currentState == 'during' && !playedAudio) {
+            AUDIO.setMedia(LIVE_AUDIO_URL);
+            playedAudio = true;
+        }
     } else {
         $globalControls.hide();
         $globalHeader.hide();
+        $duringModeNotice.hide();
+        $flickityNav.hide();
     }
 
-    if ($thisSlide.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+    if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+        // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
     }
 
-    ANALYTICS.trackEvent('card-enter', $thisSlide.attr('id'));
+    ANALYTICS.trackEvent('card-enter', $thisCard.attr('id'));
+}
+
+var onDragStart = function(e, pointer) {
+    dragDirection = null;
+}
+
+var onDragMove = function(e, pointer, moveVector) {
+    if (moveVector.x > 0) {
+        dragDirection = 'previous';
+    } else {
+        dragDirection = 'next';
+    }
+}
+
+var onDragEnd = function(e, pointer) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if (dragDirection === 'previous') {
+        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
+    } else if (dragDirection === 'next') {
+        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
+    }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
+}
+
+var onKeydown = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if (e.which === 37) {
+        var keyDirection = 'previous';
+    } else if (e.which === 39) {
+        var keyDirection = 'next';
+    } else {
+        return;
+    }
+
+    if (e.target !== $cardsWrapper[0]) {
+        ANALYTICS.trackEvent('keyboard-nav-wrong-target')
+    } else {
+        if (keyDirection === 'previous') {
+            var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+            ANALYTICS.trackEvent('keyboard-nav-previous', exitedCardID);
+        } else if (keyDirection === 'next') {
+            var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+            ANALYTICS.trackEvent('keyboard-nav-next', exitedCardID);
+        }
+    }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
+}
+
+var onFlickityNavClick = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if ($(this).hasClass('previous')) {
+        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        ANALYTICS.trackEvent('nav-click-previous', exitedCardID);
+    } else if ($(this).hasClass('next')) {
+        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        ANALYTICS.trackEvent('nav-click-next', exitedCardID);
+    }
+
+    ANALYTICS.trackEvent('card-exit', exitedCardID);
 }
 
 var checkOverflow = function(cardHeight, $slide) {
@@ -118,17 +215,10 @@ var checkOverflow = function(cardHeight, $slide) {
     }
 }
 
-var onCardAnimationFinish = function(e) {
-    var flickity = $cardsWrapper.data('flickity');
-    var newSlideIndex = flickity.selectedIndex;
-
-    if (newSlideIndex > 0) {
-    }
-}
-
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click');
+    ANALYTICS.trackEvent('card-exit', 'title');
 }
 
 var setPolls = function() {
@@ -172,9 +262,12 @@ var checkState = function() {
         url: APP_CONFIG.S3_BASE_URL + '/current-state.json',
         dataType: 'json',
         ifModified: true,
-        success: function(data) {
+        success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
                 currentState = data['state']
+                if (currentState === 'during') {
+                    AUDIO.setLive();
+                }
             }
         }
     });
@@ -184,15 +277,30 @@ var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
 
-    var $thisSlide = $cards.filter('.is-selected');
-    var cardHeight = $thisSlide.find('.card-inner').height();
-    checkOverflow(cardHeight, $thisSlide);
+    var $thisCard = $cards.filter('.is-selected');
+    var cardHeight = $thisCard.find('.card-inner').height();
+    checkOverflow(cardHeight, $thisCard);
+}
+
+var focusCardsWrapper = function() {
+    $cardsWrapper.focus();
 }
 
 var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
     });
+}
+
+var onSupportBtnClick = function(e) {
+    focusCardsWrapper();
+    ANALYTICS.trackEvent('support-btn-click');
+}
+
+var onLinkRoundupLinkClick = function() {
+    focusCardsWrapper();
+    var href = $(this).attr('href');
+    ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
 
 var makeListOfCandidates = function(candidates) {

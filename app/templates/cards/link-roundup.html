@@ -1,15 +1,15 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<header>
+<header style="background-image: url('{{ image }}');">
     <div class="header-screen">
         <div class="header-content">
             <!-- before -->
-            <h1>{{ headline|smarty }}</h1>
-            <h2>{{ subhed|smarty }}</h2>
+            <h2>{{ headline|smarty }}</h2>
+            <h1>{{ subhed|smarty }}</h1>
         </div>
     </div>
-    <p class="photo-credit">Photo: Nicholas Pilch/Getty Images</p>
+    <p class="photo-credit">{{ credit }}</p>
 </header>
 
 <article>

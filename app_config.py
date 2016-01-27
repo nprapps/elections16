@@ -8,6 +8,7 @@ They will be exposed to users. Use environment variables instead.
 See get_secrets() below for a fast way to access them.
 """
 
+import logging
 import os
 
 from authomatic.providers import oauth2
@@ -75,7 +76,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVER_SERVICES = [
-    ('app', SERVER_REPOSITORY_PATH, 'ini'),
+    #('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
     ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
@@ -162,15 +163,21 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-01'
-
+NEXT_ELECTION_DATE = '2016-02-09'
+ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
+#ELEX_FLAGS = '-t'
 
 """
 Daemon configuration
 """
-RESULTS_DEPLOY_INTERVAL = 60
-CARD_DEPLOY_INTERVAL = 60
+RESULTS_DEPLOY_INTERVAL = 30
+CARD_DEPLOY_INTERVAL = 120
 
+
+"""
+Logging
+"""
+LOG_FORMAT = '%(levelname)s:%(name)s:%(asctime)s: %(message)s'
 
 """
 Utilities
@@ -204,6 +211,7 @@ def configure_targets(deployment_target):
     global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
     global NEWSLETTER_POST_URL
+    global LOG_LEVEL
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
@@ -216,6 +224,7 @@ def configure_targets(deployment_target):
         DEBUG = False
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
+        LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
@@ -227,6 +236,7 @@ def configure_targets(deployment_target):
         DEBUG = True
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        LOG_LEVEL = logging.DEBUG
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -238,6 +248,7 @@ def configure_targets(deployment_target):
         DEBUG = True
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        LOG_LEVEL = logging.DEBUG
 
     DEPLOYMENT_TARGET = deployment_target
 

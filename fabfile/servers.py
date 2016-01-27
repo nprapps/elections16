@@ -212,16 +212,13 @@ def deploy_confs():
             print 'Updating %s' % installed_path
             put(rendered_path, installed_path, use_sudo=True)
 
+            sudo('initctl reload-configuration')
+
             if service == 'nginx':
                 sudo('service nginx reload')
-                sudo('service %s restart' % service_name)
-            elif service == 'app':
-                run('touch %s' % app_config.UWSGI_SOCKET_PATH)
-                sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
-                sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
             else:
                 service_name = _get_installed_service_name(service)
-                sudo('initctl reload-configuration')
+                sudo('service %s restart' % service_name)
 
 
 @task

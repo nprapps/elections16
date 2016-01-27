@@ -2,11 +2,13 @@
 
 {% block card_content %}
 <header>
-    <!-- During -->
-    <h1>Current Status</h1>
-    <h2>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %} Caucuses</h2>
-    <!-- After -->
-    <!-- <h1>The Results Are&nbsp;In</h1> -->
+    {% if state == 'during' %}
+    <h2>Current Status</h2>
+    {% else %}
+    <h2>The Results Are In</h2>
+    {% endif %}
+
+    <h1>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %} Caucuses</h1>
 </header>
 
 <article>
@@ -25,9 +27,12 @@
         <tbody>
             {% for result in results %}
                 <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %} winner {% endif %}">
-                    <td>{% if result.first %} {{ result.first }} {% endif %} {{ result.last }}</td>
+                    <td>
+                        {% if result.first %} {{ result.first }} {% endif %} {{ result.last }}
+                        {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %}<b class="fa fa-check"></b>{% endif %}
+                    </td>
                     <td class="votes">{{ result.votecount|comma }}</td>
-                    <td class="pct">{{ result.votepct|percent }}</td>
+                    <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
                 </tr>
             {% endfor %}
 
