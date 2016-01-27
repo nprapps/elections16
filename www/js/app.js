@@ -103,9 +103,10 @@ var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
+    focusCardsWrapper();
+
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
-
     checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
@@ -278,6 +279,10 @@ var onResize = function() {
     checkOverflow(cardHeight, $thisCard);
 }
 
+var focusCardsWrapper = function() {
+    $cardsWrapper.focus();
+}
+
 var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
@@ -285,14 +290,17 @@ var getCandidates = function() {
 }
 
 var onSubscribeBtnClick = function() {
+    focusCardsWrapper();
     ANALYTICS.trackEvent('subscribe-btn-click');
 }
 
 var onSupportBtnClick = function(e) {
+    focusCardsWrapper();
     ANALYTICS.trackEvent('support-btn-click');
 }
 
 var onLinkRoundupLinkClick = function() {
+    focusCardsWrapper();
     var href = $(this).attr('href');
     ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
