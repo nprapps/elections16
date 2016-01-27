@@ -558,8 +558,12 @@ body {
         width: 100%;
         height: 100%;
         z-index: -1;
-        -webkit-filter: opacity(.5);
-        filter: opacity(.5);
+        opacity: .7;
+
+        .photo-credit {
+            color: #fff;
+            opacity: 1;
+        }
     }
 
     .title-inner {
@@ -994,6 +998,12 @@ body {
     // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
     ol {
         counter-reset: li;
+        margin-left: 3.5rem;
+
+        @media @screen-small-above {
+            margin-left: 0;
+        }
+
 
         > li {
             position: relative;
