@@ -269,7 +269,7 @@ body {
 
 .global-controls {
     position: absolute;
-    top: 12px;
+    top: 15px;
     right: 5px;
     display: none;
     z-index: 3;
@@ -941,11 +941,10 @@ body {
 
 .link-roundup {
     header {
-        // background: url('http://media.npr.org/assets/img/2015/12/31/gettyimages-501987996_wide-s700-c85.jpg') 50% 50% no-repeat;
-        background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') 50% 50% no-repeat;
-        background-size: cover;
+        .background-size(cover);
+        background-position: center center;
         position: relative;
-        height: 15rem;
+        min-height: 16rem;
         margin-bottom: 22px;
         padding: 0;
         border-bottom: 5px solid @accent2;
@@ -956,8 +955,8 @@ body {
             right: 0;
             bottom: 0;
             left: 0;
-            content: '';
-            background: rgba(0, 0, 0, .5);
+            //content: '';
+            background: rgba(0, 0, 0, .3);
             display: -webkit-flex;
             display: flex;
             -webkit-align-items: center;
