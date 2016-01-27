@@ -243,6 +243,25 @@ var calculateExitTime = function(id) {
     slideStartTime = new Date();
 }
 
+var calculateTotalTimeBucket = function() {
+    var currentTime = new Date();
+    var timeOnSite = Math.abs(currentTime - globalStartTime);
+    var seconds = Math.floor(timeOnSite/1000);
+    if (seconds < 60) {
+        var tensOfSeconds = Math.floor(seconds / 10) * 10;
+        var timeBucket = tensOfSeconds.toString() + 's';
+    } else if (seconds >=60 && seconds < 300) {
+        var minutes = Math.floor(seconds / 60);
+        var timeBucket = minutes.toString() + 'm';
+    } else {
+        var minutes = Math.floor(seconds / 60);
+        var fivesOfMinutes = Math.floor(minutes / 5) * 5;
+        var timeBucket = fivesOfMinutes.toString() + 'm';
+    }
+
+    return [timeBucket, timeOnSite];
+}
+
 var setPolls = function() {
     // set poll for cards
     for (var i = 0; i < $cards.length; i++) {
@@ -305,6 +324,12 @@ var onResize = function() {
 }
 
 var onUnload = function(e) {
+    // log global time
+    var totalTimeArray = calculateTotalTimeBucket();
+    console.log(totalTimeArray);
+    ANALYTICS.trackEvent('total-time-on-site', totalTimeArray[0], totalTimeArray[1]);
+
+    // log all slide times
     var currentSlideId = $('.is-selected').attr('id');
     calculateExitTime(currentSlideId);
 
