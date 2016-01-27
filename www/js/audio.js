@@ -2,8 +2,13 @@ var AUDIO = (function() {
     var NO_AUDIO = (window.location.search.indexOf('noaudio') >= 0);
     var timedAnalytics = [
         {
-            'seconds': 5,
-            'unit': '5s',
+            'seconds': 10,
+            'unit': '10s',
+            'measured': false
+        },
+        {
+            'seconds': 20,
+            'unit': '20s',
             'measured': false
         },
         {
@@ -14,6 +19,21 @@ var AUDIO = (function() {
         {
             'seconds': 60,
             'unit': '1m',
+            'measured': false
+        },
+        {
+            'seconds': 120,
+            'unit': '2m',
+            'measured': false
+        },
+        {
+            'seconds': 180,
+            'unit': '3m',
+            'measured': false
+        },
+        {
+            'seconds': 240,
+            'unit': '4m',
             'measured': false
         },
         {
