@@ -166,6 +166,8 @@ def title():
     context['credit'] = doc.credit
     context['slug'] = 'title'
     context['template'] = 'title'
+    context['route'] = '/get-caught-up/'
+    context['refresh_rate'] = 60
     context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
