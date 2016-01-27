@@ -323,18 +323,25 @@ var onNewsletterSubmit = function(e) {
     var $el = $(this);
     var email = $el.find('#newsletter-email').val();
 
+    var clearStatusMessage = function() {
+        var statusMsgExists = $el.find('.message').length;
+        if (statusMsgExists > 0) {
+            $el.find('.message').remove();
+        }
+    }
+
     if (!email) {
         return;
     }
 
     ANALYTICS.trackEvent('newsletter-signup');
     // wait state
-    // remove error message if it exists
-    var errorMsgExists = $el.find('.error').length;
-    if (errorMsgExists > 0) {
-        $el.find('.error').remove();
-    }
-    $el.css('opacity', 0.5); // wait state
+    clearStatusMessage();
+    var waitMsg = '<div class="message wait">'
+    waitMsg += '<p>' + COPY.newsletter.waiting_text + '</p>';
+    waitMsg += '</div>'
+    $el.append(waitMsg);
+    $el.css('opacity', 0.5);
 
     $.ajax({
         url: APP_CONFIG.NEWSLETTER_POST_URL,
@@ -350,6 +357,7 @@ var onNewsletterSubmit = function(e) {
             successMsg += '<h3>' + COPY.newsletter.success_headline + '</h3>';
             successMsg += '<p>' + COPY.newsletter.success_text + ' ' + email + '.</p>';
             successMsg += '</div>'
+            clearStatusMessage();
             $el.html(successMsg);
             $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-success');
@@ -359,6 +367,7 @@ var onNewsletterSubmit = function(e) {
             errorMsg += '<h3>' + COPY.newsletter.error_headline + '</h3>';
             errorMsg += '<p>' + COPY.newsletter.error_text + '</p>';
             errorMsg += '</div>'
+            clearStatusMessage();
             $el.append(errorMsg);
             $el.css('opacity', 1);
             ANALYTICS.trackEvent('newsletter-signup-error');
