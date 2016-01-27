@@ -169,6 +169,11 @@ body {
     background-color: @live;
     width: 100%;
     z-index: 5;
+    height: 25px;
+
+    @media @screen-small-above {
+        height: 30px;
+    }
 
     .during & {
         top: 0;
@@ -182,15 +187,16 @@ body {
         left: 5px;
         right: 0;
         bottom: 0;
-        width: 1.3rem;
-        height: 1rem;
+        width: 17px;
+        height: 12px;
         z-index: 1;
         background: transparent url('@{img-root}/bounce.gif') no-repeat;
         .background-size(cover);
 
         @media @screen-small-above {
             left: 30px;
-            height: 30px;
+            width: 20px;
+            height: 15px;
         }
     }
 
