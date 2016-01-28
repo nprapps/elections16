@@ -132,7 +132,7 @@ def ap_time_period_filter(value):
     if not value:
         return ''
 
-    periods = '.'.join(value.lower()) + '.'
+    periods = '.'.join(value) + '.'
 
     return periods
 
