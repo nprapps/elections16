@@ -85,6 +85,10 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
+    for (var i = 0; i < $cards.length; i++) {
+        detectMobileBg($cards.eq(i));
+    }
+
     $flickityNav = $('.flickity-prev-next-button');
 
     // bind events that must be bound after flickity init
@@ -255,6 +259,7 @@ var getCard = function(url, $card, i) {
                     }
 
                     $card.html(htmlString);
+                    detectMobileBg($card);
                 }
             }
         });
@@ -277,6 +282,18 @@ var checkState = function() {
     });
 }
 
+var detectMobileBg = function($card) {
+    var $cardBackground = $card.find('.card-background');
+
+    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+        var bgURL = $cardBackground.data('mobile-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    } else {
+        var bgURL = $cardBackground.data('default-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    }
+}
+
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
@@ -284,6 +301,8 @@ var onResize = function() {
     var $thisCard = $cards.filter('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
+
+    detectMobileBg();
 }
 
 var focusCardsWrapper = function() {

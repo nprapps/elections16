@@ -147,6 +147,7 @@ def get_caught_up():
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
     context['image'] = doc.image
+    context['mobile_image'] = doc.mobile_image
     context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
@@ -164,6 +165,7 @@ def title():
     context['headline'] = doc.headline
     context['banner'] = doc.banner
     context['image'] = doc.image
+    context['mobile_image'] = doc.mobile_image
     context['credit'] = doc.credit
     context['slug'] = 'title'
     context['template'] = 'title'
