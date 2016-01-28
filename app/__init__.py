@@ -25,6 +25,7 @@ app.add_template_filter(utils.normalize_percent_filter, name='normalize_percent'
 app.add_template_filter(utils.ordinal_filter, name='ordinal')
 app.add_template_filter(utils.ap_month_filter, name='ap_month')
 app.add_template_filter(utils.ap_date_filter, name='ap_date')
+app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
@@ -146,6 +147,7 @@ def get_caught_up():
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
     context['image'] = doc.image
+    context['mobile_image'] = doc.mobile_image
     context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
@@ -163,9 +165,12 @@ def title():
     context['headline'] = doc.headline
     context['banner'] = doc.banner
     context['image'] = doc.image
+    context['mobile_image'] = doc.mobile_image
     context['credit'] = doc.credit
     context['slug'] = 'title'
     context['template'] = 'title'
+    context['route'] = '/title/'
+    context['refresh_rate'] = 60
     context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 

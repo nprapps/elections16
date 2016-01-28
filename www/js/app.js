@@ -67,6 +67,7 @@ var onDocumentLoad = function(e) {
     setupFlickity();
     setPolls();
     AUDIO.setupAudio();
+    detectMobileBg();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -291,7 +292,14 @@ var getCard = function(url, $card, i) {
             success: function(data, status) {
                 if (status === 'success') {
                     var $cardInner = $(data).find('.card-inner');
-                    $card.html($cardInner);
+                    var $cardBackground = $(data).find('.card-background');
+
+                    var htmlString = $cardInner.prop('outerHTML');
+                    if ($cardBackground.length > 0) {
+                        htmlString += $cardBackground.prop('outerHTML');
+                    }
+
+                    $card.html(htmlString);
                 }
             }
         });
@@ -314,6 +322,20 @@ var checkState = function() {
     });
 }
 
+var detectMobileBg = function() {
+    for (var i = 0; i < $cards.length; i++) {
+        var $cardBackground = $cards.eq(i).find('.card-background');
+
+        if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+            var bgURL = $cardBackground.data('mobile-bg');
+            $cardBackground.css('background-image', 'url("' + bgURL + '")');
+        } else {
+            var bgURL = $cardBackground.data('default-bg');
+            $cardBackground.css('background-image', 'url("' + bgURL + '")');
+        }
+    }
+}
+
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
@@ -321,6 +343,8 @@ var onResize = function() {
     var $thisCard = $cards.filter('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
+
+    detectMobileBg();
 }
 
 var onUnload = function(e) {

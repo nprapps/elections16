@@ -154,12 +154,7 @@ def update():
     data.update()
 
 @task
-def deploy(remote='origin', reload=False):
-    """
-    Deploy the latest app to S3 and, if configured, to our servers.
-    """
-    require('settings', provided_by=[production, staging])
-
+def deploy_server(remote='origin'):
     if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
 
@@ -179,6 +174,13 @@ def deploy(remote='origin', reload=False):
 
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
+
+@task
+def deploy_client(remote='origin', reload=False):
+    """
+    Deploy the latest app to S3 and, if configured, to our servers.
+    """
+    require('settings', provided_by=[production, staging])
 
     update()
     render.render_all()
