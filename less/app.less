@@ -18,21 +18,6 @@
     }
 }
 
-//center vertically and horizontally
-.vh-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-// center vertically
-.v-center {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 //images
 @img-root: "../assets";
 
@@ -1102,13 +1087,24 @@ body {
 }
 
 #newsletter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    //content: '';
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
 
     .card-inner {
+        max-width: 37rem;
+        margin: 4rem 1rem 1rem 1rem;
+
         @media @screen-small-above {
-            position: absolute;
-            top: 50%;
-            left: 47%;
-            transform: translate(-47%, -50%);
+            margin: 0 auto;
         }
     }
 
