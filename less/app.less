@@ -231,9 +231,15 @@ body {
     z-index: 2;
 }
 
+.global-nav {
+        display: none;
+    &.show-nav  {
+        display: block;
+    }
+}
+
 .global-header {
     position: absolute;
-    display: none;
     top: 0;
     left: 0;
     width: 100%;
@@ -263,7 +269,6 @@ body {
     position: absolute;
     top: 15px;
     right: 5px;
-    display: none;
     z-index: 3;
 
     .during & {
