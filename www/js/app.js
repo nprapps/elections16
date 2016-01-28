@@ -249,11 +249,11 @@ var getCard = function(url, $card, i) {
                     var $cardInner = $(data).find('.card-inner');
                     var $cardBackground = $(data).find('.card-background');
 
+                    var htmlString = $cardInner.prop('outerHTML');
                     if ($cardBackground.length > 0) {
-                        var htmlString = $cardInner.prop('outerHTML') + $cardBackground.prop('outerHTML');
-                    } else {
-                        var htmlString = $cardInner.prop('outerHTML');
+                        htmlString += $cardBackground.prop('outerHTML');
                     }
+
                     $card.html(htmlString);
                 }
             }
