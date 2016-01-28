@@ -159,8 +159,14 @@ var onCardChange = function(e) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
     }
+}
 
-    ANALYTICS.trackEvent('card-enter', $thisCard.attr('id'));
+var checkOverflow = function(cardHeight, $slide) {
+    if (cardHeight > $(window).height()) {
+        $slide.find('.card-background').height(cardHeight + (6 * rem));
+    } else {
+        $slide.find('.card-background').height('100%');
+    }
 }
 
 var onDragStart = function(e, pointer) {
@@ -187,8 +193,7 @@ var onDragEnd = function(e, pointer) {
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
 
-    calculateExitTime(exitedCardID);
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
+    logCardExit(exitedCardID);
 }
 
 var onKeydown = function(e) {
@@ -215,8 +220,7 @@ var onKeydown = function(e) {
         }
     }
 
-    calculateExitTime(exitedCardID);
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
+    logCardExit(exitedCardID);
 }
 
 var onFlickityNavClick = function(e) {
@@ -231,36 +235,39 @@ var onFlickityNavClick = function(e) {
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
 
-    calculateExitTime(exitedCardID);
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
-}
-
-var checkOverflow = function(cardHeight, $slide) {
-    if (cardHeight > $(window).height()) {
-        $slide.find('.card-background').height(cardHeight + (6 * rem));
-    } else {
-        $slide.find('.card-background').height('100%');
-    }
+    logCardExit(exitedCardID);
 }
 
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
-    ANALYTICS.trackEvent('begin-btn-click');
-    calculateExitTime('title');
-    ANALYTICS.trackEvent('card-exit', 'title');
+    ANALYTICS.trackEvent('begin-btn-click', currentState);
+    logCardExit('title');
 }
 
-var calculateExitTime = function(id) {
+var logCardExit = function(id) {
+    var timeBucket = calculateTimeBucket(slideStartTime)[0];
+    var timeValue = calculateSlideExitTime(id);
+    ANALYTICS.trackEvent('card-exit', id, timeBucket, timeValue);
+}
+
+var calculateSlideExitTime = function(id) {
     var currentTime = new Date();
     var timeOnSlide = Math.abs(currentTime - slideStartTime);
     timeOnSlides[id] += timeOnSlide;
     slideStartTime = new Date();
+    return timeOnSlide;
 }
 
-var calculateTotalTimeBucket = function() {
+var calculateTimeBucket = function(startTime) {
     var currentTime = new Date();
-    var timeOnSite = Math.abs(currentTime - globalStartTime);
-    var seconds = Math.floor(timeOnSite/1000);
+    var totalTime = Math.abs(currentTime - startTime);
+    var seconds = Math.floor(totalTime/1000);
+    var timeBucket = getTimeBucket(seconds);
+
+    return [timeBucket, totalTime];
+}
+
+var getTimeBucket = function(seconds) {
     if (seconds < 60) {
         var tensOfSeconds = Math.floor(seconds / 10) * 10;
         var timeBucket = tensOfSeconds.toString() + 's';
@@ -273,7 +280,29 @@ var calculateTotalTimeBucket = function() {
         var timeBucket = fivesOfMinutes.toString() + 'm';
     }
 
-    return [timeBucket, timeOnSite];
+    return timeBucket
+}
+
+var onUnload = function(e) {
+    // log global time
+    var totalTimeArray = calculateTimeBucket(globalStartTime);
+    console.log(totalTimeArray);
+    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
+
+    // log final slide time
+    var currentSlideId = $('.is-selected').attr('id');
+    calculateSlideExitTime(currentSlideId);
+
+    // log all slide total time buckets and time values
+    for (slide in timeOnSlides) {
+        if (timeOnSlides.hasOwnProperty(slide)) {
+            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+            console.log(slide, timeBucket, timeOnSlides[slide]);
+            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+        }
+    }
+
+    return 'unload!';
 }
 
 var setPolls = function() {
@@ -336,18 +365,6 @@ var checkState = function() {
     });
 }
 
-var detectMobileBg = function($card) {
-    var $cardBackground = $card.find('.card-background');
-
-    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
-        var bgURL = $cardBackground.data('mobile-bg');
-        $cardBackground.css('background-image', 'url("' + bgURL + '")');
-    } else {
-        var bgURL = $cardBackground.data('default-bg');
-        $cardBackground.css('background-image', 'url("' + bgURL + '")');
-    }
-}
-
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
@@ -359,50 +376,38 @@ var onResize = function() {
     detectMobileBg();
 }
 
-var onUnload = function(e) {
-    // log global time
-    var totalTimeArray = calculateTotalTimeBucket();
-    console.log(totalTimeArray);
-    ANALYTICS.trackEvent('total-time-on-site', totalTimeArray[0], totalTimeArray[1]);
-
-    // log all slide times
-    var currentSlideId = $('.is-selected').attr('id');
-    calculateExitTime(currentSlideId);
-
-    for (slide in timeOnSlides) {
-        if (timeOnSlides.hasOwnProperty(slide)) {
-            console.log(slide, timeOnSlides[slide]);
-            ANALYTICS.trackEvent('total-time-on-slide', slide, timeOnSlides[slide]);
-        }
-    }
-
-    return 'unload!';
-}
-
 var focusCardsWrapper = function() {
     $cardsWrapper.focus();
 }
+
+var onSubscribeBtnClick = function() {
+    focusCardsWrapper();
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('subscribe-btn-click', currentState, timesToClick[0], timesToClick[1]);
+}
+
+var onSupportBtnClick = function(e) {
+    focusCardsWrapper();
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
+}
+
+var onLinkRoundupLinkClick = function() {
+    focusCardsWrapper();
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
+}
+
+
+
+/*
+* STUB TEST COMMANDS
+*/
 
 var getCandidates = function() {
     $.getJSON('assets/candidates.json', function(data) {
         return data;
     });
-}
-
-var onSubscribeBtnClick = function() {
-    focusCardsWrapper();
-    ANALYTICS.trackEvent('subscribe-btn-click');
-}
-
-var onSupportBtnClick = function(e) {
-    focusCardsWrapper();
-    ANALYTICS.trackEvent('support-btn-click');
-}
-
-var onLinkRoundupLinkClick = function() {
-    focusCardsWrapper();
-    var href = $(this).attr('href');
-    ANALYTICS.trackEvent('link-roundup-link-click', href);
 }
 
 var makeListOfCandidates = function(candidates) {
