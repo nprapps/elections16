@@ -4,6 +4,7 @@ var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
 var $globalHeader = null;
+var $globalNav = null;
 var $globalControls = null;
 var $rewindBtn = null;
 var $forwardBtn = null;
@@ -36,6 +37,7 @@ var onDocumentLoad = function(e) {
     $playToggleBtn = $('.toggle-btn');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $globalNav = $('.global-nav');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
     $duringModeNotice = $('.during-mode-notice');
@@ -86,6 +88,10 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
+    for (var i = 0; i < $cards.length; i++) {
+        detectMobileBg($cards.eq(i));
+    }
+
     $flickityNav = $('.flickity-prev-next-button');
 
     // bind events that must be bound after flickity init
@@ -98,7 +104,7 @@ var setupFlickity = function() {
 
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
-    var cardHeight = $thisCard.find('.card-inner').height();
+    var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
     checkOverflow(cardHeight, $thisCard);
 }
 
@@ -109,14 +115,13 @@ var onCardChange = function(e) {
     focusCardsWrapper();
 
     var $thisCard = $('.is-selected');
-    var cardHeight = $thisCard.find('.card-inner').height();
+    var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
     checkOverflow(cardHeight, $thisCard);
 
     $globalHeader.removeClass('bg-header');
 
     if (newCardIndex > 0) {
-        $globalControls.show();
-        $globalHeader.show();
+        $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
         if (currentState == 'during' && !playedAudio) {
@@ -124,8 +129,7 @@ var onCardChange = function(e) {
             playedAudio = true;
         }
     } else {
-        $globalControls.hide();
-        $globalHeader.hide();
+        $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
         $flickityNav.hide();
     }
@@ -250,7 +254,15 @@ var getCard = function(url, $card, i) {
             success: function(data, status) {
                 if (status === 'success') {
                     var $cardInner = $(data).find('.card-inner');
-                    $card.html($cardInner);
+                    var $cardBackground = $(data).find('.card-background');
+
+                    var htmlString = $cardInner.prop('outerHTML');
+                    if ($cardBackground.length > 0) {
+                        htmlString += $cardBackground.prop('outerHTML');
+                    }
+
+                    $card.html(htmlString);
+                    detectMobileBg($card);
                 }
             }
         });
@@ -273,6 +285,18 @@ var checkState = function() {
     });
 }
 
+var detectMobileBg = function($card) {
+    var $cardBackground = $card.find('.card-background');
+
+    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+        var bgURL = $cardBackground.data('mobile-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    } else {
+        var bgURL = $cardBackground.data('default-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    }
+}
+
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
@@ -280,6 +304,8 @@ var onResize = function() {
     var $thisCard = $cards.filter('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
+
+    detectMobileBg();
 }
 
 var focusCardsWrapper = function() {

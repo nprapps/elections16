@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" style="background: url('{{ image }}') no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
     <p class="photo-credit">{{ credit }}</p>
 </span>
 {% endblock %}

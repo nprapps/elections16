@@ -1,4 +1,6 @@
+from datetime import datetime
 from decimal import Decimal
+from pytz import timezone
 
 import operator
 import re
@@ -119,6 +121,20 @@ def ap_date_filter(value):
 
     return output
 
+def ap_time_filter(value):
+    """
+    Converts a date string in m/d/yyyy format into AP style.
+    """
+    if not value:
+        return ''
+
+    datetime_obj = datetime.strptime(value, '%I:%M')
+    datetime_obj_utc = datetime_obj.replace(tzinfo=timezone('GMT'))
+    datetime_obj_est = datetime_obj_utc.astimezone(timezone('US/Eastern'))
+    datetime_string_est = datetime_obj_est.strftime('%I:%M')
+
+    return datetime_string_est
+
 def ap_state_filter(usps):
     """
     Convert a USPS state abbreviation into AP style.
@@ -132,7 +148,7 @@ def ap_time_period_filter(value):
     if not value:
         return ''
 
-    periods = '.'.join(value.lower()) + '.'
+    periods = '.'.join(value) + '.'
 
     return periods
 
