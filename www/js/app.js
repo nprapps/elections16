@@ -67,7 +67,6 @@ var onDocumentLoad = function(e) {
     setupFlickity();
     setPolls();
     AUDIO.setupAudio();
-    detectMobileBg();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -96,6 +95,7 @@ var setupFlickity = function() {
     for (var i = 0; i < $cards.length; i++) {
         var id = $cards.eq(i).attr('id');
         timeOnSlides[id] = 0;
+        detectMobileBg($cards.eq(i));
     }
 
     $flickityNav = $('.flickity-prev-next-button');
@@ -300,6 +300,7 @@ var getCard = function(url, $card, i) {
                     }
 
                     $card.html(htmlString);
+                    detectMobileBg($card);
                 }
             }
         });
@@ -322,17 +323,15 @@ var checkState = function() {
     });
 }
 
-var detectMobileBg = function() {
-    for (var i = 0; i < $cards.length; i++) {
-        var $cardBackground = $cards.eq(i).find('.card-background');
+var detectMobileBg = function($card) {
+    var $cardBackground = $card.find('.card-background');
 
-        if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
-            var bgURL = $cardBackground.data('mobile-bg');
-            $cardBackground.css('background-image', 'url("' + bgURL + '")');
-        } else {
-            var bgURL = $cardBackground.data('default-bg');
-            $cardBackground.css('background-image', 'url("' + bgURL + '")');
-        }
+    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+        var bgURL = $cardBackground.data('mobile-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    } else {
+        var bgURL = $cardBackground.data('default-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
     }
 }
 
