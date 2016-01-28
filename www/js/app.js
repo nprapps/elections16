@@ -114,6 +114,19 @@ var setupFlickity = function() {
     checkOverflow(cardHeight, $thisCard);
 }
 
+var detectMobileBg = function($card) {
+    var $cardBackground = $card.find('.card-background');
+
+    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+        var bgURL = $cardBackground.data('mobile-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    } else {
+        var bgURL = $cardBackground.data('default-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    }
+}
+
+
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
