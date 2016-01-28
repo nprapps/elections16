@@ -247,7 +247,14 @@ var getCard = function(url, $card, i) {
             success: function(data, status) {
                 if (status === 'success') {
                     var $cardInner = $(data).find('.card-inner');
-                    $card.html($cardInner);
+                    var $cardBackground = $(data).find('.card-background');
+
+                    if ($cardBackground.length > 0) {
+                        var htmlString = $cardInner.prop('outerHTML') + $cardBackground.prop('outerHTML');
+                    } else {
+                        var htmlString = $cardInner.prop('outerHTML');
+                    }
+                    $card.html(htmlString);
                 }
             }
         });
