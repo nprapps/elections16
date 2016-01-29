@@ -71,6 +71,9 @@ class DocParser:
             self.create_underline(tag)
             self.unwrap_span(tag)
 
+        for tag in self.soup.findAll('a'):
+            self.remove_comments(tag)
+
         for tag in self.soup.body.findAll():
             self.remove_empty(tag)
             self.parse_attrs(tag)
@@ -80,6 +83,13 @@ class DocParser:
             self.find_token(tag, 'BACKGROUNDIMAGE', 'image')
             self.find_token(tag, 'MOBILEIMAGE', 'mobile_image')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
+
+    def remove_comments(self, tag):
+        """
+        Remove comments.
+        """
+        if tag.get('id', '').startswith('cmnt'):
+            tag.parent.extract()
 
     def create_italic(self, tag):
         """

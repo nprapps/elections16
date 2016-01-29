@@ -1,5 +1,6 @@
 // Global jQuery references
 var $window = null;
+var $body = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
@@ -11,6 +12,7 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $newsletterForm = null;
 var $mute = null;
 var $flickityNav = null;
 var $subscribeBtn = null
@@ -34,6 +36,7 @@ var timeOnSlides = {};
  */
 var onDocumentLoad = function(e) {
     $window = $(window);
+    $body = $('body');
     $cardsWrapper = $('.cards');
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
@@ -47,6 +50,7 @@ var onDocumentLoad = function(e) {
     $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
+    $newsletterForm = $('#newsletter-signup');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
@@ -54,13 +58,14 @@ var onDocumentLoad = function(e) {
 
     rem = getEmPixels();
 
-    $begin.on('click', onBeginClick);
+    $body.on('click', '.begin', onBeginClick);
+    $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
+    $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
-    $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -300,8 +305,6 @@ var onUnload = function(e) {
             ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
         }
     }
-
-    return 'unload!';
 }
 
 var setPolls = function() {
@@ -372,7 +375,9 @@ var onResize = function() {
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
 
-    detectMobileBg();
+    for (var i = 0; i < $cards.length; i++) {
+        detectMobileBg($cards.eq(i));
+    }
 }
 
 var focusCardsWrapper = function() {
@@ -387,6 +392,7 @@ var onSupportBtnClick = function(e) {
 
 var onLinkRoundupLinkClick = function() {
     focusCardsWrapper();
+    var href = $(this).attr('href');
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
