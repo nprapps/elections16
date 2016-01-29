@@ -136,11 +136,14 @@ var ANALYTICS = (function () {
     /*
      * Event tracking.
      */
-    var trackEvent = function(eventName, label, value) {
+    var trackEvent = function(category, action, label, value) {
         var eventData = {
             'hitType': 'event',
-            'eventCategory': APP_CONFIG.PROJECT_SLUG,
-            'eventAction': eventName
+            'eventCategory': category
+        }
+
+        if (action) {
+            eventData['eventAction'] = action
         }
 
         if (label) {
@@ -148,7 +151,7 @@ var ANALYTICS = (function () {
         }
 
         if (value) {
-            eventData['eventValue'] = value
+            eventData['eventValue'] = value;
         }
 
         ga('send', eventData);
@@ -242,15 +245,6 @@ var ANALYTICS = (function () {
         trackEvent('chromecast-stop');
     }
 
-    // SLIDES
-
-    var exitSlide = function(slide_index) {
-        var currentTime = new Date();
-        timeOnLastSlide = Math.abs(currentTime - slideStartTime);
-        slideStartTime = currentTime;
-        trackEvent('slide-exit', slide_index, timeOnLastSlide);
-    }
-
     setupGoogle();
     setupComscore();
     setupNielson();
@@ -272,7 +266,6 @@ var ANALYTICS = (function () {
         'completeFiftyPercent': completeFiftyPercent,
         'completeSeventyFivePercent': completeSeventyFivePercent,
         'completeOneHundredPercent': completeOneHundredPercent,
-        'exitSlide': exitSlide,
         'startFullscreen': startFullscreen,
         'stopFullscreen': stopFullscreen,
         'begin': begin,

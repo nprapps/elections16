@@ -1,4 +1,5 @@
 // Global jQuery references
+var $window = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
@@ -25,11 +26,15 @@ var rem = null;
 var dragDirection = null;
 var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
+var globalStartTime = null;
+var slideStartTime = null;
+var timeOnSlides = {};
 
 /*
  * Run on page load.
  */
 var onDocumentLoad = function(e) {
+    $window = $(window);
     $cardsWrapper = $('.cards');
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
@@ -46,7 +51,7 @@ var onDocumentLoad = function(e) {
     $newsletterForm = $('#newsletter-signup');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
-    $supportBtn = $('.support');
+    $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
 
     rem = getEmPixels();
@@ -61,7 +66,8 @@ var onDocumentLoad = function(e) {
     $supportBtn.on('click', onSupportBtnClick);
     $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
 
-    $(window).resize(onResize);
+    $window.resize(onResize);
+    $window.on('beforeunload', onUnload);
 
     setupFlickity();
     setPolls();
@@ -88,7 +94,12 @@ var setupFlickity = function() {
         selectedAttraction: isTouch ? 0.025 : 1
     });
 
+    globalStartTime = new Date();
+    slideStartTime = new Date();
+
     for (var i = 0; i < $cards.length; i++) {
+        var id = $cards.eq(i).attr('id');
+        timeOnSlides[id] = 0;
         detectMobileBg($cards.eq(i));
     }
 
@@ -107,6 +118,19 @@ var setupFlickity = function() {
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
     checkOverflow(cardHeight, $thisCard);
 }
+
+var detectMobileBg = function($card) {
+    var $cardBackground = $card.find('.card-background');
+
+    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
+        var bgURL = $cardBackground.data('mobile-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    } else {
+        var bgURL = $cardBackground.data('default-bg');
+        $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    }
+}
+
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
@@ -138,8 +162,14 @@ var onCardChange = function(e) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
     }
+}
 
-    ANALYTICS.trackEvent('card-enter', $thisCard.attr('id'));
+var checkOverflow = function(cardHeight, $slide) {
+    if (cardHeight > $(window).height()) {
+        $slide.find('.card-background').height(cardHeight + (6 * rem));
+    } else {
+        $slide.find('.card-background').height('100%');
+    }
 }
 
 var onDragStart = function(e, pointer) {
@@ -166,7 +196,7 @@ var onDragEnd = function(e, pointer) {
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
 
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
+    logCardExit(exitedCardID);
 }
 
 var onKeydown = function(e) {
@@ -193,7 +223,7 @@ var onKeydown = function(e) {
         }
     }
 
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
+    logCardExit(exitedCardID);
 }
 
 var onFlickityNavClick = function(e) {
@@ -208,21 +238,72 @@ var onFlickityNavClick = function(e) {
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
 
-    ANALYTICS.trackEvent('card-exit', exitedCardID);
-}
-
-var checkOverflow = function(cardHeight, $slide) {
-    if (cardHeight > $(window).height()) {
-        $slide.find('.card-background').height(cardHeight + (6 * rem));
-    } else {
-        $slide.find('.card-background').height('100%');
-    }
+    logCardExit(exitedCardID);
 }
 
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
-    ANALYTICS.trackEvent('begin-btn-click');
-    ANALYTICS.trackEvent('card-exit', 'title');
+    ANALYTICS.trackEvent('begin-btn-click', currentState);
+    logCardExit('title');
+}
+
+var logCardExit = function(id) {
+    var timeBucket = calculateTimeBucket(slideStartTime)[0];
+    var timeValue = calculateSlideExitTime(id);
+    ANALYTICS.trackEvent('card-exit', id, timeBucket, timeValue);
+}
+
+var calculateSlideExitTime = function(id) {
+    var currentTime = new Date();
+    var timeOnSlide = Math.abs(currentTime - slideStartTime);
+    timeOnSlides[id] += timeOnSlide;
+    slideStartTime = new Date();
+    return timeOnSlide;
+}
+
+var calculateTimeBucket = function(startTime) {
+    var currentTime = new Date();
+    var totalTime = Math.abs(currentTime - startTime);
+    var seconds = Math.floor(totalTime/1000);
+    var timeBucket = getTimeBucket(seconds);
+
+    return [timeBucket, totalTime];
+}
+
+var getTimeBucket = function(seconds) {
+    if (seconds < 60) {
+        var tensOfSeconds = Math.floor(seconds / 10) * 10;
+        var timeBucket = tensOfSeconds.toString() + 's';
+    } else if (seconds >=60 && seconds < 300) {
+        var minutes = Math.floor(seconds / 60);
+        var timeBucket = minutes.toString() + 'm';
+    } else {
+        var minutes = Math.floor(seconds / 60);
+        var fivesOfMinutes = Math.floor(minutes / 5) * 5;
+        var timeBucket = fivesOfMinutes.toString() + 'm';
+    }
+
+    return timeBucket
+}
+
+var onUnload = function(e) {
+    // log global time
+    var totalTimeArray = calculateTimeBucket(globalStartTime);
+    console.log(totalTimeArray);
+    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
+
+    // log final slide time
+    var currentSlideId = $('.is-selected').attr('id');
+    calculateSlideExitTime(currentSlideId);
+
+    // log all slide total time buckets and time values
+    for (slide in timeOnSlides) {
+        if (timeOnSlides.hasOwnProperty(slide)) {
+            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+            console.log(slide, timeBucket, timeOnSlides[slide]);
+            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+        }
+    }
 }
 
 var setPolls = function() {
@@ -285,18 +366,6 @@ var checkState = function() {
     });
 }
 
-var detectMobileBg = function($card) {
-    var $cardBackground = $card.find('.card-background');
-
-    if ($cardBackground.data('mobile-bg') && $(window).width() <= 768) {
-        var bgURL = $cardBackground.data('mobile-bg');
-        $cardBackground.css('background-image', 'url("' + bgURL + '")');
-    } else {
-        var bgURL = $cardBackground.data('default-bg');
-        $cardBackground.css('background-image', 'url("' + bgURL + '")');
-    }
-}
-
 var onResize = function() {
     $cardsWrapper.height($(window).height());
     $cardsWrapper.flickity('resize');
@@ -312,21 +381,28 @@ var focusCardsWrapper = function() {
     $cardsWrapper.focus();
 }
 
-var getCandidates = function() {
-    $.getJSON('assets/candidates.json', function(data) {
-        return data;
-    });
-}
-
 var onSupportBtnClick = function(e) {
     focusCardsWrapper();
-    ANALYTICS.trackEvent('support-btn-click');
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
     focusCardsWrapper();
-    var href = $(this).attr('href');
-    ANALYTICS.trackEvent('link-roundup-link-click', href);
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
+}
+
+
+
+/*
+* STUB TEST COMMANDS
+*/
+
+var getCandidates = function() {
+    $.getJSON('assets/candidates.json', function(data) {
+        return data;
+    });
 }
 
 var makeListOfCandidates = function(candidates) {
@@ -360,7 +436,10 @@ var onNewsletterSubmit = function(e) {
         return;
     }
 
-    ANALYTICS.trackEvent('newsletter-signup');
+    focusCardsWrapper();
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('newsletter-subscribe', currentState, timesToClick[0], timesToClick[1]);
+
     // wait state
     clearStatusMessage();
     var waitMsg = '<div class="message wait">'
@@ -395,7 +474,7 @@ var onNewsletterSubmit = function(e) {
             clearStatusMessage();
             $el.append(errorMsg);
             $subscribeBtn.show();
-            ANALYTICS.trackEvent('newsletter-signup-error');
+            ANALYTICS.trackEvent('newsletter-signup-error', currentState);
         }
     });
 }
