@@ -61,7 +61,6 @@ var onDocumentLoad = function(e) {
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
-    $begin.on('click', onBeginClick);
     $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
     $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
@@ -242,6 +241,7 @@ var onFlickityNavClick = function(e) {
 }
 
 var onBeginClick = function(e) {
+    console.log('fire');
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click', currentState);
     logCardExit('title');
