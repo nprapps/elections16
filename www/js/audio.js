@@ -1,47 +1,6 @@
 var AUDIO = (function() {
     var NO_AUDIO = (window.location.search.indexOf('noaudio') >= 0);
-    var timedAnalytics = [
-        {
-            'seconds': 10,
-            'unit': '10s',
-            'measured': false
-        },
-        {
-            'seconds': 20,
-            'unit': '20s',
-            'measured': false
-        },
-        {
-            'seconds': 30,
-            'unit': '30s',
-            'measured': false
-        },
-        {
-            'seconds': 60,
-            'unit': '1m',
-            'measured': false
-        },
-        {
-            'seconds': 120,
-            'unit': '2m',
-            'measured': false
-        },
-        {
-            'seconds': 180,
-            'unit': '3m',
-            'measured': false
-        },
-        {
-            'seconds': 240,
-            'unit': '4m',
-            'measured': false
-        },
-        {
-            'seconds': 300,
-            'unit': '5m',
-            'measured': false
-        },
-    ]
+    var timedAnalytics = {};
     var live = null;
 
     var setupAudio = function() {
@@ -134,13 +93,10 @@ var AUDIO = (function() {
         var position = e.jPlayer.status.currentTime;
         var remainingTime = totalTime - position;
 
-        for (var i = 0; i < timedAnalytics.length; i++) {
-            var obj = timedAnalytics[i];
-
-            if (position >= obj.seconds && !obj.measured) {
-                ANALYTICS.trackEvent('audio-' + obj.unit, $audioPlayer.data().jPlayer.status.src);
-                obj.measured = true;
-            }
+        var timeBucket = getTimeBucket(position);
+        if (!timedAnalytics[timeBucket]) {
+            timedAnalytics[timeBucket] = true;
+            ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
         }
 
         $duration.text($.jPlayer.convertTime(remainingTime));
