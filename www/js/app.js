@@ -1,5 +1,6 @@
 // Global jQuery references
 var $window = null;
+var $body = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
@@ -35,6 +36,7 @@ var timeOnSlides = {};
  */
 var onDocumentLoad = function(e) {
     $window = $(window);
+    $body = $('body');
     $cardsWrapper = $('.cards');
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
@@ -56,15 +58,14 @@ var onDocumentLoad = function(e) {
 
     rem = getEmPixels();
 
-    $begin.on('click', onBeginClick);
+    $body.on('click', '.begin', onBeginClick);
+    $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
     $playToggleBtn.on('click', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
-    $begin.on('click', onBeginClick);
     $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
-    $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -389,6 +390,7 @@ var onSupportBtnClick = function(e) {
 
 var onLinkRoundupLinkClick = function() {
     focusCardsWrapper();
+    var href = $(this).attr('href');
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
