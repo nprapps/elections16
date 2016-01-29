@@ -23,7 +23,7 @@ var onDocumentLoad = function() {
     $callNPR.on('click', onCallNPRClick);
     $uncallNPR.on('click', onUncallNPRClick);
 
-    pageRefresh = setInterval(refreshPage, 10000);
+    //pageRefresh = setInterval(refreshPage, 10000);
 }
 
 var onAPClick = function(e) {

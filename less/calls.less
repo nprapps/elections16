@@ -31,13 +31,27 @@
     background-color: rgba(255,255,255,0.5);
 }
 
-table {
-    th {
-        text-align: center;
+h3 {
+  font-size: 2.6rem;
+}
+
+p {
+  font-size: 1.4rem;
+}
+
+table, .table {
+    font-size: 1.5rem;
+    margin-bottom: 6rem;
+
+    tbody tr td, thead tr th {
+      padding: 3px 5px;
+      border-top: none;
+      border-right: none;
+      border-left: none;
     }
 
     .col-candidate {
-        width: 40%;
+        width: 25%;
     }
     .col-npr-winner {
         text-align:
@@ -57,13 +71,14 @@ table {
     .col-call-npr {
         text-align: center;
         width: 20%;
-
-        .btn {
-            width: 100%;
-            &.disabled {
-                color: #777;
-                opacity: 0.3;
-            }
-        }
     }
+
+    .btn {
+        font-size: 1.5rem;
+        padding: 2px;
+        width: 100%;
+        &.disabled {
+            opacity: 0.3;
+        }
+    } 
 }

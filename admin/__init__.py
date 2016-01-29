@@ -1,10 +1,9 @@
 import app_config
 import datetime
-import json
 import logging
 
 from . import utils
-from collections import OrderedDict
+from app.utils import comma_filter, percent_filter
 from flask import Flask, make_response, render_template
 from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
@@ -17,6 +16,10 @@ app = Flask(__name__)
 app.debug = app_config.DEBUG
 secrets = app_config.get_secrets()
 app.secret_key = secrets.get('FLASK_SECRET_KEY')
+
+app.add_template_filter(comma_filter, name='comma')
+app.add_template_filter(percent_filter, name='percent')
+
 
 try:
     file_handler = logging.FileHandler('%s/admin_app.log' % app_config.SERVER_LOG_PATH)
