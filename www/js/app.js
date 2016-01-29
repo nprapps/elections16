@@ -112,8 +112,12 @@ var setupFlickity = function() {
     $cardsWrapper.on('dragMove', onDragMove);
     $cardsWrapper.on('dragEnd', onDragEnd);
     $cardsWrapper.on('keydown', onKeydown);
-    $flickityNav.on('click', onFlickityNavClick);
 
+    if (isTouch) {
+        $flickityNav.on('touchend', onFlickityNavClick);
+    } else {
+        $flickityNav.on('click', onFlickityNavClick);
+    }
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -196,7 +200,7 @@ var onDragEnd = function(e, pointer) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
-
+    console.log('firing');
     logCardExit(exitedCardID);
 }
 
@@ -238,7 +242,7 @@ var onFlickityNavClick = function(e) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
-
+    console.log('nav click');
     logCardExit(exitedCardID);
 }
 
