@@ -57,7 +57,7 @@ def call_npr():
 
     result = models.Result.get(models.Result.id == result_id)
     call = result.call[0]
-    if call.override_winner == True:
+    if call.override_winner:
         call.override_winner = False
     else:
         call.override_winner = True
@@ -66,12 +66,13 @@ def call_npr():
 
     race_id = result.raceid
     race_results = models.Result.select().where(
+        models.Result.level == 'state',
         models.Result.raceid == race_id
     )
 
     for race_result in race_results:
         race_call = race_result.call[0]
-        if call.override_winner == True:
+        if call.override_winner:
             race_call.accept_ap = False
 
         if race_call.call_id != call.call_id:
@@ -88,12 +89,13 @@ def accept_ap():
     race_id = request.form.get('race_id')
 
     results = models.Result.select().where(
-        (models.Result.raceid == race_id)
+        models.Result.level == 'state',
+        models.Result.raceid == race_id
     )
 
     for result in results:
         call = result.call[0]
-        if call.accept_ap == True:
+        if call.accept_ap:
             call.accept_ap = False
         else:
             call.accept_ap = True
