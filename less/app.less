@@ -520,6 +520,8 @@ body {
         color: @white;
         font-weight: 700;
         text-decoration: none;
+        padding-bottom: 2px;
+        border-bottom: 2px solid @accent2;
     }
     .no-touch & {
         a:hover,
@@ -1165,7 +1167,7 @@ body {
             margin-left: 2em;
             list-style: none;
             margin: 2.5rem 0 0 0;
-            line-height: 1.7;
+            line-height: 2;
 
             &:before {
                 content:counter(li);
@@ -1218,6 +1220,10 @@ body {
         &.footnote {
             color: #999;
             font-size: 0.8rem;
+
+            a {
+                border: none;
+            }
         }
     }
     form {
