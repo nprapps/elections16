@@ -375,7 +375,9 @@ var onResize = function() {
     var cardHeight = $thisCard.find('.card-inner').height();
     checkOverflow(cardHeight, $thisCard);
 
-    detectMobileBg();
+    for (var i = 0; i < $cards.length; i++) {
+        detectMobileBg($cards.eq(i));
+    }
 }
 
 var focusCardsWrapper = function() {
