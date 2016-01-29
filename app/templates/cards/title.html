@@ -12,20 +12,22 @@
             </div>
         </div>
 
-
-        <!-- add class of live banner to the countdown-banner in during mode -->
         <div class="countdown-banner {% if state == 'during' %} live-banner {% endif %}">
             <h6>{{ banner }}</h6>
         </div>
 
-            <h1>{{ headline }}</h1>
-
-            <p>{{ content|safe }}
-            </p>
-
-
-
-             <button class="begin">Get Caught Up <i class="fa fa-angle-right"></i></button>
+        <h1>{{ headline }}</h1>
+        <p>{{ content|safe }}</p>
+        <button class="begin">
+            {% if state == 'before' or state == 'inactive' %}
+            Get Caught Up
+            {% elif state == 'during' %}
+            Join the live event
+            {% elif state == 'after' %}
+            View the results
+            {% endif %}
+        </button>
+        <i class="fa fa-angle-right"></i></button>
     </div>
 
 </div>
