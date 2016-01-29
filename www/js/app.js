@@ -242,7 +242,6 @@ var onFlickityNavClick = function(e) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
-    console.log('nav click');
     logCardExit(exitedCardID);
 }
 
