@@ -5,6 +5,7 @@ var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
 var $globalHeader = null;
+var $globalNav = null;
 var $globalControls = null;
 var $rewindBtn = null;
 var $forwardBtn = null;
@@ -40,6 +41,7 @@ var onDocumentLoad = function(e) {
     $playToggleBtn = $('.toggle-btn');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $globalNav = $('.global-nav');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
     $duringModeNotice = $('.during-mode-notice');
@@ -140,8 +142,7 @@ var onCardChange = function(e) {
     $globalHeader.removeClass('bg-header');
 
     if (newCardIndex > 0) {
-        $globalControls.show();
-        $globalHeader.show();
+        $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
         if (currentState == 'during' && !playedAudio) {
@@ -149,8 +150,7 @@ var onCardChange = function(e) {
             playedAudio = true;
         }
     } else {
-        $globalControls.hide();
-        $globalHeader.hide();
+        $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
         $flickityNav.hide();
     }
