@@ -43,18 +43,26 @@ table, .table {
     font-size: 1.5rem;
     margin-bottom: 6rem;
 
-    tbody tr td, thead tr th {
-      padding: 3px 5px;
-      border-top: none;
-      border-right: none;
-      border-left: none;
+    tbody tr td, thead tr th, tfoot tr td {
+        padding: 3px 5px;
+        border-top: none;
+        border-right: none;
+        border-left: none;
+    }
+
+    thead th, tfoot td {
+        text-align: center;
+        border: none;
+    }
+
+    tfoot tr td {
+        border: none;
     }
 
     .col-candidate {
         width: 25%;
     }
     .col-npr-winner {
-        text-align:
         width: 20%;
 
         .btn {
@@ -80,5 +88,6 @@ table, .table {
         &.disabled {
             opacity: 0.3;
         }
-    } 
+    }
+
 }
