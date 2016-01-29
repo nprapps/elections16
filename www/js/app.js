@@ -30,6 +30,7 @@ var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
+var currentCard = null;
 
 /*
  * Run on page load.
@@ -97,6 +98,7 @@ var setupFlickity = function() {
 
     globalStartTime = new Date();
     slideStartTime = new Date();
+    currentCard = 0;
 
     for (var i = 0; i < $cards.length; i++) {
         var id = $cards.eq(i).attr('id');
@@ -108,6 +110,7 @@ var setupFlickity = function() {
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
+    $cardsWrapper.on('settle', onCardSettle);
     $cardsWrapper.on('dragStart', onDragStart);
     $cardsWrapper.on('dragMove', onDragMove);
     $cardsWrapper.on('dragEnd', onDragEnd);
@@ -138,6 +141,8 @@ var detectMobileBg = function($card) {
 
 
 var onCardChange = function(e) {
+    console.log('card change');
+
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
@@ -193,6 +198,10 @@ var onDragEnd = function(e, pointer) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
+    if (currentCard === newCardIndex) {
+        return;
+    }
+
     if (dragDirection === 'previous') {
         var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
         ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
@@ -200,13 +209,16 @@ var onDragEnd = function(e, pointer) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
-    console.log('firing');
     logCardExit(exitedCardID);
 }
 
 var onKeydown = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
+
+    if (currentCard === newCardIndex) {
+        return;
+    }
 
     if (e.which === 37) {
         var keyDirection = 'previous';
@@ -232,6 +244,10 @@ var onKeydown = function(e) {
 }
 
 var onFlickityNavClick = function(e) {
+    if ($(this).attr('disabled')) {
+        return;
+    }
+
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
@@ -243,6 +259,11 @@ var onFlickityNavClick = function(e) {
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
     logCardExit(exitedCardID);
+}
+
+var onCardSettle = function() {
+    var flickity = $cardsWrapper.data('flickity');
+    currentCard = flickity.selectedIndex;
 }
 
 var onBeginClick = function(e) {
