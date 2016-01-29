@@ -11,6 +11,7 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $newsletterForm = null;
 var $mute = null;
 var $flickityNav = null;
 var $subscribeBtn = null
@@ -47,6 +48,7 @@ var onDocumentLoad = function(e) {
     $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
+    $newsletterForm = $('#newsletter-signup');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
@@ -59,7 +61,8 @@ var onDocumentLoad = function(e) {
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
-    $subscribeBtn.on('click', onSubscribeBtnClick);
+    $begin.on('click', onBeginClick);
+    $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
     $linkRoundupLinks.on('click', onLinkRoundupLinkClick);
 
@@ -301,8 +304,6 @@ var onUnload = function(e) {
             ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
         }
     }
-
-    return 'unload!';
 }
 
 var setPolls = function() {
@@ -380,12 +381,6 @@ var focusCardsWrapper = function() {
     $cardsWrapper.focus();
 }
 
-var onSubscribeBtnClick = function() {
-    focusCardsWrapper();
-    var timesToClick = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('subscribe-btn-click', currentState, timesToClick[0], timesToClick[1]);
-}
-
 var onSupportBtnClick = function(e) {
     focusCardsWrapper();
     var timesToClick = calculateTimeBucket(globalStartTime);
@@ -422,6 +417,66 @@ var makeListOfCandidates = function(candidates) {
     }
 
     return candidateList;
+}
+
+var onNewsletterSubmit = function(e) {
+    e.preventDefault();
+
+    var $el = $(this);
+    var email = $el.find('#newsletter-email').val();
+
+    var clearStatusMessage = function() {
+        var statusMsgExists = $el.find('.message').length;
+        if (statusMsgExists > 0) {
+            $el.find('.message').remove();
+        }
+    }
+
+    if (!email) {
+        return;
+    }
+
+    focusCardsWrapper();
+    var timesToClick = calculateTimeBucket(globalStartTime);
+    ANALYTICS.trackEvent('newsletter-subscribe', currentState, timesToClick[0], timesToClick[1]);
+
+    // wait state
+    clearStatusMessage();
+    var waitMsg = '<div class="message wait">'
+    waitMsg += '<p><i class="fa fa-spinner fa-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
+    waitMsg += '</div>'
+    $el.append(waitMsg);
+    $subscribeBtn.hide();
+
+    $.ajax({
+        url: APP_CONFIG.NEWSLETTER_POST_URL,
+        timeout: APP_CONFIG.NEWSLETTER_POST_TIMEOUT,
+        method: 'POST',
+        data: {
+            email: email,
+            orgId: 0,
+            isAuthenticated: false
+        },
+        success: function(response) { // success
+            var successMsg = '<div class="message success">'
+            successMsg += '<h3>' + COPY.newsletter.success_headline + '</h3>';
+            successMsg += '<p>' + COPY.newsletter.success_text + ' ' + email + '.</p>';
+            successMsg += '</div>'
+            clearStatusMessage();
+            $el.html(successMsg);
+            ANALYTICS.trackEvent('newsletter-signup-success');
+        },
+        error: function(response) { // error
+            var errorMsg = '<div class="message error">';
+            errorMsg += '<h3>' + COPY.newsletter.error_headline + '</h3>';
+            errorMsg += '<p>' + COPY.newsletter.error_text + '</p>';
+            errorMsg += '</div>'
+            clearStatusMessage();
+            $el.append(errorMsg);
+            $subscribeBtn.show();
+            ANALYTICS.trackEvent('newsletter-signup-error', currentState);
+        }
+    });
 }
 
 $(onDocumentLoad);

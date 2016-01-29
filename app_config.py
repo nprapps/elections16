@@ -46,7 +46,7 @@ ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
 DEFAULT_MAX_AGE = 300
 
-RELOAD_TRIGGER = False
+RELOAD_TRIGGER = True
 RELOAD_CHECK_INTERVAL = 60
 
 PRODUCTION_SERVERS = ['54.244.238.237']
@@ -135,6 +135,13 @@ DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCa
 DISQUS_UUID = '5d97b454-ae74-11e5-b1cf-80e65003a150'
 
 """
+NEWSLETTER CONFIGURATION
+"""
+
+# Timeout (ms)
+NEWSLETTER_POST_TIMEOUT = 5000
+
+"""
 OAUTH
 """
 
@@ -203,6 +210,7 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
+    global NEWSLETTER_POST_URL
     global LOG_LEVEL
 
     if deployment_target == 'production':
@@ -215,6 +223,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
+        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
@@ -226,6 +235,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
+        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
     else:
         S3_BUCKET = None
@@ -237,6 +247,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
+        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
 
     DEPLOYMENT_TARGET = deployment_target

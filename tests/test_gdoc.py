@@ -47,6 +47,10 @@ class DocParserTestCase(unittest.TestCase):
     def test_a(self):
         self._contains_tag(self.contents[8], 'a')
 
+    def test_a_count(self):
+        tags = self.parser.soup.body.findAll('a')
+        self.assertEqual(len(tags), 1)
+
     def test_ahref(self):
         href = self.contents[8].a.attrs['href'][0]
         self.assertEqual(href, 'http://npr.org')
