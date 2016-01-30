@@ -23,7 +23,7 @@ var onDocumentLoad = function() {
     $callNPR.on('click', onCallNPRClick);
     $uncallNPR.on('click', onUncallNPRClick);
 
-    pageRefresh = setInterval(refreshPage, 10000);
+    //pageRefresh = setInterval(refreshPage, 10000);
 }
 
 var onAPClick = function(e) {
@@ -31,6 +31,7 @@ var onAPClick = function(e) {
         race_id: $(this).data('race-id')
     }
 
+    $overlay.fadeIn();
     $.post(ACCEPT_AP_URL, data,function() {
         refreshPage(true);
     });
@@ -41,6 +42,8 @@ var onCallNPRClick = function(e) {
         race_id: $(this).data('race-id'),
         result_id: $(this).data('result-id')
     }
+
+    $overlay.fadeIn();
     $.post(CALL_NPR_URL, data, function() {
         refreshPage(true);
     });
@@ -52,16 +55,13 @@ var onUncallNPRClick = function(e) {
         result_id: $(this).data('result-id')
     }
 
+    $overlay.fadeIn();
     $.post(CALL_NPR_URL, data, function() {
         refreshPage(true);
     });
 }
 
-var refreshPage = function(fadeUI) {
-    if (fadeUI) {
-        $overlay.fadeIn();
-    }
-
+var refreshPage = function() {
     $.get(window.location.href, function(data) {
         var $oldContainer = $('.container');
         var $newHTML = $(data);
@@ -76,9 +76,7 @@ var refreshPage = function(fadeUI) {
 
         onDocumentLoad();
 
-        if (fadeUI) {
-            $overlay.fadeOut();
-        }
+        $overlay.fadeOut();
     });
 }
 

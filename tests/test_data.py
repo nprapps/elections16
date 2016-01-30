@@ -18,14 +18,14 @@ class ResultsLoadingTestCase(unittest.TestCase):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
             data.load_local_results('tests/data/elex.csv')
             results_length = models.Result.select().count()
-            self.assertEqual(results_length, 20)
+            self.assertEqual(results_length, 1800)
 
     def test_calls_creation(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
             data.load_local_results('tests/data/elex.csv')
             data.create_calls()
             calls_length = models.Call.select().count()
-            self.assertEqual(calls_length, 20)
+            self.assertEqual(calls_length, 18)
 
     def test_results_deletion(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):

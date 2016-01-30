@@ -26,10 +26,10 @@
         </thead>
         <tbody>
             {% for result in results %}
-                <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %} winner {% endif %}">
+                <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %} winner {% endif %}">
                     <td>
                         {% if result.first %} {{ result.first|smarty }} {% endif %} {{ result.last|smarty }}
-                        {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %}<b class="fa fa-check"></b>{% endif %}
+                        {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %}<b class="fa fa-check"></b>{% endif %}
                     </td>
                     <td class="votes">{{ result.votecount|comma }}</td>
                     <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>

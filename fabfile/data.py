@@ -131,7 +131,10 @@ def create_calls():
     """
     Create database of race calls for all races in results data.
     """
-    results = models.Result.select()
+    results = models.Result.select().where(
+        models.Result.level == 'state'
+    )
+
     for result in results:
         models.Call.create(call_id=result.id)
 
