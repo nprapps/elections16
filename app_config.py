@@ -263,7 +263,7 @@ configure_targets(DEPLOYMENT_TARGET)
 Database
 """
 secrets = get_secrets()
-DATABASE = {
+database = {
     'name': PROJECT_SLUG,
     'test_name': '%stest' % PROJECT_SLUG,
     'user': secrets.get('POSTGRES_USER', None),
