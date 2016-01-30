@@ -22,7 +22,7 @@ class FilterResultsTestCase(unittest.TestCase):
             data.create_calls()
 
             filtered = utils.filter_results()
-            self.assertEqual(filtered.count(), 20)
+            self.assertEqual(filtered.count(), 18)
 
     def test_results_grouping(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
