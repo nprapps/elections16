@@ -176,7 +176,7 @@ def deploy_server(remote='origin'):
             servers.deploy_confs()
 
 @task
-def deploy_client(remote='origin', reload=False):
+def deploy_client(reload=False):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
