@@ -10,6 +10,7 @@ var AUDIO = (function() {
             loop: false,
             supplied: 'mp3',
             timeupdate: onTimeupdate,
+            preload: 'none',
             volume: NO_AUDIO ? 0 : 1
         });
     }
