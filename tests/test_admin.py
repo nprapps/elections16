@@ -10,7 +10,7 @@ from models import models
 from peewee import *
 from playhouse.test_utils import test_database
 
-test_db = PostgresqlDatabase(app_config.DATABASE['test_name'])
+test_db = PostgresqlDatabase(app_config.database['test_name'])
 
 class FilterResultsTestCase(unittest.TestCase):
     """

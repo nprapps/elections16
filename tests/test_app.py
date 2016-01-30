@@ -38,5 +38,12 @@ class AppConfigTestCase(unittest.TestCase):
 
         app_config.configure_targets('staging')
 
+    def test_app_config_no_db_credentials(self):
+        from render_utils import flatten_app_config
+
+        config = flatten_app_config()
+
+        assert not config.get('database')
+
 if __name__ == '__main__':
     unittest.main()

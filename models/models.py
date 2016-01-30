@@ -4,11 +4,11 @@ from peewee import Model, PostgresqlDatabase
 from peewee import BooleanField, CharField, DateField, DateTimeField, DecimalField, ForeignKeyField, IntegerField
 
 db = PostgresqlDatabase(
-    app_config.DATABASE['name'],
-    user=app_config.DATABASE['user'],
-    password=app_config.DATABASE['password'],
-    host=app_config.DATABASE['host'],
-    port=app_config.DATABASE['port']
+    app_config.database['name'],
+    user=app_config.database['user'],
+    password=app_config.database['password'],
+    host=app_config.database['host'],
+    port=app_config.database['port']
 )
 
 
