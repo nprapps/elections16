@@ -262,9 +262,6 @@ configure_targets(DEPLOYMENT_TARGET)
 """
 Database
 """
-"""
-Database
-"""
 secrets = get_secrets()
 DATABASE = {
     'name': PROJECT_SLUG,
