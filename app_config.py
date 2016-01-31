@@ -44,6 +44,8 @@ STAGING_S3_BUCKET = 'stage-apps.npr.org'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
+ARCHIVE_S3_BUCKET = 'election-backup.apps.npr.org'
+
 DEFAULT_MAX_AGE = 300
 
 RELOAD_TRIGGER = True
@@ -164,14 +166,16 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 Election configuration
 """
 NEXT_ELECTION_DATE = '2016-02-09'
-ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
-#ELEX_FLAGS = '-t'
+#ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
+ELEX_FLAGS = '-t'
 
 """
 Daemon configuration
 """
+COPY_DEPLOY_INTERVAL = 30
 RESULTS_DEPLOY_INTERVAL = 30
-CARD_DEPLOY_INTERVAL = 120
+CARD_DEPLOY_INTERVAL = 60
+SITE_ARCHIVE_INTERVAL = 900
 
 
 """
