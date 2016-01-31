@@ -57,7 +57,7 @@ def main(run_once=False):
             logger.info('deploy content cards')
             execute('deploy_all_cards')
 
-        if app_config.CARD_DEPLOY_INTERVAL and (now - archive_start) > app_config.CARD_DEPLOY_INTERVAL:
+        if app_config.SITE_ARCHIVE_INTERVAL and (now - archive_start) > app_config.SITE_ARCHIVE_INTERVAL:
             archive_start = now
             logger.info('archiving site')
             execute('archive_site')
