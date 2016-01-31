@@ -59,7 +59,8 @@ def main(run_once=False):
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - archive_start) > app_config.CARD_DEPLOY_INTERVAL:
             archive_start = now
-            logger.info('will archive site')
+            logger.info('archiving site')
+            execute('archive_site')
 
         if run_once:
             logger.info('run once specified, exiting')
