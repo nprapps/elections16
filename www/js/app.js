@@ -81,8 +81,6 @@ var onDocumentLoad = function(e) {
         'opacity': 1,
         'visibility': 'visible'
     });
-
-    $inputButtons.on('focus', forceInputFocus);
 }
 
 var setupFlickity = function() {
@@ -149,8 +147,6 @@ var onCardChange = function(e) {
 
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
-
-    focusCardsWrapper();
 
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -408,33 +404,16 @@ var onResize = function() {
     }
 }
 
-var focusCardsWrapper = function() {
-    $cardsWrapper.focus();
-}
 
 var onSupportBtnClick = function(e) {
-    focusCardsWrapper();
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
-    focusCardsWrapper();
     var href = $(this).attr('href');
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
-}
-
-/*
- * Handle loss of input focus when keyboard slides up by forcing a focus and
- * setSelectionRange on the element. Forcing focus handles the Android/Chrome case;
- * setting selection range handles the iOS/Safari case.
- */
-var forceInputFocus = function(e) {
-    var el = this;
-    setTimeout(function() {
-        $(el).focus();
-    }, 25);
 }
 
 /*
@@ -478,7 +457,6 @@ var onNewsletterSubmit = function(e) {
         return;
     }
 
-    focusCardsWrapper();
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('newsletter-subscribe', currentState, timesToClick[0], timesToClick[1]);
 
