@@ -655,9 +655,21 @@ body {
 }
 
 .title {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    //content: '';
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
 
     .card-inner {
         padding-top: 0;
+        max-width: @max-width-content;
+        margin: 0 auto;
 
         .during & {
             padding-top: 0;
@@ -669,11 +681,9 @@ body {
 
     }
     .card-background {
-        // background: url('http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg') no-repeat;
         .background-size(cover);
         background-position: center center;
         position: absolute;
-        //position: fixed;
         top: 0;
         left: 0;
         width: 100%;
@@ -782,12 +792,7 @@ body {
         margin: 2rem;
 
         @media @screen-small-above {
-            width: 40rem;
-            margin: 0 auto;
-            // position: absolute;
-            // top: 50%;
-            // left: 50%;
-            // transform: translate(-50%, -50%);
+            margin: 0;
         }
 
         .logo {
@@ -1144,7 +1149,7 @@ body {
             bottom: 0;
             left: 0;
             //content: '';
-            background: rgba(0, 0, 0, .3);
+            background: rgba(0, 0, 0, .5);
             display: -webkit-flex;
             display: flex;
             -webkit-align-items: center;
@@ -1293,7 +1298,26 @@ body {
 }
 
 #feedback {
-    article {margin-top: 2rem;}
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    //content: '';
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+
+    .card-inner {
+        max-width: @max-width-content;
+        margin: 4rem 1rem 1rem 1rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
 
     .project-credits {
 
