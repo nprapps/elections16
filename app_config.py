@@ -224,7 +224,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
-        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
