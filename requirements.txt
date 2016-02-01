@@ -53,3 +53,4 @@ twitter==1.14.3
 wheel==0.23.0
 wsgiref==0.1.2
 wtf-peewee==0.2.6
+awscli==1.10.1
