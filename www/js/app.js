@@ -88,6 +88,10 @@ var onDocumentLoad = function(e) {
         'opacity': 1,
         'visibility': 'visible'
     });
+
+    if (window.navigator.standalone) {
+        ANALYTICS.trackEvent('launched-from-homescreen', currentState);
+    }
 }
 
 var setupFlickity = function() {
