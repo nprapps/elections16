@@ -150,8 +150,6 @@ var detectMobileBg = function($card) {
 
 
 var onCardChange = function(e) {
-    console.log('card change');
-
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
@@ -335,7 +333,6 @@ var getTimeBucket = function(seconds) {
 var onUnload = function(e) {
     // log global time
     var totalTimeArray = calculateTimeBucket(globalStartTime);
-    console.log(totalTimeArray);
     ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
 
     // log final slide time
@@ -346,7 +343,6 @@ var onUnload = function(e) {
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
             var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            console.log(slide, timeBucket, timeOnSlides[slide]);
             ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
         }
     }
