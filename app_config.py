@@ -40,8 +40,6 @@ DEPLOYMENT
 """
 PRODUCTION_S3_BUCKET = 'apps.npr.org'
 
-#STAGING_S3_BUCKET = 'stage-elections16.apps.npr.org.s3.amazonaws.com'
-
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
 ARCHIVE_S3_BUCKET = 'election-backup.apps.npr.org'
@@ -165,7 +163,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-09'
+NEXT_ELECTION_DATE = '2016-02-01'
 #ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
 ELEX_FLAGS = '-t'
 
