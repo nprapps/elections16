@@ -18,6 +18,7 @@ var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
+var $inputButtons = null;
 
 // Global references
 var candidates = {}
@@ -56,6 +57,7 @@ var onDocumentLoad = function(e) {
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
+    $inputButtons = $('input');
 
     rem = getEmPixels();
 
@@ -79,6 +81,8 @@ var onDocumentLoad = function(e) {
         'opacity': 1,
         'visibility': 'visible'
     });
+
+    $inputButtons.on('focus', forceInputFocus);
 }
 
 var setupFlickity = function() {
@@ -421,7 +425,18 @@ var onLinkRoundupLinkClick = function() {
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
 
-
+/*
+ * Handle loss of input focus when keyboard slides up by forcing a focus and
+ * setSelectionRange on the element. Forcing focus handles the Android/Chrome case;
+ * setting selection range handles the iOS/Safari case.
+ */
+var forceInputFocus = function(e) {
+    var el = this;
+    setTimeout(function() {
+        $(el).focus();
+        el.setSelectionRange(0, 0);
+    }, 0);
+}
 
 /*
 * STUB TEST COMMANDS
