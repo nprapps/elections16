@@ -80,9 +80,9 @@ class DocParser:
             self.find_token(tag, 'HEADLINE', 'headline')
             self.find_token(tag, 'SUBHED', 'subhed')
             self.find_token(tag, 'BANNER', 'banner')
-            self.find_token(tag, 'BACKGROUNDIMAGE', 'image')
-            self.find_token(tag, 'MOBILEIMAGE', 'mobile_image')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
+            self.find_image_token(tag, 'BACKGROUNDIMAGE', 'image')
+            self.find_image_token(tag, 'MOBILEIMAGE', 'mobile_image')
 
     def remove_comments(self, tag):
         """
@@ -146,6 +146,20 @@ class DocParser:
                 text = tag.text
                 if text.startswith(token):
                     setattr(self, attr, text.split(':', 1)[-1].strip())
+                    tag.extract()
+        except TypeError:
+            pass
+
+    def find_image_token(self, tag, token, attr):
+        try:
+            if not getattr(self, attr):
+                text = tag.text
+                if text.startswith(token):
+                    value = text.split(':', 1)[-1].strip()
+                    if value.startswith('http://media.npr.org'):
+                        value = value.replace('http://media.npr.org', 'https://secure.npr.org')
+                    setattr(self, attr, value)
+
                     tag.extract()
         except TypeError:
             pass

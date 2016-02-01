@@ -25,7 +25,10 @@ def get_bucket(bucket_name):
     """
 
     if '.' in bucket_name:
-        s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
+        if bucket_name == 'elections.npr.org':
+            s3 = boto.s3.connect_to_region('us-west-2', calling_format=OrdinaryCallingFormat())
+        else:
+            s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
     else:
         s3 = boto.connect_s3()
 
