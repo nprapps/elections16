@@ -191,7 +191,7 @@ def deploy_client(reload=False):
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www',
-        app_config.PROJECT_SLUG,
+        '',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
@@ -201,7 +201,7 @@ def deploy_client(reload=False):
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www/assets',
-        '%s/assets' % app_config.PROJECT_SLUG,
+        'assets',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.ASSETS_MAX_AGE
         }
@@ -221,7 +221,7 @@ def deploy_results_cards():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html/results',
-        '%s/results' % app_config.PROJECT_SLUG,
+        'results',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
@@ -251,7 +251,7 @@ def deploy_all_cards():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html',
-        app_config.PROJECT_SLUG,
+        '',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
@@ -271,7 +271,7 @@ def check_timestamp():
 
     bucket = utils.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
-    k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
+    k.key = 'live-data/timestamp.json'
     if k.exists():
         return True
     else:
@@ -297,7 +297,7 @@ def reset_browsers():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www/live-data',
-        '%s/live-data' % app_config.PROJECT_SLUG,
+        'live-data',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
