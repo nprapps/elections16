@@ -480,6 +480,10 @@ body {
     .gotham();
     color: #ccc;
 
+    .touch & {
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
 
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
@@ -1100,11 +1104,6 @@ body {
 }
 
 .link-roundup {
-
-    .touch & {
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-    }
 
     header {
         .background-size(cover);
