@@ -262,7 +262,7 @@ def archive_site():
     require('settings', provided_by=[production, staging])
     now = datetime.now().strftime('%Y-%m-%d-%H:%M')
     s3archiveurl = 's3://{0}/{1}/backup-{2}/'.format(app_config.ARCHIVE_S3_BUCKET, env.settings, now)
-    cmd = 'aws s3 sync {0}/ {1} --acl public-read --region us-east-1'.format(app_config.S3_DEPLOY_URL, s3archiveurl)
+    cmd = 'aws s3 sync {0}/ {1} --acl public-read --source-region us-west-2 --region us-east-1'.format(app_config.S3_DEPLOY_URL, s3archiveurl)
     local(cmd)
 
 @task
