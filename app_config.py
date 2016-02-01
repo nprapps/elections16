@@ -40,7 +40,7 @@ DEPLOYMENT
 """
 PRODUCTION_S3_BUCKET = 'apps.npr.org'
 
-STAGING_S3_BUCKET = 'stage-apps.npr.org'
+#STAGING_S3_BUCKET = 'stage-elections16.apps.npr.org.s3.amazonaws.com'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
@@ -230,9 +230,9 @@ def configure_targets(deployment_target):
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
-        S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BUCKET = 'stage-elections16.apps.npr.org'
+        S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
+        S3_DEPLOY_URL = 's3://stage-elections16.apps.npr.org'
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
