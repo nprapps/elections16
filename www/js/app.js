@@ -12,13 +12,14 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $newsletterContainer = null;
 var $newsletterForm = null;
+var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
-var $inputButtons = null;
 
 // Global references
 var candidates = {}
@@ -52,12 +53,13 @@ var onDocumentLoad = function(e) {
     $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
-    $newsletterForm = $('#newsletter-signup');
+    $newsletterContainer = $('#newsletter');
+    $newsletterForm = $newsletterContainer.find('form');
+    $newsletterInput = $newsletterContainer.find('input');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
-    $inputButtons = $('input');
 
     rem = getEmPixels();
 
@@ -264,6 +266,20 @@ var onFlickityNavClick = function(e) {
 var onCardSettle = function() {
     var flickity = $cardsWrapper.data('flickity');
     currentCard = flickity.selectedIndex;
+
+    /*
+     * Workaround for bouncing kbd tray on some mobile webkit browsers (iphone 5, nexus 6).
+     *
+     * Attaches a focus handler that forces focus back on redraws triggered by keyboard
+     * after other commands have executed. It should only fire once to avoid recursion.
+     */
+    if ($(flickity.selectedElement).is($newsletterContainer)) {
+        $newsletterInput.one('focus', function() {
+            setTimeout(function() {
+                $newsletterInput.focus();
+            }, 100);
+        });
+    }
 }
 
 var onBeginClick = function(e) {
