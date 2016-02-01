@@ -434,8 +434,7 @@ var forceInputFocus = function(e) {
     var el = this;
     setTimeout(function() {
         $(el).focus();
-        el.setSelectionRange(0, 0);
-    }, 0);
+    }, 25);
 }
 
 /*
