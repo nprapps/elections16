@@ -165,7 +165,7 @@ Election configuration
 """
 NEXT_ELECTION_DATE = '2016-02-01'
 #ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
-ELEX_FLAGS = '-t'
+#ELEX_FLAGS = '-t'
 
 """
 Daemon configuration
