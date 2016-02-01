@@ -57,7 +57,6 @@ var AUDIO = (function() {
         var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
         var seekTime =  currentTime > 15 ? currentTime - 15 : 0;
         $audioPlayer.jPlayer('play', seekTime);
-        focusCardsWrapper();
 
         ANALYTICS.trackEvent('audio-rewind', $audioPlayer.data().jPlayer.status.src);
     }
@@ -66,7 +65,6 @@ var AUDIO = (function() {
         var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
         var seekTime =  currentTime + 15;
         $audioPlayer.jPlayer('play', seekTime);
-        focusCardsWrapper();
 
         ANALYTICS.trackEvent('audio-forward', $audioPlayer.data().jPlayer.status.src);
     };
@@ -85,8 +83,6 @@ var AUDIO = (function() {
                 pauseAudio();
             }
         }
-
-        focusCardsWrapper();
     }
 
     var onTimeupdate = function(e) {
