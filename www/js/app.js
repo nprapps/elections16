@@ -34,6 +34,11 @@ var slideStartTime = null;
 var timeOnSlides = {};
 var currentCard = null;
 
+var focusWorkaround = false;
+if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
+   focusWorkaround = true;
+}
+
 /*
  * Run on page load.
  */
@@ -273,7 +278,7 @@ var onCardSettle = function() {
      * Attaches a focus handler that forces focus back on redraws triggered by keyboard
      * after other commands have executed. It should only fire once to avoid recursion.
      */
-    if ($(flickity.selectedElement).is($newsletterContainer)) {
+    if (focusWorkaround && $(flickity.selectedElement).is($newsletterContainer)) {
         $newsletterInput.one('focus', function() {
             setTimeout(function() {
                 $newsletterInput.focus();
