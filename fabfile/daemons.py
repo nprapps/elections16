@@ -40,10 +40,6 @@ def main(run_once=False):
             copy_start = now
             logger.info('Update copy')
             execute('text.update')
-            execute('render.copytext_js')
-
-            logger.info('Update config')
-            execute('render.app_config_js')
 
         if app_config.RESULTS_DEPLOY_INTERVAL and (now - results_start) > app_config.RESULTS_DEPLOY_INTERVAL:
             results_start = now
