@@ -141,7 +141,7 @@ NEWSLETTER CONFIGURATION
 """
 
 # Timeout (ms)
-NEWSLETTER_POST_TIMEOUT = 5000
+NEWSLETTER_POST_TIMEOUT = 10000
 
 """
 OAUTH
@@ -239,7 +239,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
-        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
     else:
         S3_BUCKET = None
