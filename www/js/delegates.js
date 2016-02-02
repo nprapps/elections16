@@ -2,16 +2,16 @@
 var DELEGATE_DATA = {
     "republicans": {
         "del_needed": 1237,
-        "last_updated": "Feb. 2, 2016, 9:52 a.m. EST",
+        "last_updated": "Feb. 2, 2016, 2:59 p.m. EST",
         "candidates": [
             { "name_last": "Bush", "del_total": 1 },
             { "name_last": "Carson", "del_total": 3 },
             { "name_last": "Christie", "del_total": 0 },
             { "name_last": "Cruz", "del_total": 8 },
-            { "name_last": "Fiorina", "del_total": 0 },
+            { "name_last": "Fiorina", "del_total": 1 },
             { "name_last": "Gilmore", "del_total": 0 },
             { "name_last": "Huckabee", "del_total": 0 },
-            { "name_last": "Kasich", "del_total": 0 },
+            { "name_last": "Kasich", "del_total": 1 },
             { "name_last": "Paul", "del_total": 1 },
             { "name_last": "Rubio", "del_total": 7 },
             { "name_last": "Santorum", "del_total": 0 },
@@ -20,9 +20,9 @@ var DELEGATE_DATA = {
     },
     "democrats": {
         "del_needed": 2382,
-        "last_updated": "Feb. 2, 2016, 9:52 a.m. EST",
+        "last_updated": "Feb. 2, 2016, 2:59 p.m. EST",
         "candidates": [
-            { "name_last": "Clinton", "del_total": 384 },
+            { "name_last": "Clinton", "del_total": 385 },
             { "name_last": "Sanders", "del_total": 29 },
             { "name_last": "O'Malley", "del_total": 2 },
             { "name_last": "Uncommitted", "del_total": 207 }
