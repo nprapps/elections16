@@ -176,7 +176,7 @@ def deploy_server(remote='origin'):
             servers.deploy_confs()
 
 @task
-def deploy_client(remote='origin', reload=False):
+def deploy_client(reload=False):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
@@ -191,7 +191,7 @@ def deploy_client(remote='origin', reload=False):
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www',
-        app_config.PROJECT_SLUG,
+        '',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
@@ -201,7 +201,7 @@ def deploy_client(remote='origin', reload=False):
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www/assets',
-        '%s/assets' % app_config.PROJECT_SLUG,
+        'assets',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.ASSETS_MAX_AGE
         }
@@ -221,7 +221,7 @@ def deploy_results_cards():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html/results',
-        '%s/results' % app_config.PROJECT_SLUG,
+        'results',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
@@ -251,11 +251,19 @@ def deploy_all_cards():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html',
-        app_config.PROJECT_SLUG,
+        '',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
     )
+
+@task
+def archive_site():
+    require('settings', provided_by=[production, staging])
+    now = datetime.now().strftime('%Y-%m-%d-%H:%M')
+    s3archiveurl = 's3://{0}/{1}/backup-{2}/'.format(app_config.ARCHIVE_S3_BUCKET, env.settings, now)
+    cmd = 'aws s3 sync {0}/ {1} --acl public-read --source-region us-west-2 --region us-east-1'.format(app_config.S3_DEPLOY_URL, s3archiveurl)
+    local(cmd)
 
 @task
 def check_timestamp():
@@ -263,7 +271,7 @@ def check_timestamp():
 
     bucket = utils.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
-    k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
+    k.key = 'live-data/timestamp.json'
     if k.exists():
         return True
     else:
@@ -289,7 +297,7 @@ def reset_browsers():
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www/live-data',
-        '%s/live-data' % app_config.PROJECT_SLUG,
+        'live-data',
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }

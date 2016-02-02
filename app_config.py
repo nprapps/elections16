@@ -38,13 +38,13 @@ ASSETS_SLUG = 'elections16'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKET = 'apps.npr.org'
-
-STAGING_S3_BUCKET = 'stage-apps.npr.org'
+PRODUCTION_S3_BUCKET = 'elections.npr.org'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-DEFAULT_MAX_AGE = 300
+ARCHIVE_S3_BUCKET = 'election-backup.apps.npr.org'
+
+DEFAULT_MAX_AGE = 60
 
 RELOAD_TRIGGER = True
 RELOAD_CHECK_INTERVAL = 60
@@ -99,7 +99,8 @@ COPY_PATH = 'data/copy.xlsx'
 
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
-    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q'
+    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
+    'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
 }
 
 """
@@ -139,7 +140,7 @@ NEWSLETTER CONFIGURATION
 """
 
 # Timeout (ms)
-NEWSLETTER_POST_TIMEOUT = 5000
+NEWSLETTER_POST_TIMEOUT = 10000
 
 """
 OAUTH
@@ -163,15 +164,16 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-09'
-ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1453743145.json'
-#ELEX_FLAGS = '-t'
+NEXT_ELECTION_DATE = '2016-02-01'
+ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
 
 """
 Daemon configuration
 """
-RESULTS_DEPLOY_INTERVAL = 30
-CARD_DEPLOY_INTERVAL = 120
+COPY_DEPLOY_INTERVAL = 15
+RESULTS_DEPLOY_INTERVAL = 15
+CARD_DEPLOY_INTERVAL = 60
+SITE_ARCHIVE_INTERVAL = 900
 
 
 """
@@ -214,28 +216,28 @@ def configure_targets(deployment_target):
     global LOG_LEVEL
 
     if deployment_target == 'production':
-        S3_BUCKET = PRODUCTION_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BUCKET = 'elections.npr.org'
+        S3_BASE_URL = 'https://elections.npr.org'
+        S3_DEPLOY_URL = 's3://elections.npr.org'
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
-        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
     elif deployment_target == 'staging':
-        S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BUCKET = 'stage-elections16.apps.npr.org'
+        S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
+        S3_DEPLOY_URL = 's3://stage-elections16.apps.npr.org'
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         ASSETS_MAX_AGE = 20
-        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
     else:
         S3_BUCKET = None
@@ -262,11 +264,8 @@ configure_targets(DEPLOYMENT_TARGET)
 """
 Database
 """
-"""
-Database
-"""
 secrets = get_secrets()
-DATABASE = {
+database = {
     'name': PROJECT_SLUG,
     'test_name': '%stest' % PROJECT_SLUG,
     'user': secrets.get('POSTGRES_USER', None),

@@ -10,7 +10,7 @@ from models import models
 from peewee import *
 from playhouse.test_utils import test_database
 
-test_db = PostgresqlDatabase(app_config.DATABASE['test_name'])
+test_db = PostgresqlDatabase(app_config.database['test_name'])
 
 class FilterResultsTestCase(unittest.TestCase):
     """
@@ -22,7 +22,7 @@ class FilterResultsTestCase(unittest.TestCase):
             data.create_calls()
 
             filtered = utils.filter_results()
-            self.assertEqual(filtered.count(), 20)
+            self.assertEqual(filtered.count(), 18)
 
     def test_results_grouping(self):
         with test_database(test_db, [models.Result, models.Call], create_tables=True):
@@ -44,12 +44,13 @@ class CallRacesTestCase(unittest.TestCase):
         response = self.test_app.post(
             '/%s/calls/accept-ap' % app_config.PROJECT_SLUG,
             data={
-                'race_id': '16672'
+                'race_id': '16957'
             }
         )
 
         results = models.Result.select().where(
-            (models.Result.raceid == '16672')
+            models.Result.level == 'state',
+            models.Result.raceid == '16957'
         )
 
         return results
@@ -58,15 +59,16 @@ class CallRacesTestCase(unittest.TestCase):
         response = self.test_app.post(
             '/%s/calls/call-npr' % app_config.PROJECT_SLUG,
             data={
-                'race_id': '16672',
-                'result_id': '16672-polid-22603-None'
+                'race_id': '16957',
+                'result_id': '16957-polid-1239-1'
             }
         )
 
-        result = models.Result.get(models.Result.id == '16672-polid-22603-None')
+        result = models.Result.get(models.Result.id == '16957-polid-1239-1')
 
         race_results = models.Result.select().where(
-            (models.Result.raceid == '16672')
+            models.Result.level == 'state',
+            models.Result.raceid == '16957'
         )
         return result, race_results
 

@@ -13,7 +13,7 @@
 
 <article>
     <ul class="meta">
-        <li>As of {{ lastupdated.strftime('%m/%d/%Y')|ap_date }}, {{ lastupdated.strftime('%I:%M')|ap_time }} <span class="ap-period">{{ lastupdated.strftime('%p')|ap_time_period }}</span> EST</li>
+        <li>As of {{ results[0].lastupdated|ap_date }}, {{ results[0].lastupdated|ap_time }} <span class="ap-period">{{ results[0].lastupdated|ap_time_period }}</span> EST</li>
         <li>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting|comma }} of {{ results[0].precinctstotal|comma }})</li>
     </ul>
     <table>
@@ -26,10 +26,10 @@
         </thead>
         <tbody>
             {% for result in results %}
-                <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %} winner {% endif %}">
+                <tr class="{% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %} winner {% endif %}">
                     <td>
                         {% if result.first %} {{ result.first|smarty }} {% endif %} {{ result.last|smarty }}
-                        {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner) %}<b class="fa fa-check"></b>{% endif %}
+                        {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %}<b class="fa fa-check"></b>{% endif %}
                     </td>
                     <td class="votes">{{ result.votecount|comma }}</td>
                     <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>

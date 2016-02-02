@@ -108,16 +108,10 @@ def ap_date_filter(value):
     """
     Converts a date string in m/d/yyyy format into AP style.
     """
-    if not value:
-        return ''
-
-    bits = unicode(value).split('/')
-
-    month, day, year = bits
-
-    output = AP_MONTHS[int(month) - 1]
-    output += ' ' + unicode(int(day))
-    output += ', ' + year
+    value_tz = _set_timezone(value)
+    output = AP_MONTHS[value_tz.month - 1]
+    output += ' ' + unicode(value_tz.day)
+    output += ', ' + unicode(value_tz.year)
 
     return output
 
@@ -125,15 +119,8 @@ def ap_time_filter(value):
     """
     Converts a date string in m/d/yyyy format into AP style.
     """
-    if not value:
-        return ''
-
-    datetime_obj = datetime.strptime(value, '%I:%M')
-    datetime_obj_utc = datetime_obj.replace(tzinfo=timezone('GMT'))
-    datetime_obj_est = datetime_obj_utc.astimezone(timezone('US/Eastern'))
-    datetime_string_est = datetime_obj_est.strftime('%I:%M')
-
-    return datetime_string_est
+    value_tz = _set_timezone(value)
+    return value_tz.strftime('%-I:%M')
 
 def ap_state_filter(usps):
     """
@@ -145,12 +132,9 @@ def ap_time_period_filter(value):
     """
     Converts Python's AM/PM into AP Style's a.m./p.m.
     """
-    if not value:
-        return ''
-
-    periods = '.'.join(value) + '.'
-
-    return periods
+    value_tz = _set_timezone(value)
+    periods = '.'.join(value_tz.strftime('%p')) + '.'
+    return periods.lower()
 
 
 def candidate_sort_lastname(item):
@@ -162,3 +146,8 @@ def candidate_sort_lastname(item):
 
 def candidate_sort_votecount(item):
     return item.votecount
+
+def _set_timezone(value):
+    datetime_obj_utc = value.replace(tzinfo=timezone('GMT'))
+    datetime_obj_est = datetime_obj_utc.astimezone(timezone('US/Eastern'))
+    return datetime_obj_est

@@ -1,14 +1,12 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<div class="title-inner">
-
     <div class="title-description">
 
         <div class="title-branding">
             <div class="logo">
                 <img src="./assets/npr-white.png">
-                <h5>Election 2016</h5>
+                <h5>Elections 2016</h5>
             </div>
         </div>
 
@@ -26,11 +24,10 @@
             {% elif state == 'after' %}
             View the results
             {% endif %}
-        </button>
-        <i class="fa fa-angle-right"></i></button>
-    </div>
 
-</div>
+            <i class="fa fa-angle-right"></i></button>
+        </button>
+    </div>
 {% endblock %}
 
 {% block card_background %}

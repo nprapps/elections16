@@ -184,6 +184,26 @@ def get_caught_up():
 
     return render_template('cards/link-roundup.html', **context)
 
+@app.route('/what-happened/')
+@oauth_required
+def what_happened():
+    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
+    context = make_context()
+    doc = get_google_doc_html(key)
+    context['content'] = doc
+    context['headline'] = doc.headline
+    context['subhed'] = doc.subhed
+    context['slug'] = 'what-happened'
+    context['template'] = 'link-roundup'
+    context['image'] = doc.image
+    context['mobile_image'] = doc.mobile_image
+    context['credit'] = doc.credit
+    context['route'] = '/what-happened/'
+    context['refresh_rate'] = 60
+    context['state'] = context['COPY']['meta']['state']['value']
+
+    return render_template('cards/link-roundup.html', **context)
+
 @app.route('/title/')
 @oauth_required
 def title():

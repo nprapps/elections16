@@ -12,7 +12,9 @@ var $rewindBtn = null;
 var $forwardBtn = null;
 var $duration = null;
 var $begin = null;
+var $newsletterContainer = null;
 var $newsletterForm = null;
+var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
 var $subscribeBtn = null
@@ -30,6 +32,12 @@ var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
+var currentCard = null;
+
+var focusWorkaround = false;
+if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
+   focusWorkaround = true;
+}
 
 /*
  * Run on page load.
@@ -50,7 +58,9 @@ var onDocumentLoad = function(e) {
     $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
-    $newsletterForm = $('#newsletter-signup');
+    $newsletterContainer = $('#newsletter');
+    $newsletterForm = $newsletterContainer.find('form');
+    $newsletterInput = $newsletterContainer.find('input');
     $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
@@ -78,6 +88,10 @@ var onDocumentLoad = function(e) {
         'opacity': 1,
         'visibility': 'visible'
     });
+
+    if (window.navigator.standalone) {
+        ANALYTICS.trackEvent('launched-from-homescreen', currentState);
+    }
 }
 
 var setupFlickity = function() {
@@ -97,6 +111,7 @@ var setupFlickity = function() {
 
     globalStartTime = new Date();
     slideStartTime = new Date();
+    currentCard = 0;
 
     for (var i = 0; i < $cards.length; i++) {
         var id = $cards.eq(i).attr('id');
@@ -108,12 +123,17 @@ var setupFlickity = function() {
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
+    $cardsWrapper.on('settle', onCardSettle);
     $cardsWrapper.on('dragStart', onDragStart);
     $cardsWrapper.on('dragMove', onDragMove);
     $cardsWrapper.on('dragEnd', onDragEnd);
     $cardsWrapper.on('keydown', onKeydown);
-    $flickityNav.on('click', onFlickityNavClick);
 
+    if (isTouch) {
+        $flickityNav.on('touchend', onFlickityNavClick);
+    } else {
+        $flickityNav.on('click', onFlickityNavClick);
+    }
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -136,8 +156,6 @@ var detectMobileBg = function($card) {
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
-
-    focusCardsWrapper();
 
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -189,6 +207,10 @@ var onDragEnd = function(e, pointer) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
+    if (currentCard === newCardIndex) {
+        return;
+    }
+
     if (dragDirection === 'previous') {
         var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
         ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
@@ -196,13 +218,16 @@ var onDragEnd = function(e, pointer) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
     }
-
     logCardExit(exitedCardID);
 }
 
 var onKeydown = function(e) {
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
+
+    if (currentCard === newCardIndex) {
+        return;
+    }
 
     if (e.which === 37) {
         var keyDirection = 'previous';
@@ -228,6 +253,10 @@ var onKeydown = function(e) {
 }
 
 var onFlickityNavClick = function(e) {
+    if ($(this).attr('disabled')) {
+        return;
+    }
+
     var flickity = $cardsWrapper.data('flickity');
     var newCardIndex = flickity.selectedIndex;
 
@@ -238,8 +267,26 @@ var onFlickityNavClick = function(e) {
         var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         ANALYTICS.trackEvent('nav-click-next', exitedCardID);
     }
-
     logCardExit(exitedCardID);
+}
+
+var onCardSettle = function() {
+    var flickity = $cardsWrapper.data('flickity');
+    currentCard = flickity.selectedIndex;
+
+    /*
+     * Workaround for bouncing kbd tray on some mobile webkit browsers (iphone 5, nexus 6).
+     *
+     * Attaches a focus handler that forces focus back on redraws triggered by keyboard
+     * after other commands have executed. It should only fire once to avoid recursion.
+     */
+    if (focusWorkaround && $(flickity.selectedElement).is($newsletterContainer)) {
+        $newsletterInput.one('focus', function() {
+            setTimeout(function() {
+                $newsletterInput.focus();
+            }, 100);
+        });
+    }
 }
 
 var onBeginClick = function(e) {
@@ -290,7 +337,6 @@ var getTimeBucket = function(seconds) {
 var onUnload = function(e) {
     // log global time
     var totalTimeArray = calculateTimeBucket(globalStartTime);
-    console.log(totalTimeArray);
     ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
 
     // log final slide time
@@ -301,7 +347,6 @@ var onUnload = function(e) {
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
             var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            console.log(slide, timeBucket, timeOnSlides[slide]);
             ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
         }
     }
@@ -380,24 +425,17 @@ var onResize = function() {
     }
 }
 
-var focusCardsWrapper = function() {
-    $cardsWrapper.focus();
-}
 
 var onSupportBtnClick = function(e) {
-    focusCardsWrapper();
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
-    focusCardsWrapper();
     var href = $(this).attr('href');
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
-
-
 
 /*
 * STUB TEST COMMANDS
@@ -440,7 +478,6 @@ var onNewsletterSubmit = function(e) {
         return;
     }
 
-    focusCardsWrapper();
     var timesToClick = calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('newsletter-subscribe', currentState, timesToClick[0], timesToClick[1]);
 
@@ -468,7 +505,7 @@ var onNewsletterSubmit = function(e) {
             successMsg += '</div>'
             clearStatusMessage();
             $el.html(successMsg);
-            ANALYTICS.trackEvent('newsletter-signup-success');
+            ANALYTICS.trackEvent('newsletter-signup-success', currentState);
         },
         error: function(response) { // error
             var errorMsg = '<div class="message error">';
@@ -482,5 +519,4 @@ var onNewsletterSubmit = function(e) {
         }
     });
 }
-
 $(onDocumentLoad);

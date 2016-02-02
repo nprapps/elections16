@@ -37,10 +37,10 @@ def bootstrap_db():
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('dropdb --if-exists %s' % app_config.DATABASE['name'])
-        local('createdb %s' % app_config.DATABASE['name'])
-        local('dropdb --if-exists %s' % app_config.DATABASE['test_name'])
-        local('createdb %s' % app_config.DATABASE['test_name'])
+        local('dropdb --if-exists %s' % app_config.database['name'])
+        local('createdb %s' % app_config.database['name'])
+        local('dropdb --if-exists %s' % app_config.database['test_name'])
+        local('createdb %s' % app_config.database['test_name'])
 
 
     if env.get('settings'):
@@ -67,10 +67,10 @@ def bootstrap_data(election_date=None):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
-        local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
-        local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
-        local('elex ballot-measures %s %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.DATABASE['name']))
+        local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
+        local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
+        local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
+        local('elex ballot-measures %s %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
 
 
 @task
@@ -80,9 +80,9 @@ def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
     """
 
     if not test_db:
-        db_name = app_config.DATABASE['name']
+        db_name = app_config.database['name']
     else:
-        db_name = app_config.DATABASE['test_name']
+        db_name = app_config.database['test_name']
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
@@ -104,7 +104,7 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
         if cmd_output.succeeded:
             print("LOADING RESULTS")
             delete_results()
-            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.DATABASE['name']))
+            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['name']))
         else:
             print("ERROR GETTING RESULTS")
             print(cmd_output.stderr)
@@ -123,7 +123,7 @@ def load_local_results(file_path):
 
     pg_vars = _get_pg_vars()
     with shell_env(**pg_vars):
-        local('psql %s -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % (app_config.DATABASE['test_name'], os.path.join(root_path, file_path)))
+        local('psql %s -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % (app_config.database['test_name'], os.path.join(root_path, file_path)))
 
 
 @task
@@ -131,7 +131,10 @@ def create_calls():
     """
     Create database of race calls for all races in results data.
     """
-    results = models.Result.select()
+    results = models.Result.select().where(
+        models.Result.level == 'state'
+    )
+
     for result in results:
         models.Call.create(call_id=result.id)
 
@@ -152,14 +155,14 @@ def _get_pg_vars():
     fabric commands
     """
     vars = {
-        'PGHOST': app_config.DATABASE['host'],
-        'PGPORT': app_config.DATABASE['port'],
-        'PGDATABASE': app_config.DATABASE['name'],
+        'PGHOST': app_config.database['host'],
+        'PGPORT': app_config.database['port'],
+        'PGDATABASE': app_config.database['name'],
     }
-    if app_config.DATABASE['user']:
-        vars['PGUSER'] = app_config.DATABASE['user']
+    if app_config.database['user']:
+        vars['PGUSER'] = app_config.database['user']
 
-    if app_config.DATABASE['password']:
-        vars['PGPASSWORD'] = app_config.DATABASE['password']
+    if app_config.database['password']:
+        vars['PGPASSWORD'] = app_config.database['password']
 
     return vars
