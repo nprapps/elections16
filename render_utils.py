@@ -177,6 +177,15 @@ def make_context(asset_depth=0):
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
 
+    if app_config.DEPLOYMENT_TARGET == 'production':
+        state_var = 'prod_state'
+    elif app_config.DEPLOYMENT_TARGET == 'staging':
+        state_var = 'stage_state'
+    else:
+        state_var = 'dev_state'
+
+    context['state'] = context['COPY']['meta'][state_var]['value']
+
     return context
 
 def urlencode_filter(s):

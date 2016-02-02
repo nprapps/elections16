@@ -59,7 +59,7 @@ def index():
     """
     context = make_context()
 
-    state = context['COPY']['meta']['state']['value']
+    state = context['state']
     script = context['COPY'][state]
 
     content = ''
@@ -75,7 +75,6 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
-    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -88,7 +87,6 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     context['template'] = 'basic-card'
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -105,7 +103,6 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -129,7 +126,6 @@ def results(party):
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['state'] = context['COPY']['meta']['state']['value']
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
@@ -153,7 +149,6 @@ def get_caught_up():
     context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -173,7 +168,6 @@ def what_happened():
     context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -193,7 +187,6 @@ def title():
     context['template'] = 'title'
     context['route'] = '/title/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 
