@@ -2,7 +2,7 @@
 var DELEGATE_DATA = {
     "republicans": {
         "del_needed": 1237,
-        "last_updated": "Feb. 1, 2016, 11:56 p.m.",
+        "last_updated": "Feb. 1, 2016, 11:56 p.m. EST",
         "candidates": [
             { "name_last": "Bush", "del_total": 0 },
             { "name_last": "Carson", "del_total": 2 },
@@ -20,7 +20,7 @@ var DELEGATE_DATA = {
     },
     "democrats": {
         "del_needed": 2382,
-        "last_updated": "Feb. 1, 2016, 11:56 p.m.",
+        "last_updated": "Feb. 1, 2016, 11:56 p.m. EST",
         "candidates": [
             { "name_last": "Clinton", "del_total": 384 },
             { "name_last": "Sanders", "del_total": 29 },
