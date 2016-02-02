@@ -258,7 +258,7 @@ def get_results(party):
 
     serialized_results = []
     for result in sorted_results:
-        serialized_results.append(model_to_dict(result))
+        serialized_results.append(model_to_dict(result, backrefs=True))
 
     latest_result = models.Result.select(
         fn.Max(models.Result.lastupdated).alias('lastupdated')
@@ -266,6 +266,8 @@ def get_results(party):
         models.Result.party == PARTY_MAPPING[party]['AP'],
         models.Result.level == 'state'
     ).get()
+
+    print serialized_results
 
     return serialized_results, latest_result.lastupdated
 
