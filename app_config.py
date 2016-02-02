@@ -38,7 +38,7 @@ ASSETS_SLUG = 'elections16'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKET = 'apps.npr.org'
+PRODUCTION_S3_BUCKET = 'elections.npr.org'
 
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
