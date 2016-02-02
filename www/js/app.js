@@ -177,9 +177,10 @@ var onCardChange = function(e) {
         $flickityNav.hide();
     }
 
-    if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+    if ($thisCard.is('#podcast') && !playedAudio) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
+        playedAudio = true;
     }
 }
 

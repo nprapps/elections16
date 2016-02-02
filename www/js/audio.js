@@ -37,6 +37,7 @@ var AUDIO = (function() {
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
         $playToggleBtn.removeClass('play').addClass('pause');
+        $mute.show();
         $mute.removeClass('muted').addClass('playing');
     }
 
@@ -103,6 +104,7 @@ var AUDIO = (function() {
 
     var onEnded = function(e) {
         $mute.hide();
+        $playToggleBtn.removeClass('pause').addClass('play');
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
