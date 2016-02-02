@@ -1,46 +1,82 @@
 // settings
-var DELEGATE_DATA_URL = './delegates.json';
-var DELEGATE_UPDATE_INTERVAL = 120000;
+var DELEGATE_DATA = {
+    "republicans": {
+        "del_needed": 1237,
+        "last_updated": "Feb. 1, 2016, 11:56 p.m.",
+        "candidates": [
+            { "name_last": "Bush", "del_total": 0 },
+            { "name_last": "Carson", "del_total": 2 },
+            { "name_last": "Christie", "del_total": 0 },
+            { "name_last": "Cruz", "del_total": 8 },
+            { "name_last": "Fiorina", "del_total": 0 },
+            { "name_last": "Gilmore", "del_total": 0 },
+            { "name_last": "Huckabee", "del_total": 0 },
+            { "name_last": "Kasich", "del_total": 0 },
+            { "name_last": "Paul", "del_total": 1 },
+            { "name_last": "Rubio", "del_total": 6 },
+            { "name_last": "Santorum", "del_total": 0 },
+            { "name_last": "Trump", "del_total": 7 }
+        ]
+    },
+    "democrats": {
+        "del_needed": 2382,
+        "last_updated": "Feb. 1, 2016, 11:56 p.m.",
+        "candidates": [
+            { "name_last": "Clinton", "del_total": 384 },
+            { "name_last": "Sanders", "del_total": 29 },
+            { "name_last": "O'Malley", "del_total": 2 },
+            { "name_last": "Uncommitted", "del_total": 207 }
+        ]
+    }
+};
 
 // objects/vars
-var dataDelegates = null;
-var $delegateSlide = $('#delegates')
+var $delegatesDemSlide = $('#delegates-dem');
+var $delegatesGOPSlide = $('#delegates-gop');
 
 // don't run any of this unless the slide actually exists
-if ($delegateSlide) {
-    var $delegatesNeeded = $delegateSlide.find('.needed');
-    var $delegateChart = $delegateSlide.find('ul.delegates');
-    var $delegateTimestamp = $delegateSlide.find('.timestamp');
-    var delegateInterval = null;
-
+if ($delegatesDemSlide || $delegatesGOPSlide) {
     // load/process delegate json
-    var loadDelegateData = function() {
-        console.log('refresh delegate data');
-        $.getJSON(DELEGATE_DATA_URL, function(data) {
-            var parties = Object.keys(data);
+    var formatDelegateData = function() {
+        var parties = Object.keys(DELEGATE_DATA);
 
-            dataDelegates = data;
-
-            parties.forEach(function(d, i) {
-                dataDelegates[d]['candidates'].forEach(function(a, b) {
-                    a['name_slug'] = a['name_last'].toLowerCase();
-                    a['amt_pct'] = ((a['del_total'] / dataDelegates[d]['del_needed']) * 100).toFixed(1);
-                });
-
-                // sort list by # of delegates
-                dataDelegates[d]['candidates'] = _.sortBy(dataDelegates[d]['candidates'], 'del_total');
-                dataDelegates[d]['candidates'].reverse();
+        parties.forEach(function(d, i) {
+            DELEGATE_DATA[d]['candidates'].forEach(function(a, b) {
+                a['name_slug'] = a['name_last'].toLowerCase();
+                a['amt_pct'] = ((a['del_total'] / DELEGATE_DATA[d]['del_needed']) * 100).toFixed(1);
             });
 
-            // TODO: filling in the republican delegate card as an example
+            // sort list by # of delegates
+            DELEGATE_DATA[d]['candidates'] = _.sortBy(DELEGATE_DATA[d]['candidates'], 'del_total');
+            DELEGATE_DATA[d]['candidates'].reverse();
+        });
+
+        if ($delegatesDemSlide) {
+            renderDelegates('democrats');
+        }
+        if ($delegatesGOPSlide) {
             renderDelegates('republicans');
-        })
+        }
     }
 
     // display delegate info
     var renderDelegates = function(party) {
-        var delsNeeded = dataDelegates[party]['del_needed'];
-        var candidates = dataDelegates[party]['candidates'];
+        var $delegateSlide = null;
+        switch(party) {
+            case 'democrats':
+                $delegateSlide = $delegatesDemSlide;
+                break;
+            case 'republicans':
+                $delegateSlide = $delegatesGOPSlide;
+                break;
+        }
+
+        var $delegatesNeeded = $delegateSlide.find('.needed');
+        var $delegateChart = $delegateSlide.find('ul.delegates');
+        var $delegateTimestamp = $delegateSlide.find('.timestamp');
+
+        var delsNeeded = DELEGATE_DATA[party]['del_needed'];
+        var candidates = DELEGATE_DATA[party]['candidates'];
         var delegateHTML = '';
 
         $delegateChart.empty();
@@ -55,9 +91,7 @@ if ($delegateSlide) {
         $delegatesNeeded.empty().text(commaFormat(delsNeeded) + ' needed to win');
 
         // update timestamp
-        var d = new Date(dataDelegates[party]['last_updated']);
-        var timestamp = moment(d).format('MMM D, YYYY [at] h:mm a');
-        $delegateTimestamp.empty().text('As of ' + timestamp);
+        $delegateTimestamp.empty().text('As of ' + DELEGATE_DATA[party]['last_updated']);
     }
 
     // comma formatter: http://stackoverflow.com/questions/1990512/add-comma-to-numbers-every-three-digits-using-jquery
@@ -68,6 +102,5 @@ if ($delegateSlide) {
     }
 
     // initialize and set interval
-    loadDelegateData();
-    delegateInterval = setInterval(loadDelegateData, DELEGATE_UPDATE_INTERVAL);
+    formatDelegateData();
 }
