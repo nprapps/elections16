@@ -21,6 +21,8 @@ var AUDIO = (function() {
         });
         playAudio();
 
+        $mute.show();
+
         for (var i = 0; i < timedAnalytics.length; i++) {
             timedAnalytics[i]['measured'] = false;
         }
@@ -100,6 +102,7 @@ var AUDIO = (function() {
     }
 
     var onEnded = function(e) {
+        $mute.hide();
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
