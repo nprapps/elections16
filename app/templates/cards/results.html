@@ -35,8 +35,14 @@
                     <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
                 </tr>
             {% endfor %}
-
         </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td class="votes">5,000</td>
+                <td class="pct">100.0%</td>
+            </tr>
+        </tfoot>
     </table>
     <ul class="meta">
         {% if results[0].party == 'Dem' %}<li class="footnote" style="text-transform: none;">{{ COPY.meta.iowa_dem_disclaimer|smarty }}</li>{% endif %}
