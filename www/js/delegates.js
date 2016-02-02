@@ -92,6 +92,13 @@ if ($delegatesDemSlide || $delegatesGOPSlide) {
 
         // update timestamp
         $delegateTimestamp.empty().text('As of ' + DELEGATE_DATA[party]['last_updated']);
+
+        if (party == 'democrats') {
+            if (COPY['meta']['delegates_dem_footnote']) {
+                var delegateFootnote = '<li class="footnote">' + COPY['meta']['delegates_dem_footnote'] + '</li>';
+                $delegateSlide.find('.meta').prepend(delegateFootnote);
+            }
+        }
     }
 
     // comma formatter: http://stackoverflow.com/questions/1990512/add-comma-to-numbers-every-three-digits-using-jquery
