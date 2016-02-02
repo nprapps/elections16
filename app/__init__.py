@@ -129,8 +129,10 @@ def results(party):
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['refresh_rate'] = 20
     context['state'] = context['COPY']['meta']['state']['value']
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
 
