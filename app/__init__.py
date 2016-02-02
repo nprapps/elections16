@@ -267,8 +267,6 @@ def get_results(party):
         models.Result.level == 'state'
     ).get()
 
-    print serialized_results
-
     return serialized_results, latest_result.lastupdated
 
 def never_cache_preview(response):

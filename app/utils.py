@@ -108,7 +108,8 @@ def ap_date_filter(value):
     """
     Converts a date string in m/d/yyyy format into AP style.
     """
-    value = datetime.strptime(value, '%m/%d/%Y')
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%m/%d/%Y')
     value_tz = _set_timezone(value)
     output = AP_MONTHS[value_tz.month - 1]
     output += ' ' + unicode(value_tz.day)
@@ -120,8 +121,8 @@ def ap_time_filter(value):
     """
     Converts a time string in hh:mm format into AP style.
     """
-    value = datetime.strptime(value, '%I:%M')
-    print type(value)
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%I:%M')
     value_tz = _set_timezone(value)
     value_year = value_tz.replace(year=2016)
     return value_year.strftime('%-I:%M')
@@ -136,7 +137,8 @@ def ap_time_period_filter(value):
     """
     Converts Python's AM/PM into AP Style's a.m./p.m.
     """
-    value = datetime.strptime(value, '%p')
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%p')
     value_tz = _set_timezone(value)
     value_year = value_tz.replace(year=2016)
     periods = '.'.join(value_year.strftime('%p')) + '.'
