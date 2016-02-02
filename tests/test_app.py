@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
-import json
-import unittest
+from app import utils
+from datetime import datetime
 
 import app
 import app_config
+import json
+import unittest
 
 class AppConfigTestCase(unittest.TestCase):
     """
@@ -44,6 +46,27 @@ class AppConfigTestCase(unittest.TestCase):
         config = flatten_app_config()
 
         assert not config.get('database')
+
+    def test_date_filter(self):
+        test_date = datetime(2016, 2, 1, 4, 0, 0)
+        output = utils.ap_date_filter(test_date)
+        self.assertEqual(output, 'Jan. 31, 2016')
+
+    def test_time_filter(self):
+        test_date = datetime(2016, 2, 1, 4, 0, 0)
+        output = utils.ap_time_filter(test_date)
+        self.assertEqual(output, '11:00')
+
+    def test_time_filter_leading_zero(self):
+        test_date = datetime(2016, 2, 1, 10, 0, 0)
+        output = utils.ap_time_filter(test_date)
+        self.assertEqual(output, '5:00')
+
+    def test_time_period_filter(self):
+        test_date = datetime(2016, 2, 1, 4, 0, 0)
+        output = utils.ap_time_period_filter(test_date)
+        self.assertEqual(output, 'p.m.')
+
 
 if __name__ == '__main__':
     unittest.main()
