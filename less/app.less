@@ -970,6 +970,10 @@ body {
 }
 
 #podcast {
+    .card-inner {
+        padding-bottom: 2rem;
+    }
+
     .card-background {
         background-repeat: no-repeat;
         .background-size(cover);
@@ -985,6 +989,9 @@ body {
         .photo-credit {
             color: #fff;
             opacity: 1;
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
         }
     }
 
@@ -1115,11 +1122,37 @@ body {
         }
 
         .featured-links {
-            .begin {
+            a {
+                .knockout();
+                color: @white;
+                text-shadow: 2px 2px 2px #222;
+                background-color: transparent;
+                border-top: 0;
+                border-right: 0;
+                border-bottom: 4px solid @accent1;
+                border-left: 0;
+                padding: 0 0 .5rem 0;
                 font-size: 1.2rem;
+
+                .no-touch & {
+                    &:hover,
+                    &:active {
+                        color: #fff;
+                        border-color: @accent1a;
+                    }
+                }
+
+                i {
+                    font-size: 1.6rem;
+                    padding-left: .5rem;
+                }
+
+                @media @screen-small-above {
+                    font-size: 1.7rem;
+
+                    i {font-size: 1.9rem;}
+                }
             }
-
-
         }
     }
 }
@@ -1328,7 +1361,7 @@ body {
 
     .card-inner {
         max-width: @max-width-content;
-        margin: 4rem 1rem 1rem 1rem;
+        margin: 5rem 1rem 1rem 1rem;
 
         @media @screen-small-above {
             margin: 0 auto;
