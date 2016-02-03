@@ -20,6 +20,8 @@ var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
+var $alert = null;
+var $alertAction = null;
 
 // Global references
 var candidates = {}
@@ -65,6 +67,8 @@ var onDocumentLoad = function(e) {
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
+    $alert = $('.alert');
+    $alertAction = $('.alert-action');
 
     rem = getEmPixels();
 
@@ -404,12 +408,25 @@ var checkState = function() {
         ifModified: true,
         success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
+                var oldState = currentState;
                 currentState = data['state']
                 if (currentState === 'during') {
                     AUDIO.setLive();
                 }
+
+                if (oldState === 'before' && currentState === 'during') {
+                    setLiveAlert();
+                }
             }
         }
+    });
+}
+
+var setLiveAlert = function() {
+    $alert.addClass('signal-during');
+    $alertAction.off('click');
+    $alertAction.on('click', function() {
+        location.reload(true);
     });
 }
 
