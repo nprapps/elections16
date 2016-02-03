@@ -426,7 +426,7 @@ var checkState = function() {
 }
 
 var setLiveAlert = function() {
-    $alert.addClass('signal-during');
+    $alert.removeClass().addClass('alert signal-during');
     $alertAction.off('click');
     $alertAction.on('click', function() {
         location.reload(true);
@@ -434,7 +434,7 @@ var setLiveAlert = function() {
 }
 
 var onCloseAlertClick = function() {
-    $alert.removeClass().addClass('alert');
+    $alert.addClass('alert-slide-up')
 }
 
 var onResize = function() {

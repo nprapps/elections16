@@ -91,6 +91,21 @@
   animation-name: slideInDown;
 }
 
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.slideOutUp {
+  animation-name: slideOutUp;
+}
+
 // colors
 @republican     : #e61e1d;
 @republicanFade : #342224;
@@ -260,6 +275,11 @@ body {
                 height: 15px;
             }
         }
+    }
+
+    &.alert-slide-up {
+        -webkit-animation-name: slideOutUp;
+        animation-name: slideOutUp;
     }
 
     h5 {
