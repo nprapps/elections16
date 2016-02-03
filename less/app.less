@@ -219,7 +219,7 @@ body {
     background-color: @live;
     width: 100%;
     z-index: 5;
-    height: 35px;
+    height: 40px;
 
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
@@ -229,9 +229,9 @@ body {
     -webkit-animation-delay: 1s;
 
 
-    // @media @screen-small-above {
-    //     height: 45px;
-    // }
+    @media @screen-small-above {
+        height: 50px;
+    }
 
 
     &.signal-during  {
@@ -243,7 +243,7 @@ body {
             display: block;
             content: ' ';
             position: absolute;
-            top: 10px;
+            top: 12px;
             left: 5px;
             right: 0;
             bottom: 0;
@@ -253,54 +253,56 @@ body {
             background: transparent url('@{img-root}/bounce.gif') no-repeat;
             .background-size(cover);
 
-            // @media @screen-small-above {
-            //     left: 30px;
-            //     width: 20px;
-            //     height: 15px;
-            // }
+            @media @screen-small-above {
+                top: 15px;
+                left: 30px;
+                width: 20px;
+                height: 15px;
+            }
         }
     }
 
     h5 {
         float: left;
         line-height: 1;
-        margin: 10px 0 0 30px;
-        font-size: 13px;
+        margin: 12px 0 0 30px;
+        font-size: 12px;
         text-transform: uppercase;
         .knockout();
+        text-transform: none;
 
-        // @media @screen-small-above {
-        //     font-size: 15px;
-        //     margin: 10px 0 0 30px;
-        // }
+        @media @screen-small-above {
+            font-size: 16px;
+            margin: 15px 0 0 60px;
+        }
     }
 
     .alert-action {
-        float: left;
-        line-height: 1;
-        margin: 6px 0 0 35px;
-        padding: 5px;
-        color: #fff;
-        font-size: 11px;
+        display: inline-block;
         .knockout();
-        background-color: rgba(255, 255, 255, .15);
+        text-transform: none;
+        line-height: 1;
+        margin: 0 0 0 7px;
+        padding: 0 0 2px 0;
+        color: #fff;
         border: none;
-
-        // @media @screen-small-above {
-        //     font-size: 12px;
-        //     right: 30px;
-        // }
+        border-bottom: 2px solid rgba(255, 255, 255, .4);
+        background: transparent;
     }
 
     .close-alert {
         float: right;
         line-height: 1;
-        margin: 6px 5px 0 0;
-        padding: 5px;
+        margin: 9px 5px 0 0;
         color: #fff;
         font-size: 16px;
-        background-color: rgba(255, 255, 255, .15);
         border: none;
+        background: transparent;
+
+        @media @screen-small-above {
+            font-size: 20px;
+            margin: 10px 15px 0 0;
+        }
     }
 }
 
