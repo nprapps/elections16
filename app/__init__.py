@@ -137,16 +137,10 @@ def results(party):
 @oauth_required
 def get_caught_up():
     key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context = make_context(gdoc=doc)
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
 
@@ -156,16 +150,10 @@ def get_caught_up():
 @oauth_required
 def what_happened():
     key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context = make_context(gdoc=doc)
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
 
@@ -175,14 +163,8 @@ def what_happened():
 @oauth_required
 def title():
     key = app_config.CARD_GOOGLE_DOC_KEYS['title']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['banner'] = doc.banner
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
+    context = make_context(gdoc=doc)
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
@@ -205,10 +187,9 @@ def gdoc(key):
 @oauth_required
 def current_state():
     context = make_context()
-    state = context['COPY']['meta']['state']['value']
 
     data = {
-        'state': state
+        'state': context['state']
     }
 
     return jsonify(**data)

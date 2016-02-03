@@ -157,7 +157,7 @@ def flatten_app_config():
 
     return config
 
-def make_context(asset_depth=0):
+def make_context(asset_depth=0, gdoc=None):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
@@ -185,6 +185,15 @@ def make_context(asset_depth=0):
         state_var = 'dev_state'
 
     context['state'] = context['COPY']['meta'][state_var]['value']
+
+    if gdoc:
+        context['content'] = gdoc
+        context['headline'] = gdoc.headline
+        context['subhed'] = gdoc.subhed
+        context['banner'] = gdoc.banner
+        context['image'] = gdoc.image
+        context['mobile_image'] = gdoc.mobile_image
+        context['credit'] = gdoc.credit
 
     return context
 
