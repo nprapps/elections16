@@ -76,6 +76,36 @@
   }
 }
 
+@keyframes slideInDown {
+  from {
+    transform: translate3d(0, -100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slideInDown {
+  animation-name: slideInDown;
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.slideOutUp {
+  animation-name: slideOutUp;
+}
+
 // colors
 @republican     : #e61e1d;
 @republicanFade : #342224;
@@ -195,6 +225,109 @@ body {
 }
 
 // header
+.alert {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: @white;
+    background-color: @live;
+    width: 100%;
+    z-index: 5;
+    height: 40px;
+
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    animation-delay: 1s;
+    -webkit-animation-delay: 1s;
+
+
+    @media @screen-small-above {
+        height: 50px;
+    }
+
+
+    &.signal-during  {
+        display: block;
+        -webkit-animation-name: slideInDown;
+        animation-name: slideInDown;
+
+        &:before {
+            display: block;
+            content: ' ';
+            position: absolute;
+            top: 12px;
+            left: 5px;
+            right: 0;
+            bottom: 0;
+            width: 17px;
+            height: 12px;
+            z-index: 1;
+            background: transparent url('@{img-root}/bounce.gif') no-repeat;
+            .background-size(cover);
+
+            @media @screen-small-above {
+                top: 15px;
+                left: 30px;
+                width: 20px;
+                height: 15px;
+            }
+        }
+    }
+
+    &.alert-slide-up {
+        -webkit-animation-name: slideOutUp;
+        animation-name: slideOutUp;
+    }
+
+    h5 {
+        float: left;
+        line-height: 1;
+        margin: 12px 0 0 30px;
+        font-size: 12px;
+        text-transform: uppercase;
+        .knockout();
+        text-transform: none;
+
+        @media @screen-small-above {
+            font-size: 16px;
+            margin: 15px 0 0 60px;
+        }
+    }
+
+    .alert-action {
+        display: inline-block;
+        .knockout();
+        text-transform: none;
+        line-height: 1;
+        margin: 0 0 0 7px;
+        padding: 0 0 2px 0;
+        color: #fff;
+        border: none;
+        border-bottom: 2px solid rgba(255, 255, 255, .4);
+        background: transparent;
+    }
+
+    .close-alert {
+        float: right;
+        line-height: 1;
+        margin: 9px 5px 0 0;
+        color: #fff;
+        font-size: 16px;
+        border: none;
+        background: transparent;
+
+        @media @screen-small-above {
+            font-size: 20px;
+            margin: 10px 15px 0 0;
+        }
+    }
+}
+
+
+
 .during-mode-notice {
     position: absolute;
     top: -50px;
@@ -278,32 +411,6 @@ body {
     width: 100%;
     height: 5px;
     z-index: 2;
-}@-webkit-keyframes fadeInDown {
-  from {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
-  }
-
-  to {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
-  }
-
-  to {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
 }
 
 .global-nav {

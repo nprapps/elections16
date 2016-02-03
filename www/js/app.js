@@ -20,6 +20,9 @@ var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
+var $alert = null;
+var $alertAction = null;
+var $closeAlert = null;
 
 // Global references
 var candidates = {}
@@ -65,6 +68,9 @@ var onDocumentLoad = function(e) {
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
+    $alert = $('.alert');
+    $alertAction = $('.alert-action');
+    $closeAlert = $('.close-alert');
 
     rem = getEmPixels();
 
@@ -76,6 +82,7 @@ var onDocumentLoad = function(e) {
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
+    $closeAlert.on('click', onCloseAlertClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -402,13 +409,30 @@ var checkState = function() {
         ifModified: true,
         success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
+                var oldState = currentState;
                 currentState = data['state']
-                if (currentState === 'during') {
+                if (!oldState && currentState === 'during') {
                     AUDIO.setLive();
+                }
+
+                if (oldState === 'before' && currentState === 'during') {
+                    setLiveAlert();
                 }
             }
         }
     });
+}
+
+var setLiveAlert = function() {
+    $alert.removeClass().addClass('alert signal-during');
+    $alertAction.off('click');
+    $alertAction.on('click', function() {
+        location.reload(true);
+    });
+}
+
+var onCloseAlertClick = function() {
+    $alert.addClass('alert-slide-up')
 }
 
 var onResize = function() {
