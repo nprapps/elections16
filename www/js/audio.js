@@ -93,10 +93,12 @@ var AUDIO = (function() {
         var position = e.jPlayer.status.currentTime;
         var remainingTime = totalTime - position;
 
-        var timeBucket = getTimeBucket(position);
-        if (!timedAnalytics[timeBucket]) {
-            timedAnalytics[timeBucket] = true;
-            ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
+        if (position > 10) {
+            var timeBucket = getTimeBucket(position);
+            if (!timedAnalytics[timeBucket]) {
+                timedAnalytics[timeBucket] = true;
+                ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
+            }
         }
 
         $duration.text($.jPlayer.convertTime(remainingTime));

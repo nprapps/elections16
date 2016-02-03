@@ -336,10 +336,6 @@ var getTimeBucket = function(seconds) {
 }
 
 var onUnload = function(e) {
-    // log global time
-    var totalTimeArray = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
-
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
     calculateSlideExitTime(currentSlideId);
@@ -347,8 +343,10 @@ var onUnload = function(e) {
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
-            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            if (timeOnSlides[slide] > 0) {
+                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            }
         }
     }
 }
