@@ -343,8 +343,10 @@ var onUnload = function(e) {
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
-            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            if (timeOnSlides[slide] > 0) {
+                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            }
         }
     }
 }
