@@ -336,10 +336,6 @@ var getTimeBucket = function(seconds) {
 }
 
 var onUnload = function(e) {
-    // log global time
-    var totalTimeArray = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
-
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
     calculateSlideExitTime(currentSlideId);
