@@ -3,6 +3,7 @@
 import app_config
 import unittest
 
+from app import utils
 from fabfile import data
 from models import models
 from peewee import *
@@ -34,6 +35,27 @@ class ResultsLoadingTestCase(unittest.TestCase):
             data.delete_results(test_db=True)
             results_length = models.Result.select().count()
             self.assertEqual(results_length, 0)
+
+    def test_results_collation(self):
+        with test_database(test_db, [models.Result, models.Call], create_tables=True):
+            data.load_local_results('tests/data/elex.csv')
+            data.create_calls()
+
+            for party in ['Dem', 'GOP']:
+                results = models.Result.select().where(
+                    (models.Result.party == party)
+                )
+                filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), party)
+                filtered_length = len(filtered)
+                if party == 'dem':
+                    whitelist_length = utils.DEM_CANDIDATES
+                    self.assertEqual(filtered_length, whitelist_length)
+                elif party == 'gop':
+                    whitelist_length = utils.GOP_CANDIDATES
+                    self.assertEqual(filtered_length, whitelist_length)
+
+
+
 
 
 if __name__ == '__main__':

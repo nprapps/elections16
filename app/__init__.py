@@ -116,13 +116,15 @@ def results(party):
     """
     Render the results card
     """
+    ap_party = PARTY_MAPPING[party]['AP']
+
     context = make_context()
     party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.party == ap_party,
         models.Result.level == 'state'
     )
 
-    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), party)
+    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), ap_party)
 
     secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)

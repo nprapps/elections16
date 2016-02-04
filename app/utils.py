@@ -172,9 +172,9 @@ def _set_timezone(value):
 
 
 def collate_other_candidates(results, party):
-    if party == 'gop':
+    if party == 'GOP':
         whitelisted_candidates = GOP_CANDIDATES
-    elif party == 'dem':
+    elif party == 'Dem':
         whitelisted_candidates = DEM_CANDIDATES
 
     other_votecount = 0
