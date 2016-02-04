@@ -64,6 +64,23 @@ USPS_TO_AP_STATE = {
     'WY': 'Wyo.'
 }
 
+GOP_CANDIDATES = [
+    'Jeb Bush',
+    'Ben Carson',
+    'Chris Christie',
+    'Ted Cruz',
+    'Carly Fiorina',
+    'Jim Gilmore',
+    'John Kasich',
+    'Marco Rubio',
+    'Donald Trump'
+]
+
+DEM_CANDIDATES = [
+    'Hillary Clinton',
+    'Bernie Sanders'
+]
+
 def comma_filter(value):
     """
     Format a number with commas.
@@ -147,7 +164,28 @@ def candidate_sort_lastname(item):
 def candidate_sort_votecount(item):
     return item.votecount
 
+
 def _set_timezone(value):
     datetime_obj_utc = value.replace(tzinfo=timezone('GMT'))
     datetime_obj_est = datetime_obj_utc.astimezone(timezone('US/Eastern'))
     return datetime_obj_est
+
+
+def collate_other_candidates(results, party):
+    if party == 'gop':
+        whitelisted_candidates = GOP_CANDIDATES
+    elif party == 'dem':
+        whitelisted_candidates = DEM_CANDIDATES
+
+    other_votecount = 0
+    other_votepct = 0
+
+    for result in reversed(results):
+        candidate_name = '%s %s' % (result.first, result.last)
+        if candidate_name not in whitelisted_candidates:
+            other_votecount += result.votecount
+            other_votepct += result.votepct
+            results.remove(result)
+
+    return results, other_votecount, other_votepct
+

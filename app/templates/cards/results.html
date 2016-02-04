@@ -35,6 +35,11 @@
                     <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
                 </tr>
             {% endfor %}
+                <tr>
+                    <td>Other</td>
+                    <td class="votes">{{ other_votecount|comma }}</td>
+                    <td class="pct">{{ other_votepct|normalize_percent|percent }}</td>
+                </tr>
 
         </tbody>
     </table>

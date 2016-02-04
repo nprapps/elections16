@@ -119,10 +119,11 @@ def results(party):
     context = make_context()
     party_results = models.Result.select().where(
         models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
     )
 
-    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
+    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), party)
+
+    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
 
     context['results'] = sorted_results
