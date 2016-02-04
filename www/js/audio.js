@@ -22,6 +22,7 @@ var AUDIO = (function() {
         playAudio();
 
         $playToggleBtn.removeClass().addClass('toggle-btn loading fa-spin');
+        $segmentType.text('Loading');
 
         $mute.show();
 
@@ -55,6 +56,7 @@ var AUDIO = (function() {
             .jPlayer('stop')
             .jPlayer('clearMedia');
         $mute.removeClass('playing').addClass('muted');
+        $playToggleBtn.removeClass().addClass('toggle-btn play');
         ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
@@ -97,6 +99,9 @@ var AUDIO = (function() {
 
         if ($playToggleBtn.hasClass('loading')) {
             $playToggleBtn.removeClass().addClass('toggle-btn pause');
+            if (live) {
+                $segmentType.text('Live Audio');
+            }
         }
 
         if (position > 10) {
