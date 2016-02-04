@@ -21,7 +21,7 @@ var AUDIO = (function() {
         });
         playAudio();
 
-        $playToggleBtn.removeClass().addClass('segment-play loading fa-spin');
+        $playToggleBtn.removeClass().addClass('toggle-btn loading fa-spin');
 
         $mute.show();
 
@@ -38,14 +38,14 @@ var AUDIO = (function() {
 
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
-        $playToggleBtn.removeClass().addClass('segment-play pause');
+        $playToggleBtn.removeClass().addClass('toggle-btn pause');
         $mute.show();
         $mute.removeClass('muted').addClass('playing');
     }
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
-        $playToggleBtn.removeClass().addClass('segment-play play');
+        $playToggleBtn.removeClass().addClass('toggle-btn play');
         $mute.removeClass('playing').addClass('muted');
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
@@ -96,7 +96,7 @@ var AUDIO = (function() {
         var remainingTime = totalTime - position;
 
         if ($playToggleBtn.hasClass('loading')) {
-            $playToggleBtn.removeClass().addClass('segment-play pause');
+            $playToggleBtn.removeClass().addClass('toggle-btn pause');
         }
 
         if (position > 10) {
