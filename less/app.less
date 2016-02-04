@@ -189,10 +189,11 @@ body {
 }
 
 .logo {
-    padding-top: 1.8rem;
+    padding-top: 23px;
     padding-left: 5px;
 
     @media @screen-small-above {
+        padding-top: 28px;
         padding-left: 1.8rem;
     }
 
@@ -473,13 +474,16 @@ body {
         top: 33px;
     }
 
-    @media @screen-medium-above {
-        top: 1.5rem;
-        right: 1.7rem;
+    @media @screen-small-above {
+        top: 19px;
 
         .during & {
             top: 2.6rem;
         }
+    }
+
+    @media @screen-medium-above {
+        right: 1.7rem;
     }
 
     button {
@@ -509,16 +513,26 @@ body {
                 content: "\f026";
                 font-family: FontAwesome;
                 color: @white;
-                font-size: 1rem;
-                padding: 7px 8px 7px 7px;
+                font-size: 16px;
+                padding: 5px 8px 5px 7px;
+
+                @media @screen-small-above {
+                    font-size: 20px;
+                    padding: 7px 9px 7px 10px;
+                }
             }
             &.playing:before {
                 display: block;
                 content: "\f028";
                 font-family: FontAwesome;
                 color: @white;
-                font-size: 1rem;
-                padding: 7px 4px 7px 5px;
+                font-size: 16px;
+                padding: 5px 4px 5px 3px;
+
+                @media @screen-small-above {
+                    font-size: 20px;
+                    padding: 7px 4px 7px 5px;
+                }
             }
 
             i { padding-left: 2px; }
