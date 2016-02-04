@@ -21,6 +21,8 @@ var AUDIO = (function() {
         });
         playAudio();
 
+        $playToggleBtn.removeClass().addClass('segment-play loading fa-spin');
+
         $mute.show();
 
         for (var i = 0; i < timedAnalytics.length; i++) {
@@ -36,14 +38,14 @@ var AUDIO = (function() {
 
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
-        $playToggleBtn.removeClass('play').addClass('pause');
+        $playToggleBtn.removeClass().addClass('segment-play pause');
         $mute.show();
         $mute.removeClass('muted').addClass('playing');
     }
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
-        $playToggleBtn.removeClass('pause').addClass('play');
+        $playToggleBtn.removeClass().addClass('segment-play play');
         $mute.removeClass('playing').addClass('muted');
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
@@ -92,6 +94,10 @@ var AUDIO = (function() {
         var totalTime = e.jPlayer.status.duration;
         var position = e.jPlayer.status.currentTime;
         var remainingTime = totalTime - position;
+
+        if ($playToggleBtn.hasClass('loading')) {
+            $playToggleBtn.removeClass().addClass('segment-play pause');
+        }
 
         if (position > 10) {
             var timeBucket = getTimeBucket(position);

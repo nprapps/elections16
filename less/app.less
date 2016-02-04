@@ -1176,7 +1176,7 @@ body {
                     background-color: transparent;
                 }
 
-                .play, .pause {
+                .play, .pause, .loading {
                     position: relative;
                     width: 5rem;
                     height: 5rem;
@@ -1196,6 +1196,16 @@ body {
 
                 .pause:before {
                     content: "\f04c";
+                    font-family: FontAwesome;
+                    color: @white;
+                    font-size: 5rem;
+                    position: absolute;
+                    top: 0;
+                    left: 7px;
+                }
+
+                .loading:before {
+                    content: "\f110";
                     font-family: FontAwesome;
                     color: @white;
                     font-size: 5rem;
