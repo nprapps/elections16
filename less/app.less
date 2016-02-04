@@ -1305,12 +1305,8 @@ body {
 
     .card-inner {
         max-width: @max-width-content;
-        margin: 5rem 1rem 1rem 1rem;
         padding-bottom: 2rem;
-
-        @media @screen-small-above {
-            margin: 0 auto;
-        }
+        margin: 0 auto;
     }
 
     .card-background {
@@ -1336,7 +1332,9 @@ body {
 
 
     .segment-audio-content {
-        margin: 2rem;
+        margin: 5rem auto 2rem auto;
+        padding: 0 2rem;
+        max-width: 30rem;
 
         ul {
             margin: 0;
@@ -1346,8 +1344,8 @@ body {
         }
 
         @media @screen-small-above {
-            width: 30rem;
             margin: 0 auto;
+            padding: 0;
             padding-top: 2rem;
         }
 
