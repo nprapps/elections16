@@ -119,6 +119,7 @@ def results(party):
     context = make_context()
     party_results = models.Result.select().where(
         models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
     )
 
     filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), party)
