@@ -1095,20 +1095,23 @@ body {
 }
 
 #podcast {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    //content: '';
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
+
+    @media @screen-small-above {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        //content: '';
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+    }
 
     .card-inner {
         max-width: @max-width-content;
-        margin: 5rem 1rem 1rem 1rem;
+        margin: 1rem;
         padding-bottom: 2rem;
 
         @media @screen-small-above {
