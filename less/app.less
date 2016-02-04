@@ -965,6 +965,8 @@ body {
             line-height: 33px;
             color: #f1f1f1;
 
+            &.inactive { color: #787878; }
+
             .candidate {
                 -webkit-flex-basis: auto;
                 flex-basis: auto;
@@ -992,10 +994,12 @@ body {
         &.democrat > li {
             .bar-wrapper { background-color: @democratFade; }
             .bar { background-color: @democrat; }
+            &.inactive .bar { background-color: #666; }
         }
         &.republican > li {
             .bar-wrapper { background-color: @republicanFade; }
             .bar { background-color: @republican; }
+            &.inactive .bar { background-color: #666; }
         }
     }
 }
