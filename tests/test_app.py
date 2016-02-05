@@ -67,6 +67,5 @@ class AppConfigTestCase(unittest.TestCase):
         output = utils.ap_time_period_filter(test_date)
         self.assertEqual(output, 'p.m.')
 
-
 if __name__ == '__main__':
     unittest.main()

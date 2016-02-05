@@ -59,7 +59,7 @@ def index():
     """
     context = make_context()
 
-    state = context['COPY']['meta']['state']['value']
+    state = context['state']
     script = context['COPY'][state]
 
     content = ''
@@ -75,7 +75,6 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
-    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -88,7 +87,6 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     context['template'] = 'basic-card'
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -105,7 +103,6 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -133,7 +130,6 @@ def results(party):
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['state'] = context['COPY']['meta']['state']['value']
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
@@ -145,19 +141,12 @@ def results(party):
 @oauth_required
 def get_caught_up():
     key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context = make_context(gdoc=doc)
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -165,19 +154,12 @@ def get_caught_up():
 @oauth_required
 def what_happened():
     key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context = make_context(gdoc=doc)
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -185,19 +167,12 @@ def what_happened():
 @oauth_required
 def title():
     key = app_config.CARD_GOOGLE_DOC_KEYS['title']
-    context = make_context()
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['banner'] = doc.banner
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
+    context = make_context(gdoc=doc)
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 
@@ -216,10 +191,9 @@ def gdoc(key):
 @oauth_required
 def current_state():
     context = make_context()
-    state = context['COPY']['meta']['state']['value']
 
     data = {
-        'state': state
+        'state': context['state']
     }
 
     return jsonify(**data)
