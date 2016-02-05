@@ -7,7 +7,7 @@ from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
-from render_utils import make_context, smarty_filter, urlencode_filter
+from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
@@ -136,9 +136,12 @@ def results(party):
 @app.route('/get-caught-up/')
 @oauth_required
 def get_caught_up():
+    context = make_context()
+
     key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     doc = get_google_doc_html(key)
-    context = make_context(gdoc=doc)
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
     context['route'] = '/get-caught-up/'
@@ -149,9 +152,12 @@ def get_caught_up():
 @app.route('/what-happened/')
 @oauth_required
 def what_happened():
+    context = make_context()
+
     key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     doc = get_google_doc_html(key)
-    context = make_context(gdoc=doc)
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
     context['route'] = '/what-happened/'
@@ -162,9 +168,12 @@ def what_happened():
 @app.route('/title/')
 @oauth_required
 def title():
+    context = make_context()
+
     key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     doc = get_google_doc_html(key)
-    context = make_context(gdoc=doc)
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
