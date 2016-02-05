@@ -164,8 +164,8 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-01'
-ELEX_FLAGS = ''
+NEXT_ELECTION_DATE = '2016-02-09'
+ELEX_FLAGS = '-t'
 # ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
 
 """
