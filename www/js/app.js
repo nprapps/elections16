@@ -37,6 +37,9 @@ var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
 var currentCard = null;
+if (!LIVE) {
+    var LIVE = false;
+}
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
