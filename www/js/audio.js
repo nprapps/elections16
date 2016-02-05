@@ -1,7 +1,6 @@
 var AUDIO = (function() {
     var NO_AUDIO = (window.location.search.indexOf('noaudio') >= 0);
     var timedAnalytics = {};
-    var live = null;
 
     var setupAudio = function() {
         $audioPlayer.jPlayer({
@@ -31,10 +30,6 @@ var AUDIO = (function() {
         }
 
         ANALYTICS.trackEvent('audio-started', url);
-    }
-
-    var setLive = function() {
-        live = true;
     }
 
     var playAudio = function() {
@@ -78,13 +73,13 @@ var AUDIO = (function() {
 
     var toggleAudio = function() {
         if ($audioPlayer.data('jPlayer')['status']['paused']) {
-            if (live) {
+            if (LIVE) {
                 setMedia(LIVE_AUDIO_URL);
             } else {
                 playAudio();
             }
         } else {
-            if (live) {
+            if (LIVE) {
                 stopAudio();
             } else {
                 pauseAudio();
@@ -99,7 +94,7 @@ var AUDIO = (function() {
 
         if ($playToggleBtn.hasClass('loading')) {
             $playToggleBtn.removeClass().addClass('toggle-btn pause');
-            if (live) {
+            if (LIVE) {
                 $segmentType.text('Live Audio');
             }
         }
@@ -121,13 +116,18 @@ var AUDIO = (function() {
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
+    var stopLivestream = function(e) {
+        stopAudio();
+        $mute.hide();
+    }
+
     return {
         'setupAudio': setupAudio,
         'setMedia': setMedia,
-        'setLive': setLive,
         'rewindAudio': rewindAudio,
         'forwardAudio': forwardAudio,
-        'toggleAudio': toggleAudio
+        'toggleAudio': toggleAudio,
+        'stopLivestream': stopLivestream
     }
 })();
 
