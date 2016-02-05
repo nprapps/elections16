@@ -304,6 +304,13 @@ def reset_browsers():
     )
 
 """
+Install font
+"""
+@task
+def install_font():
+    local('fontello-cli install --config fontello/config.json --css www/css/icon --font www/css/font/')
+
+"""
 Destruction
 
 Changes to destruction require setup/deploy to a test host in order to test.
