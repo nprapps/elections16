@@ -153,6 +153,22 @@ def get_caught_up():
 
     return render_template('cards/link-roundup.html', **context)
 
+@app.route('/whats-happening/')
+@oauth_required
+def whats_happening():
+    context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['whats_happening']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'whats-happening'
+    context['template'] = 'link-roundup'
+    context['route'] = '/whats-happening/'
+    context['refresh_rate'] = 60
+
+    return render_template('cards/link-roundup.html', **context)
+
 @app.route('/what-happened/')
 @oauth_required
 def what_happened():
