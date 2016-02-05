@@ -21,6 +21,17 @@
 
     </div>
 </div>
+
+{% if live %}
+<script type='text/javascript'>
+    var LIVE = true;
+</script>
+{% else %}
+<script type='text/javascript'>
+    var LIVE = false;
+</script>
+{% endif %}
+
 {% endblock %}
 
 {% block card_background %}
