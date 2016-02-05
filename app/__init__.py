@@ -130,20 +130,15 @@ def results(party):
     """
     Render the results card
     """
-    ap_party = PARTY_MAPPING[party]['AP']
 
     context = make_context()
-    party_results = models.Result.select().where(
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
-    )
 
-    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), ap_party)
+    results, other_votecount, other_votepct, last_updated = get_results(party, app_config.NEXT_ELECTION_DATE)
 
-    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
-
-    context['results'] = sorted_results
+    context['results'] = results
+    context['other_votecount'] = other_votecount
+    context['other_votepct'] = other_votepct
+    context['last_updated'] = last_updated
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
@@ -154,17 +149,19 @@ def results(party):
     return render_template('cards/results.html', **context)
 
 
-@app.route('/data/data.json')
-def results_json():
+@app.route('/data/results-<electiondate>.json')
+def results_json(electiondate):
     data = {
         'gop': None,
         'dem': None,
     }
 
     for party in data.keys():
-        results, lastupdated = get_results(party)
+        results, other_votecount, other_votepct, lastupdated = get_results(party, electiondate)
         data[party] = {
             'results': results,
+            'other_votecount': other_votecount,
+            'other_votepct': other_votepct,
             'lastupdated': lastupdated
         }
 
@@ -240,13 +237,21 @@ def current_state():
 
     return jsonify(**data)
 
-def get_results(party):
+
+def get_results(party, electiondate):
+    """
+    Results getter
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
     party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
         models.Result.level == 'state'
     )
 
-    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
+    filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(party_results), ap_party)
+
+    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
 
     serialized_results = []
@@ -260,7 +265,8 @@ def get_results(party):
         models.Result.level == 'state'
     ).get()
 
-    return serialized_results, latest_result.lastupdated
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+
 
 def never_cache_preview(response):
     """
