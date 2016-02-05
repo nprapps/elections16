@@ -327,80 +327,6 @@ body {
     }
 }
 
-
-
-.during-mode-notice {
-    position: absolute;
-    top: -50px;
-    left: 0;
-    color: @white;
-    background-color: @live;
-    width: 100%;
-    z-index: 5;
-    height: 25px;
-
-    @media @screen-small-above {
-        height: 30px;
-    }
-
-    .during & {
-        top: 0;
-    }
-
-    &:before {
-        display: block;
-        content: ' ';
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        right: 0;
-        bottom: 0;
-        width: 17px;
-        height: 12px;
-        z-index: 1;
-        background: transparent url('@{img-root}/bounce.gif') no-repeat;
-        .background-size(cover);
-
-        @media @screen-small-above {
-            left: 30px;
-            width: 20px;
-            height: 15px;
-        }
-    }
-
-    h5 {
-        position: absolute;
-        top: 7px;
-        left: 30px;
-        line-height: 1;
-        margin: 0;
-        font-size: 11px;
-        text-transform: uppercase;
-        .knockout();
-
-        @media @screen-small-above {
-            font-size: 15px;
-            left: 60px;
-        }
-    }
-
-    p {
-        position: absolute;
-        top: 7px;
-        right: 5px;
-        line-height: 1;
-        margin: 0;
-        font-size: 10px;
-        .knockout();
-        text-transform: none;
-
-        @media @screen-small-above {
-            font-size: 12px;
-            right: 30px;
-        }
-    }
-}
-
 .branding-border {
     position: absolute;
     top: 0;
@@ -448,10 +374,6 @@ body {
     min-height: 4rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2));
 
-    .during & {
-        top: 20px;
-    }
-
     &.bg-header {
         background-color: rgba(0, 0, 0, .6);
         width: 100%;
@@ -470,16 +392,8 @@ body {
     right: 5px;
     z-index: 3;
 
-    .during & {
-        top: 33px;
-    }
-
     @media @screen-small-above {
         top: 19px;
-
-        .during & {
-            top: 2.6rem;
-        }
     }
 
     @media @screen-medium-above {
@@ -612,10 +526,6 @@ body {
 
     .card-inner {
         padding-top: 5rem;
-
-        .during & {
-            padding-top: 6rem;
-        }
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -802,10 +712,6 @@ body {
         max-width: @max-width-content;
         margin: 0 auto;
 
-        .during & {
-            padding-top: 0;
-        }
-
         @media @screen-small-above {
             padding-top: 5rem;
         }
@@ -865,11 +771,6 @@ body {
             line-height: 1;
             padding: 1rem;
             text-transform: uppercase;
-
-            .during & {
-                padding-left: 45px;
-            }
-
         }
 
         .get-alerts {
@@ -905,6 +806,10 @@ body {
                 z-index: 1;
                 background: transparent url('@{img-root}/bounce.gif') no-repeat;
                 .background-size(cover);
+            }
+
+            h6 {
+                padding-left: 45px;
             }
 
             p {
