@@ -186,16 +186,19 @@ def make_context(asset_depth=0, gdoc=None):
 
     context['state'] = context['COPY']['meta'][state_var]['value']
 
-    if gdoc:
-        context['content'] = gdoc
-        context['headline'] = gdoc.headline
-        context['subhed'] = gdoc.subhed
-        context['banner'] = gdoc.banner
-        context['image'] = gdoc.image
-        context['mobile_image'] = gdoc.mobile_image
-        context['credit'] = gdoc.credit
-
     return context
+
+def make_gdoc_context(gdoc):
+    gdoc_context = {}
+    gdoc_context['content'] = gdoc
+    gdoc_context['headline'] = gdoc.headline
+    gdoc_context['subhed'] = gdoc.subhed
+    gdoc_context['banner'] = gdoc.banner
+    gdoc_context['image'] = gdoc.image
+    gdoc_context['mobile_image'] = gdoc.mobile_image
+    gdoc_context['credit'] = gdoc.credit
+
+    return gdoc_context
 
 def urlencode_filter(s):
     """
