@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
 from app import utils
-from app.gdoc import DocParser
 from datetime import datetime
-from render_utils import make_context
 
 import app
 import app_config
@@ -68,16 +66,6 @@ class AppConfigTestCase(unittest.TestCase):
         test_date = datetime(2016, 2, 1, 4, 0, 0)
         output = utils.ap_time_period_filter(test_date)
         self.assertEqual(output, 'p.m.')
-
-    def test_gdoc_make_context(self):
-        with open('tests/data/testdoc.html') as f:
-            html_string = f.read()
-
-        doc = DocParser(html_string)
-
-        context = make_context(gdoc=doc)
-        self.assertEqual(context['content'], doc)
-
 
 if __name__ == '__main__':
     unittest.main()
