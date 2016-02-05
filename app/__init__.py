@@ -136,6 +136,27 @@ def results(party):
 
     return render_template('cards/results.html', **context)
 
+@app.route('/live-audio/')
+@oauth_required
+def live_audio():
+    context = make_context()
+
+    live_audio_state = context['COPY']['meta']['live_audio']['value']
+
+    if live_audio_state == 'live':
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
+    else:
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_inactive']
+
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'live-audio'
+    context['template'] = 'live-audio'
+    context['route'] = '/live-audio/'
+    context['refresh_rate'] = 60
+
+    return render_template('cards/live-audio.html', **context)
 
 @app.route('/get-caught-up/')
 @oauth_required

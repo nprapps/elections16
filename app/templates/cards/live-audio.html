@@ -2,8 +2,8 @@
 
 {% block card_content %}
 <div class="segment-audio-content">
-        <h1>Special Coverage</h1>
-        <h2>of the New Hampshire primaries</h2>
+        <h1>{{ headline }}</h1>
+        <h2>{{ subhed }}</h2>
 
         <ul class="segment-audio-player">
             <li class="segment-type">Live Audio</li>
@@ -15,14 +15,14 @@
 
     <div class="broadcast-description">
 
-        <p>Tune in to hear live results, candidate speeches, news from NPR's political team on the ground in the granite state and updated analysis. Hosted by Ari Shapiro and Audie Cornish.</p>
+        <p>{{ content|safe }}</p>
 
     </div>
 </div>
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-default-bg="https://secure.npr.org/politics/election2016/post-iowa-podcast.jpg">
-    <p class="photo-credit">Christopher Furlong/Getty Images</p>
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
 </span>
 {% endblock %}
