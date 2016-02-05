@@ -8,13 +8,9 @@ from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
-<<<<<<< HEAD
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
-from render_utils import make_context, smarty_filter, urlencode_filter
-=======
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
->>>>>>> master
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
