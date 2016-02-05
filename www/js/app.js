@@ -5,6 +5,7 @@ var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
 var $playToggleBtn = null;
+var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
 var $globalControls = null;
@@ -20,6 +21,9 @@ var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
+var $alert = null;
+var $alertAction = null;
+var $closeAlert = null;
 
 // Global references
 var candidates = {}
@@ -50,6 +54,7 @@ var onDocumentLoad = function(e) {
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
     $playToggleBtn = $('.toggle-btn');
+    $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
     $globalNav = $('.global-nav');
@@ -65,6 +70,9 @@ var onDocumentLoad = function(e) {
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
+    $alert = $('.alert');
+    $alertAction = $('.alert-action');
+    $closeAlert = $('.close-alert');
 
     rem = getEmPixels();
 
@@ -76,6 +84,7 @@ var onDocumentLoad = function(e) {
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
+    $closeAlert.on('click', onCloseAlertClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -177,9 +186,10 @@ var onCardChange = function(e) {
         $flickityNav.hide();
     }
 
-    if ($thisCard.is('#podcast') && $audioPlayer.data().jPlayer.status.currentTime === 0) {
+    if ($thisCard.is('#podcast') && !playedAudio) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
+        playedAudio = true;
     }
 }
 
@@ -335,10 +345,6 @@ var getTimeBucket = function(seconds) {
 }
 
 var onUnload = function(e) {
-    // log global time
-    var totalTimeArray = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
-
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
     calculateSlideExitTime(currentSlideId);
@@ -346,8 +352,10 @@ var onUnload = function(e) {
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
-            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            if (timeOnSlides[slide] > 0) {
+                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            }
         }
     }
 }
@@ -403,13 +411,30 @@ var checkState = function() {
         ifModified: true,
         success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
+                var oldState = currentState;
                 currentState = data['state']
-                if (currentState === 'during') {
+                if (!oldState && currentState === 'during') {
                     AUDIO.setLive();
+                }
+
+                if (oldState === 'before' && currentState === 'during') {
+                    setLiveAlert();
                 }
             }
         }
     });
+}
+
+var setLiveAlert = function() {
+    $alert.removeClass().addClass('alert signal-during');
+    $alertAction.off('click');
+    $alertAction.on('click', function() {
+        location.reload(true);
+    });
+}
+
+var onCloseAlertClick = function() {
+    $alert.addClass('alert-slide-up')
 }
 
 var onResize = function() {

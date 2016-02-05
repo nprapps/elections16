@@ -21,6 +21,11 @@ var AUDIO = (function() {
         });
         playAudio();
 
+        $playToggleBtn.removeClass().addClass('toggle-btn loading fa-spin');
+        $segmentType.text('Loading');
+
+        $mute.show();
+
         for (var i = 0; i < timedAnalytics.length; i++) {
             timedAnalytics[i]['measured'] = false;
         }
@@ -34,13 +39,14 @@ var AUDIO = (function() {
 
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
-        $playToggleBtn.removeClass('play').addClass('pause');
+        $playToggleBtn.removeClass().addClass('toggle-btn pause');
+        $mute.show();
         $mute.removeClass('muted').addClass('playing');
     }
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
-        $playToggleBtn.removeClass('pause').addClass('play');
+        $playToggleBtn.removeClass().addClass('toggle-btn play');
         $mute.removeClass('playing').addClass('muted');
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
@@ -50,6 +56,7 @@ var AUDIO = (function() {
             .jPlayer('stop')
             .jPlayer('clearMedia');
         $mute.removeClass('playing').addClass('muted');
+        $playToggleBtn.removeClass().addClass('toggle-btn play');
         ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
@@ -90,16 +97,27 @@ var AUDIO = (function() {
         var position = e.jPlayer.status.currentTime;
         var remainingTime = totalTime - position;
 
-        var timeBucket = getTimeBucket(position);
-        if (!timedAnalytics[timeBucket]) {
-            timedAnalytics[timeBucket] = true;
-            ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
+        if ($playToggleBtn.hasClass('loading')) {
+            $playToggleBtn.removeClass().addClass('toggle-btn pause');
+            if (live) {
+                $segmentType.text('Live Audio');
+            }
+        }
+
+        if (position > 10) {
+            var timeBucket = getTimeBucket(position);
+            if (!timedAnalytics[timeBucket]) {
+                timedAnalytics[timeBucket] = true;
+                ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
+            }
         }
 
         $duration.text($.jPlayer.convertTime(remainingTime));
     }
 
     var onEnded = function(e) {
+        $mute.hide();
+        $playToggleBtn.removeClass('pause').addClass('play');
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 

@@ -8,9 +8,13 @@ from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
+<<<<<<< HEAD
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, smarty_filter, urlencode_filter
+=======
+from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
+>>>>>>> master
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
@@ -76,7 +80,7 @@ def index():
     """
     context = make_context()
 
-    state = context['COPY']['meta']['state']['value']
+    state = context['state']
     script = context['COPY'][state]
 
     content = ''
@@ -92,7 +96,6 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
-    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -105,7 +108,6 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     context['template'] = 'basic-card'
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -122,7 +124,6 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -133,17 +134,26 @@ def results(party):
     """
     Render the results card
     """
+    ap_party = PARTY_MAPPING[party]['AP']
+
     context = make_context()
+    party_results = models.Result.select().where(
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    )
 
-    results, lastupdated = get_results(party)
+    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), ap_party)
 
-    context['results'] = results
-    context['lastupdated'] = lastupdated
+    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
+
+    context['results'] = sorted_results
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['refresh_rate'] = 20
-    context['state'] = context['COPY']['meta']['state']['value']
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
 
@@ -167,60 +177,48 @@ def results_json():
 @app.route('/get-caught-up/')
 @oauth_required
 def get_caught_up():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/what-happened/')
 @oauth_required
 def what_happened():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/title/')
 @oauth_required
 def title():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['banner'] = doc.banner
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 
@@ -239,10 +237,9 @@ def gdoc(key):
 @oauth_required
 def current_state():
     context = make_context()
-    state = context['COPY']['meta']['state']['value']
 
     data = {
-        'state': state
+        'state': context['state']
     }
 
     return jsonify(**data)

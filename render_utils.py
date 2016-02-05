@@ -157,7 +157,7 @@ def flatten_app_config():
 
     return config
 
-def make_context(asset_depth=0):
+def make_context(asset_depth=0, gdoc=None):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
@@ -177,7 +177,28 @@ def make_context(asset_depth=0):
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
 
+    if app_config.DEPLOYMENT_TARGET == 'production':
+        state_var = 'prod_state'
+    elif app_config.DEPLOYMENT_TARGET == 'staging':
+        state_var = 'stage_state'
+    else:
+        state_var = 'dev_state'
+
+    context['state'] = context['COPY']['meta'][state_var]['value']
+
     return context
+
+def make_gdoc_context(gdoc):
+    gdoc_context = {}
+    gdoc_context['content'] = gdoc
+    gdoc_context['headline'] = gdoc.headline
+    gdoc_context['subhed'] = gdoc.subhed
+    gdoc_context['banner'] = gdoc.banner
+    gdoc_context['image'] = gdoc.image
+    gdoc_context['mobile_image'] = gdoc.mobile_image
+    gdoc_context['credit'] = gdoc.credit
+
+    return gdoc_context
 
 def urlencode_filter(s):
     """
