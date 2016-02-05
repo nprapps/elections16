@@ -1,12 +1,15 @@
 import app_config
 import feedparser
-import json
+import simplejson as json
 
 from . import utils
+from datetime import date, datetime
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
+from peewee import fn
+from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
@@ -39,6 +42,20 @@ PARTY_MAPPING = {
         'long': 'Republican'
     }
 }
+
+
+class APDatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            thedate = utils.ap_date_filter(obj.strftime('%m/%d/%Y'))
+            thetime = utils.ap_time_filter(obj.strftime('%I:%M'))
+            theperiod = utils.ap_time_period_filter(obj.strftime('%p'))
+            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
+        elif isinstance(obj, date):
+            return obj.isoformat()
+        else:
+            return super(APDatetimeEncoder, self).default(obj)
+
 
 @app.route('/preview/<path:path>/')
 @oauth_required
@@ -113,20 +130,15 @@ def results(party):
     """
     Render the results card
     """
-    ap_party = PARTY_MAPPING[party]['AP']
 
     context = make_context()
-    party_results = models.Result.select().where(
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
-    )
 
-    filtered, context['other_votecount'], context['other_votepct'] = utils.collate_other_candidates(list(party_results), ap_party)
+    results, other_votecount, other_votepct, last_updated = get_results(party, app_config.NEXT_ELECTION_DATE)
 
-    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
-
-    context['results'] = sorted_results
+    context['results'] = results
+    context['other_votecount'] = other_votecount
+    context['other_votepct'] = other_votepct
+    context['last_updated'] = last_updated
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
@@ -136,6 +148,24 @@ def results(party):
 
     return render_template('cards/results.html', **context)
 
+
+@app.route('/data/results-<electiondate>.json')
+def results_json(electiondate):
+    data = {
+        'gop': None,
+        'dem': None,
+    }
+
+    for party in data.keys():
+        results, other_votecount, other_votepct, lastupdated = get_results(party, electiondate)
+        data[party] = {
+            'results': results,
+            'other_votecount': other_votecount,
+            'other_votepct': other_votepct,
+            'lastupdated': lastupdated
+        }
+
+    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
 
 @app.route('/get-caught-up/')
 @oauth_required
@@ -222,6 +252,37 @@ def current_state():
     }
 
     return jsonify(**data)
+
+
+def get_results(party, electiondate):
+    """
+    Results getter
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    party_results = models.Result.select().where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    )
+
+    filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(party_results), ap_party)
+
+    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
+
+    serialized_results = []
+    for result in sorted_results:
+        serialized_results.append(model_to_dict(result, backrefs=True))
+
+    latest_result = models.Result.select(
+        fn.Max(models.Result.lastupdated).alias('lastupdated')
+    ).where(
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
+    ).get()
+
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+
 
 def never_cache_preview(response):
     """

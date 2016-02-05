@@ -4,13 +4,13 @@
 Commands for rendering various parts of the app stack.
 """
 
+import app
+import app_config
 import codecs
-from glob import glob
 import os
 
 from fabric.api import local, task
-
-import app
+from glob import glob
 
 def _fake_context(path):
     """
@@ -101,7 +101,7 @@ def render_simple_route(view_name):
 
 
 @task
-def render_results():
+def render_results_html():
     from flask import url_for
 
     view_name = 'results'
@@ -115,8 +115,28 @@ def render_results():
             view = app.__dict__[view_name]
             content = view(party)
 
-        output_path = '.cards_html'
         _write_file(path, content)
+
+
+@task
+def render_results_json():
+    from flask import url_for
+
+    view_name = 'results_json'
+    electiondate = app_config.NEXT_ELECTION_DATE
+
+    with app.app.test_request_context():
+        path = url_for(view_name, electiondate=electiondate)
+        view = app.__dict__[view_name]
+        content = view(electiondate)
+
+    try:
+        os.makedirs('.cards_html/data')
+    except OSError:
+        pass
+
+    with codecs.open('.cards_html/{0}'.format(path), 'w', 'utf-8') as f:
+        f.write(content)
 
 
 @task
