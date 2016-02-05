@@ -5,6 +5,7 @@
         <h1>{{ headline }}</h1>
         <h2>{{ subhed }}</h2>
 
+        {% if live %}
         <ul class="segment-audio-player">
             <li class="segment-type">Live Audio</li>
             <li class="segment-play">
@@ -12,6 +13,7 @@
                 </button>
             </li>
         </ul>
+        {% endif %}
 
     <div class="broadcast-description">
 

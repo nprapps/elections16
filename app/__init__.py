@@ -145,8 +145,10 @@ def live_audio():
 
     if live_audio_state == 'live':
         key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
+        context['live'] = True
     else:
         key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_inactive']
+        context['live'] = False
 
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
