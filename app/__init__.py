@@ -113,11 +113,15 @@ def podcast():
     Render the podcast card
     """
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['podcast']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
     podcastdata = feedparser.parse(PODCAST_URL)
     latest = podcastdata.entries[0]
-    context['podcast_title'] = latest.title
     context['podcast_link'] = latest.enclosures[0]['href']
-    context['podcast_description'] = latest.description
+
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
 
