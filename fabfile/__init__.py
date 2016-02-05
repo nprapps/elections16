@@ -149,6 +149,7 @@ def update():
     """
     Update all application data not in repository (copy, assets, etc).
     """
+    install_font()
     text.update()
     assets.sync()
     data.update()
