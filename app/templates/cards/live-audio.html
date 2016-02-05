@@ -2,9 +2,10 @@
 
 {% block card_content %}
 <div class="segment-audio-content">
-        <h1>Special Coverage</h1>
-        <h2>of the New Hampshire primaries</h2>
+        <h1>{{ headline }}</h1>
+        <h2>{{ subhed }}</h2>
 
+        {% if live %}
         <ul class="segment-audio-player">
             <li class="segment-type">Live Audio</li>
             <li class="segment-play">
@@ -12,17 +13,29 @@
                 </button>
             </li>
         </ul>
+        {% endif %}
 
     <div class="broadcast-description">
 
-        <p>Listen to Hosts Ari and Audie and our our Politics team live Quisque eu nibh consequat, convallis nunc ac, aliquet tellus. In hac link habitasse platea dit.  Quisque eu nibh consequat, convallis.</p>
+        <p>{{ content|safe }}</p>
 
     </div>
 </div>
+
+{% if live %}
+<script type='text/javascript'>
+    var LIVE = true;
+</script>
+{% else %}
+<script type='text/javascript'>
+    var LIVE = false;
+</script>
+{% endif %}
+
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-default-bg="https://secure.npr.org/politics/election2016/post-iowa-podcast.jpg">
-    <p class="photo-credit">Christopher Furlong/Getty Images</p>
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
 </span>
 {% endblock %}

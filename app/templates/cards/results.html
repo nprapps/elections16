@@ -13,7 +13,7 @@
 
 <article>
     <ul class="meta">
-        <li>As of {{ results[0].lastupdated|ap_date }}, {{ results[0].lastupdated|ap_time }} <span class="ap-period">{{ results[0].lastupdated|ap_time_period }}</span> EST</li>
+        <li>As of {{ last_updated|ap_date }}, {{ last_updated|ap_time }} <span class="ap-period">{{ last_updated|ap_time_period }}</span> EST</li>
         <li>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting|comma }} of {{ results[0].precinctstotal|comma }})</li>
     </ul>
     <table>
@@ -35,6 +35,11 @@
                     <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
                 </tr>
             {% endfor %}
+                <tr>
+                    <td>Other</td>
+                    <td class="votes">{{ other_votecount|comma }}</td>
+                    <td class="pct">{{ other_votepct|normalize_percent|percent }}</td>
+                </tr>
 
         </tbody>
     </table>

@@ -1,13 +1,16 @@
 import app_config
 import feedparser
-import json
+import simplejson as json
 
 from . import utils
+from datetime import date, datetime
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
-from render_utils import make_context, smarty_filter, urlencode_filter
+from peewee import fn
+from playhouse.shortcuts import model_to_dict
+from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
@@ -40,6 +43,20 @@ PARTY_MAPPING = {
     }
 }
 
+
+class APDatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            thedate = utils.ap_date_filter(obj.strftime('%m/%d/%Y'))
+            thetime = utils.ap_time_filter(obj.strftime('%I:%M'))
+            theperiod = utils.ap_time_period_filter(obj.strftime('%p'))
+            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
+        elif isinstance(obj, date):
+            return obj.isoformat()
+        else:
+            return super(APDatetimeEncoder, self).default(obj)
+
+
 @app.route('/preview/<path:path>/')
 @oauth_required
 def preview(path):
@@ -59,7 +76,7 @@ def index():
     """
     context = make_context()
 
-    state = context['COPY']['meta']['state']['value']
+    state = context['state']
     script = context['COPY'][state]
 
     content = ''
@@ -75,7 +92,6 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
-    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -88,7 +104,6 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     context['template'] = 'basic-card'
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
 
 @app.route('/podcast/')
@@ -105,7 +120,6 @@ def podcast():
     context['podcast_description'] = latest.description
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -116,84 +130,127 @@ def results(party):
     """
     Render the results card
     """
+
     context = make_context()
-    party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
-    )
 
-    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
+    results, other_votecount, other_votepct, last_updated = get_results(party, app_config.NEXT_ELECTION_DATE)
 
-    context['results'] = sorted_results
+    context['results'] = results
+    context['other_votecount'] = other_votecount
+    context['other_votepct'] = other_votepct
+    context['last_updated'] = last_updated
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['state'] = context['COPY']['meta']['state']['value']
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
 
     return render_template('cards/results.html', **context)
 
+@app.route('/live-audio/')
+@oauth_required
+def live_audio():
+    context = make_context()
+
+    live_audio_state = context['COPY']['meta']['live_audio']['value']
+
+    if live_audio_state == 'live':
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
+        context['live'] = True
+    else:
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_inactive']
+        context['live'] = False
+
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'live-audio'
+    context['template'] = 'live-audio'
+    context['route'] = '/live-audio/'
+    context['refresh_rate'] = 60
+
+    return render_template('cards/live-audio.html', **context)
+
+@app.route('/data/results-<electiondate>.json')
+def results_json(electiondate):
+    data = {
+        'gop': None,
+        'dem': None,
+    }
+
+    for party in data.keys():
+        results, other_votecount, other_votepct, lastupdated = get_results(party, electiondate)
+        data[party] = {
+            'results': results,
+            'other_votecount': other_votecount,
+            'other_votepct': other_votepct,
+            'lastupdated': lastupdated
+        }
+
+    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
 
 @app.route('/get-caught-up/')
 @oauth_required
 def get_caught_up():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
+
+    return render_template('cards/link-roundup.html', **context)
+
+@app.route('/whats-happening/')
+@oauth_required
+def whats_happening():
+    context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['whats_happening']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'whats-happening'
+    context['template'] = 'link-roundup'
+    context['route'] = '/whats-happening/'
+    context['refresh_rate'] = 60
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/what-happened/')
 @oauth_required
 def what_happened():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/title/')
 @oauth_required
 def title():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['banner'] = doc.banner
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 
@@ -212,13 +269,43 @@ def gdoc(key):
 @oauth_required
 def current_state():
     context = make_context()
-    state = context['COPY']['meta']['state']['value']
 
     data = {
-        'state': state
+        'state': context['state']
     }
 
     return jsonify(**data)
+
+
+def get_results(party, electiondate):
+    """
+    Results getter
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    party_results = models.Result.select().where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    )
+
+    filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(party_results), ap_party)
+
+    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
+
+    serialized_results = []
+    for result in sorted_results:
+        serialized_results.append(model_to_dict(result, backrefs=True))
+
+    latest_result = models.Result.select(
+        fn.Max(models.Result.lastupdated).alias('lastupdated')
+    ).where(
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
+    ).get()
+
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+
 
 def never_cache_preview(response):
     """

@@ -64,6 +64,23 @@ USPS_TO_AP_STATE = {
     'WY': 'Wyo.'
 }
 
+GOP_CANDIDATES = [
+    'Jeb Bush',
+    'Ben Carson',
+    'Chris Christie',
+    'Ted Cruz',
+    'Carly Fiorina',
+    'Jim Gilmore',
+    'John Kasich',
+    'Marco Rubio',
+    'Donald Trump'
+]
+
+DEM_CANDIDATES = [
+    'Hillary Clinton',
+    'Bernie Sanders'
+]
+
 def comma_filter(value):
     """
     Format a number with commas.
@@ -108,6 +125,8 @@ def ap_date_filter(value):
     """
     Converts a date string in m/d/yyyy format into AP style.
     """
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%m/%d/%Y')
     value_tz = _set_timezone(value)
     output = AP_MONTHS[value_tz.month - 1]
     output += ' ' + unicode(value_tz.day)
@@ -117,10 +136,13 @@ def ap_date_filter(value):
 
 def ap_time_filter(value):
     """
-    Converts a date string in m/d/yyyy format into AP style.
+    Converts a time string in hh:mm format into AP style.
     """
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%I:%M')
     value_tz = _set_timezone(value)
-    return value_tz.strftime('%-I:%M')
+    value_year = value_tz.replace(year=2016)
+    return value_year.strftime('%-I:%M')
 
 def ap_state_filter(usps):
     """
@@ -132,8 +154,11 @@ def ap_time_period_filter(value):
     """
     Converts Python's AM/PM into AP Style's a.m./p.m.
     """
+    if isinstance(value, basestring):
+        value = datetime.strptime(value, '%p')
     value_tz = _set_timezone(value)
-    periods = '.'.join(value_tz.strftime('%p')) + '.'
+    value_year = value_tz.replace(year=2016)
+    periods = '.'.join(value_year.strftime('%p')) + '.'
     return periods.lower()
 
 
@@ -147,7 +172,28 @@ def candidate_sort_lastname(item):
 def candidate_sort_votecount(item):
     return item.votecount
 
+
 def _set_timezone(value):
     datetime_obj_utc = value.replace(tzinfo=timezone('GMT'))
     datetime_obj_est = datetime_obj_utc.astimezone(timezone('US/Eastern'))
     return datetime_obj_est
+
+
+def collate_other_candidates(results, party):
+    if party == 'GOP':
+        whitelisted_candidates = GOP_CANDIDATES
+    elif party == 'Dem':
+        whitelisted_candidates = DEM_CANDIDATES
+
+    other_votecount = 0
+    other_votepct = 0
+
+    for result in reversed(results):
+        candidate_name = '%s %s' % (result.first, result.last)
+        if candidate_name not in whitelisted_candidates:
+            other_votecount += result.votecount
+            other_votepct += result.votepct
+            results.remove(result)
+
+    return results, other_votecount, other_votepct
+

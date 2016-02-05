@@ -37,6 +37,9 @@ var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
 var currentCard = null;
+if (!LIVE) {
+    var LIVE = false;
+}
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -176,10 +179,6 @@ var onCardChange = function(e) {
         $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
-        if (currentState == 'during' && !playedAudio) {
-            AUDIO.setMedia(LIVE_AUDIO_URL);
-            playedAudio = true;
-        }
     } else {
         $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
@@ -189,6 +188,11 @@ var onCardChange = function(e) {
     if ($thisCard.is('#podcast') && !playedAudio) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
+        playedAudio = true;
+    }
+
+    if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
+        AUDIO.setMedia(LIVE_AUDIO_URL);
         playedAudio = true;
     }
 }
@@ -398,6 +402,10 @@ var getCard = function(url, $card, i) {
 
                     $card.html(htmlString);
                     detectMobileBg($card);
+
+                    if ($card.is('#live-audio')) {
+                        AUDIO.stopLivestream();
+                    }
                 }
             }
         });
@@ -413,10 +421,6 @@ var checkState = function() {
             if (status === 'success' && data['state'] !== currentState) {
                 var oldState = currentState;
                 currentState = data['state']
-                if (!oldState && currentState === 'during') {
-                    AUDIO.setLive();
-                }
-
                 if (oldState === 'before' && currentState === 'during') {
                     setLiveAlert();
                 }

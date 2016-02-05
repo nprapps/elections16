@@ -128,6 +128,17 @@ To run on a server:
 fab staging master servers.fabcast:data.load_results:2015-11-03
 ```
 
+Controlling State
+------------------
+
+There are four states to the app: before, during, after and inactive.
+
+You can control the app state separately for local development, staging, and production through the `meta` sheet of the copy spreadsheet. Those variables are called `dev_state`, `stage_state`, and `prod_state` respectively.
+
+Defining a state determines the card stack that the app renders. Those card stacks are defined in their respective sheets in the copy spreadsheet.
+
+Additionally, you can control the state of the live audio in the app. For live audio to function in the app, the `live_audio` card must be in the stack that matches the state of the app, and the `live_audio` variable in the `meta` sheet must be set to `live`. If the live audio card is in the current stack, but you want to turn the live audio off, set `live_audio` in the `meta` sheet to `inactive`.
+
 Hide project secrets
 --------------------
 

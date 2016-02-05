@@ -101,6 +101,9 @@ CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
     'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
     'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+    'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+    'live_coverage_active': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ'
 }
 
 """
@@ -164,8 +167,8 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-01'
-ELEX_FLAGS = ''
+NEXT_ELECTION_DATE = '2016-02-09'
+ELEX_FLAGS = '-t'
 # ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
 
 """
