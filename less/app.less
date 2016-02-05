@@ -288,7 +288,6 @@ body {
         line-height: 1;
         margin: 12px 0 0 30px;
         font-size: 12px;
-        text-transform: uppercase;
         .knockout();
         text-transform: none;
 
@@ -536,13 +535,13 @@ body {
         line-height: 1.1;
     }
 
-    h1 { font-size: 2.7rem; }
+    h1 {
+        font-size: 2.7rem;
+        text-transform: none;
+    }
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
-
-    h4 {
-        margin-top: 3rem;
-    }
+    h4 { margin-top: 3rem; }
 
     header { padding: 2rem; }
     article {
@@ -839,7 +838,7 @@ body {
         }
 
         h1 {
-            .knockout();
+            text-transform: uppercase;
             font-size: 2rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
@@ -1164,9 +1163,7 @@ body {
         }
 
         h1 {
-            .knockout();
             font-size: 2.5rem;
-            text-transform: none;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
             text-align: center;
@@ -1357,7 +1354,6 @@ body {
         }
 
         h1 {
-            .knockout();
             font-size: 3rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
@@ -1401,7 +1397,6 @@ body {
         }
 
         h1 {
-            text-transform: none;
             font-size: 2.5rem;
 
             @media @screen-small-above {
@@ -1616,8 +1611,6 @@ body {
         padding: 2rem;
 
         h1 {
-            text-transform: none;
-            font-size: 1.9rem;
             color: #ccc;
             @media @screen-small-above {
                 font-size: 3rem;
@@ -1625,7 +1618,6 @@ body {
         }
 
         h2 {
-            font-size: 1.2rem;
             color: #fff;
             @media @screen-small-above {
                 font-size: 1.6rem;
