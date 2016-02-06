@@ -118,7 +118,7 @@
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
 @white          : #eee;
-
+@brightwhite    : #fff;
 
 
 // fonts
@@ -224,6 +224,11 @@ body {
             width: 4.5rem;
         }
     }
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 // header
@@ -658,7 +663,7 @@ body {
 
         i {
             font-size: 1.6rem;
-            padding-left: .5rem;
+            padding-left: 0;
         }
 
         @media @screen-small-above {
@@ -1075,7 +1080,7 @@ body {
 
             .segment-rewind {
                 position: absolute;
-                top:0;
+                top:0.5rem;
                 left: 0;
             }
 
@@ -1104,35 +1109,26 @@ body {
                 button {
                     border: none;
                     background-color: transparent;
-                }
-
-                .play, .pause, .loading {
-                    position: relative;
-                    width: 5rem;
-                    height: 5rem;
-                    margin-bottom: .5rem;
+                    width: 7rem;
+                    text-align: center;
+                    margin-bottom: 0.5rem;
                     outline: none;
                 }
 
                 .play:before {
                     content: "\e802";
                     font-family: elections16;
-                    color: @white;
+                    color: @brightwhite;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 20px;
+                    line-height: 5rem;
                 }
 
                 .pause:before {
                     content: "\e806";
                     font-family: elections16;
-                    color: @white;
+                    color: @brightwhite;
                     font-size: 5rem;
                     line-height: 5rem;
-                    /*position: absolute;*/
-                    /*top: 0;*/
-                    /*left: 7px;*/
                 }
 
                 .loading:before {
@@ -1141,9 +1137,6 @@ body {
                     color: @white;
                     font-size: 5rem;
                     line-height: 5rem;
-                    /*position: absolute;*/
-                    /*top: 0;*/
-                    /*left: 7px;*/
                     -webkit-animation: fa-spin 2s infinite linear;
                     animation: fa-spin 2s infinite linear;
                 }
@@ -1155,7 +1148,7 @@ body {
 
             .segment-forward {
                 position: absolute;
-                top:0;
+                top:0.5rem;
                 right: 0;
             }
         }
@@ -1302,7 +1295,7 @@ body {
 
             .segment-play {
                 margin: 0;
-                padding: 1.4rem 2rem 1rem 2rem;
+                /*padding: 1.4rem 2rem 1rem 2rem;*/
                 background-color: rgba(255, 255, 255, .4);
 
                 button {
@@ -1310,22 +1303,22 @@ body {
                     background-color: transparent;
                 }
 
-                .play, .pause, .loading {
-                    position: relative;
-                    width: 5rem;
-                    height: 5rem;
-                    margin-bottom: .5rem;
-                    outline: none;
-                }
+                /*.play, .pause, .loading {*/
+                    /*position: relative;*/
+                    /*width: 5rem;*/
+                    /*height: 5rem;*/
+                    /*margin-bottom: .5rem;*/
+                    /*outline: none;*/
+                /*}*/
 
                 .play:before {
                     content: "\e802";
                     font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 13px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 13px;*/
                 }
 
                 .pause:before {
@@ -1333,9 +1326,9 @@ body {
                     font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 5px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 5px;*/
                 }
 
                 .loading:before {
@@ -1343,9 +1336,9 @@ body {
                     font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 7px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 7px;*/
                     -webkit-animation: fa-spin 2s infinite linear;
                     animation: fa-spin 2s infinite linear;
                 }
