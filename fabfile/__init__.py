@@ -320,7 +320,7 @@ Install font
 """
 @task
 def install_font():
-    local('fontello-cli install --config fontello/config.json --css www/css/icon --font www/css/font/')
+    local('node_modules/fontello-cli/bin/fontello-cli install --config fontello/config.json --css www/css/icon --font www/css/font/')
 
 """
 Destruction
