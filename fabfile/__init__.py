@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import json
+import logging
 import os
 
 from boto.s3.key import Key
@@ -31,6 +32,10 @@ if app_config.DEPLOY_CRONTAB:
 # Bootstrap can only be run once, then it's disabled
 if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
     import bootstrap
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 """
 Base configuration
@@ -149,7 +154,7 @@ def update():
     """
     Update all application data not in repository (copy, assets, etc).
     """
-    install_font()
+    install_font(force=False)
     text.update()
     assets.sync()
     data.update()
@@ -315,11 +320,21 @@ def reset_browsers():
         }
     )
 
-"""
-Install font
-"""
+
 @task
-def install_font():
+def install_font(force='true'):
+    """
+    Install font
+    """
+    logger.info('Installing font')
+    if force != 'true':
+        try:
+            with open('www/css/icon/elections16.css') and open('www/css/font/elections16.svg'):
+                logger.info('Font installed, skipping.')
+                return
+        except IOError:
+            pass
+
     local('node_modules/fontello-cli/bin/fontello-cli install --config fontello/config.json --css www/css/icon --font www/css/font/')
 
 """
