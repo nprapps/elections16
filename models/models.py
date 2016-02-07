@@ -6,8 +6,8 @@ from peewee import BooleanField, CharField, DateField, DateTimeField, DecimalFie
 
 db = PostgresqlDatabase(
     app_config.database['PGDATABASE'],
-    #user=app_config.database['PGUSER'],
-    #password=app_config.database['PGPASSWORD'],
+    user=app_config.database['PGUSER'],
+    password=app_config.database['PGPASSWORD'],
     host=app_config.database['PGHOST'],
     port=app_config.database['PGPORT']
 )
