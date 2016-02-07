@@ -126,6 +126,8 @@ def create_calls():
     """
     Create database of race calls for all races in results data.
     """
+    models.Call.delete().execute()
+
     results = models.Result.select().where(
         models.Result.level == 'state'
     )
