@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import app_config
+app_config.configure_targets('test')
 
 from app import utils
 from app.gdoc import DocParser
@@ -6,7 +8,6 @@ from datetime import datetime
 from render_utils import make_gdoc_context
 
 import app
-import app_config
 import json
 import unittest
 
