@@ -148,6 +148,49 @@ def results(party):
 
     return render_template('cards/results.html', **context)
 
+
+@app.route('/delegates/<party>/')
+@oauth_required
+def delegates(party):
+    """
+    Render the results card
+    """
+
+    context = make_context()
+
+    ap_party = PARTY_MAPPING[party]['AP']
+    delegates = models.CandidateDelegates.select().where(
+        models.CandidateDelegates.party == ap_party,
+        models.CandidateDelegates.level == 'nation',
+        models.CandidateDelegates.delegates_count > 0
+    ).join(
+        models.Candidate, 
+        on=(models.CandidateDelegates.candidateid == models.Candidate.polid)
+    ).order_by(
+        -models.CandidateDelegates.delegates_count
+    )
+
+    #import ipdb; ipdb.set_trace();
+
+    context['delegates'] = delegates
+    context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
+    context['party'] = ap_party
+    if party == 'dem':
+        context['party_class'] = 'democrat'
+        context['party_long'] = 'Democratic'
+    else:
+        context['party_class'] = 'republican'
+        context['party_long'] = 'Republican'
+
+    context['slug'] = 'delegates-%s' % party
+    context['template'] = 'delegates'
+    context['route'] = '/delegates/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 20
+
+    return render_template('cards/delegates.html', **context)
+
 @app.route('/live-audio/')
 @oauth_required
 def live_audio():

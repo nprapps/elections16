@@ -54,7 +54,7 @@ def bootstrap_db():
     models.ReportingUnit.create_table()
     models.Candidate.create_table()
     models.BallotPosition.create_table()
-
+    models.CandidateDelegates.create_table()
 
 @task
 def bootstrap_data(election_date=None):
@@ -90,6 +90,17 @@ def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
 
 
 @task
+def delete_delegates():
+    """
+    Delete results without droppping database.
+    """
+    db_name = app_config.database['name']
+    pg_vars = _get_pg_vars()
+    with shell_env(**pg_vars):
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM candidatedelegates; set session_replication_role = default;"'.format(db_name))
+
+
+@task
 def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.
@@ -107,6 +118,27 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
             local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['name']))
         else:
             print("ERROR GETTING RESULTS")
+            print(cmd_output.stderr)
+
+
+@task
+def load_delegates():
+    """
+    Load AP results. Defaults to next election, or specify a date as a parameter.
+    """
+    local('mkdir -p .data')
+    pg_vars = _get_pg_vars()
+    cmd = 'elex delegates > .data/delegates.csv'
+    with shell_env(**pg_vars):
+        with settings(warn_only=True):
+            cmd_output = local(cmd, capture=True)
+
+        if cmd_output.succeeded:
+            print("LOADING DELEGATES")
+            delete_delegates()
+            local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['name']))
+        else:
+            print("ERROR GETTING DELEGATES")
             print(cmd_output.stderr)
 
 

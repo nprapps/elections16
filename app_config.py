@@ -171,6 +171,11 @@ NEXT_ELECTION_DATE = '2016-02-09'
 ELEX_FLAGS = '-t'
 # ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
 
+DELEGATE_ESTIMATES = {
+    'Dem': 2382,
+    'GOP': 1237,
+}
+
 """
 Daemon configuration
 """
