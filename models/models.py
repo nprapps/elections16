@@ -3,12 +3,13 @@ import app_config
 from peewee import Model, PostgresqlDatabase
 from peewee import BooleanField, CharField, DateField, DateTimeField, DecimalField, ForeignKeyField, IntegerField
 
+
 db = PostgresqlDatabase(
-    app_config.database['name'],
-    user=app_config.database['user'],
-    password=app_config.database['password'],
-    host=app_config.database['host'],
-    port=app_config.database['port']
+    app_config.database['PGDATABASE'],
+    user=app_config.database['PGUSER'],
+    password=app_config.database['PGPASSWORD'],
+    host=app_config.database['PGHOST'],
+    port=app_config.database['PGPORT']
 )
 
 
@@ -146,8 +147,7 @@ class CandidateDelegates(BaseModel):
     superdelegates_count = IntegerField()
     last = CharField()
     state = CharField()
-    #candidateid = CharField()
-    candidateid = ForeignKeyField(Candidate, related_name='candidate', to_field='polid')
+    candidateid = CharField()
     party_need = IntegerField()
     party = CharField()
     delegates_count = IntegerField()
