@@ -4,6 +4,7 @@ python:
 before_script:
     - npm install
     - psql -c 'create database elections16_test;' -U postgres
+    - psql -c "create user elections16_test with superuser password 'elections16';" -U postgres
 install:
   - travis_retry pip install -r requirements.txt
 script:
