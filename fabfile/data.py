@@ -4,7 +4,6 @@
 Commands that update or process the application data.
 """
 import app_config
-app_config.configure_targets('test')
 
 from app.gdoc import get_google_doc
 from elex.api import Elections

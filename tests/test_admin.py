@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import app_config
-app_config.configure_targets('test')
-
 import json
 import unittest
 

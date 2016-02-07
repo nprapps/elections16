@@ -1,15 +1,14 @@
 #!/usr/bin/env python
+import app
 import app_config
-app_config.configure_targets('test')
+import json
+import unittest
 
 from app import utils
 from app.gdoc import DocParser
 from datetime import datetime
 from render_utils import make_gdoc_context
 
-import app
-import json
-import unittest
 
 class AppConfigTestCase(unittest.TestCase):
     """
@@ -27,28 +26,20 @@ class AppConfigTestCase(unittest.TestCase):
 
     def test_app_config_staging(self):
         response = self.client.get('/js/app_config.js')
-
         data = self.parse_data(response)
-
-        assert data['DEBUG'] == True
+        self.assertEqual(data['DEBUG'], True)
 
     def test_app_config_production(self):
         app_config.configure_targets('production')
-
         response = self.client.get('/js/app_config.js')
-
         data = self.parse_data(response)
-
-        assert data['DEBUG'] == False
-
-        app_config.configure_targets('staging')
+        app_config.configure_targets('test')
+        self.assertFalse(data['DEBUG'])
 
     def test_app_config_no_db_credentials(self):
         from render_utils import flatten_app_config
-
         config = flatten_app_config()
-
-        assert not config.get('database')
+        self.assertIsNone(config.get('database'))
 
     def test_date_filter(self):
         test_date = datetime(2016, 2, 1, 4, 0, 0)
