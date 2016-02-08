@@ -114,7 +114,7 @@ def load_delegates():
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
     local('mkdir -p .data')
-    cmd = 'elex delegates > .data/delegates.csv'
+    cmd = 'elex delegates {0} > .data/delegates.csv'.format(app_config.ELEX_DELEGATE_FLAGS)
     with shell_env(**app_config.database):
         with settings(warn_only=True):
             cmd_output = local(cmd, capture=True)
