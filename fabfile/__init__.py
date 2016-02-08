@@ -213,6 +213,7 @@ def deploy_client(reload=False):
     if not check_timestamp():
         reset_browsers()
 
+
 @task
 def deploy_results_cards():
     require('settings', provided_by=[production, staging])
@@ -268,6 +269,7 @@ def deploy_all_cards():
         }
     )
 
+
 @task
 def archive_site():
     require('settings', provided_by=[production, staging])
@@ -275,6 +277,7 @@ def archive_site():
     s3archiveurl = 's3://{0}/{1}/backup-{2}/'.format(app_config.ARCHIVE_S3_BUCKET, env.settings, now)
     cmd = 'aws s3 sync {0}/ {1} --acl public-read --source-region us-west-2 --region us-east-1'.format(app_config.S3_DEPLOY_URL, s3archiveurl)
     local(cmd)
+
 
 @task
 def check_timestamp():
