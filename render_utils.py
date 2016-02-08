@@ -192,7 +192,7 @@ def make_gdoc_context(gdoc):
     gdoc_context = {}
     gdoc_context['content'] = gdoc
 
-    keywords = ['headline', 'subhed', 'banner', 'image', 'mobile_image', 'credit']
+    keywords = ['headline', 'subhed', 'banner', 'image', 'mobile_image', 'credit', 'audio_url']
 
     for keyword in keywords:
         if getattr(gdoc, keyword):
