@@ -254,7 +254,14 @@ def deploy_all_cards():
     require('settings', provided_by=[production, staging])
     local('rm -rf .cards_html')
     COPY = copytext.Copy(app_config.COPY_PATH)
-    state = COPY['meta']['state']['value']
+
+    if env.settings == 'production':
+        state = COPY['meta']['prod_state']['value']
+    elif env.settings == 'staging':
+        state = COPY['meta']['stage_state']['value']
+    else:
+        state = COPY['meta']['dev_state']['value']
+
     script = COPY[state]
 
     for row in script:
