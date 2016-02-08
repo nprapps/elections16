@@ -1,5 +1,4 @@
 import app_config
-import feedparser
 import simplejson as json
 
 from . import utils
@@ -13,9 +12,6 @@ from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
-
-
-PODCAST_URL = 'http://npr.org/rss/podcast.php?id=510310'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -117,10 +113,6 @@ def podcast():
     key = app_config.CARD_GOOGLE_DOC_KEYS['podcast']
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
-
-    podcastdata = feedparser.parse(PODCAST_URL)
-    latest = podcastdata.entries[0]
-    context['podcast_link'] = latest.enclosures[0]['href']
 
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
