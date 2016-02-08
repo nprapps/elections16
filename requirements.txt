@@ -38,9 +38,6 @@ gnureadline==6.3.3
 google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9
-ipdb==0.8.1
-ipython==4.0.1
-ipython-genutils==0.1.0
 jdcal==1.2
 jmespath==0.9.0
 nose==1.2.1
