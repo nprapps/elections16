@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 from time import sleep, time
-from fabric.api import execute, settings, task
+from fabric.api import execute, require, settings, task
+from fabric.state import env
+
 
 import app_config
 import logging
@@ -17,6 +19,7 @@ def deploy(run_once=False):
     """
     Harvest data and deploy cards
     """
+    require('settings', provided_by=['production', 'staging'])
     try:
         with settings(warn_only=True):
             main(run_once)
@@ -53,7 +56,7 @@ def main(run_once=False):
             logger.info('deploy content cards')
             execute('deploy_all_cards')
 
-        if app_config.SITE_ARCHIVE_INTERVAL and (now - archive_start) > app_config.SITE_ARCHIVE_INTERVAL:
+        if env.settings == 'production' and app_config.SITE_ARCHIVE_INTERVAL and (now - archive_start) > app_config.SITE_ARCHIVE_INTERVAL:
             archive_start = now
             logger.info('archiving site')
             execute('archive_site')
