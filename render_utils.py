@@ -191,12 +191,12 @@ def make_context(asset_depth=0, gdoc=None):
 def make_gdoc_context(gdoc):
     gdoc_context = {}
     gdoc_context['content'] = gdoc
-    gdoc_context['headline'] = gdoc.headline
-    gdoc_context['subhed'] = gdoc.subhed
-    gdoc_context['banner'] = gdoc.banner
-    gdoc_context['image'] = gdoc.image
-    gdoc_context['mobile_image'] = gdoc.mobile_image
-    gdoc_context['credit'] = gdoc.credit
+
+    keywords = ['headline', 'subhed', 'banner', 'image', 'mobile_image', 'credit']
+
+    for keyword in keywords:
+        if getattr(gdoc, keyword):
+            gdoc_context['%s' % keyword] = getattr(gdoc, keyword)
 
     return gdoc_context
 
