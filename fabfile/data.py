@@ -3,13 +3,14 @@
 """
 Commands that update or process the application data.
 """
+import app_config
+
 from app.gdoc import get_google_doc
 from elex.api import Elections
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
-import app_config
 import codecs
 import os
 import servers
@@ -30,21 +31,22 @@ def bootstrap_db():
     """
     Build the database.
     """
-    if env.get('settings'):
-        with settings(warn_only=True):
+    with settings(warn_only=True):
+        if env.get('settings'):
             servers.stop_service('uwsgi')
             servers.stop_service('deploy')
 
-    pg_vars = _get_pg_vars()
-    with shell_env(**pg_vars):
-        local('dropdb --if-exists %s' % app_config.database['name'])
-        local('createdb %s' % app_config.database['name'])
-        local('dropdb --if-exists %s' % app_config.database['test_name'])
-        local('createdb %s' % app_config.database['test_name'])
+        with shell_env(**app_config.database):
+            local('dropdb --if-exists %s' % app_config.database['PGDATABASE'])
 
+        if not env.get('settings'):
+            local('psql -c "DROP USER IF EXISTS %s;"' % app_config.database['PGUSER'])
+            local('psql -c "CREATE USER %s WITH SUPERUSER PASSWORD \'%s\';"' % (app_config.database['PGUSER'], app_config.database['PGPASSWORD']))
 
-    if env.get('settings'):
-        with settings(warn_only=True):
+        with shell_env(**app_config.database):
+            local('createdb %s' % app_config.database['PGDATABASE'])
+
+        if env.get('settings'):
             servers.start_service('uwsgi')
             servers.start_service('deploy')
 
@@ -74,19 +76,12 @@ def bootstrap_data(election_date=None):
 
 
 @task
-def delete_results(election_date=app_config.NEXT_ELECTION_DATE, test_db=False):
+def delete_results():
     """
     Delete results without droppping database.
     """
-
-    if not test_db:
-        db_name = app_config.database['name']
-    else:
-        db_name = app_config.database['test_name']
-
-    pg_vars = _get_pg_vars()
-    with shell_env(**pg_vars):
-        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(db_name, election_date))
+    with shell_env(**app_config.database):
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(app_config.database['PGDATABASE']))
 
 
 @task
@@ -95,16 +90,15 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
     local('mkdir -p .data')
-    pg_vars = _get_pg_vars()
     cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
-    with shell_env(**pg_vars):
+    with shell_env(**app_config.database):
         with settings(warn_only=True):
             cmd_output = local(cmd, capture=True)
 
         if cmd_output.succeeded:
             print("LOADING RESULTS")
             delete_results()
-            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['name']))
+            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
         else:
             print("ERROR GETTING RESULTS")
             print(cmd_output.stderr)
@@ -131,6 +125,8 @@ def create_calls():
     """
     Create database of race calls for all races in results data.
     """
+    models.Call.delete().execute()
+
     results = models.Result.select().where(
         models.Result.level == 'state'
     )
