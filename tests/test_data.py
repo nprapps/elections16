@@ -57,5 +57,39 @@ class ResultsLoadingTestCase(unittest.TestCase):
         self.assertEqual(filtered_length, whitelist_length)
 
 
+class DelegatesLoadingTestCase(unittest.TestCase):
+    """
+    Test bootstrapping postgres database
+    """
+    def setUp(self):
+        data.load_delegates()
+
+    def test_delegates_length(self):
+        results_length = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.level == 'nation'
+        ).count()
+        self.assertEqual(results_length, 30)
+
+    def test_delegate_count(self):
+        record = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last == 'Fiorina'
+        ).get()
+
+        self.assertEqual(record.delegates_count, 1)
+
+    def test_superdelegate_count(self):
+        record = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last == 'Clinton'
+        ).get()
+
+        self.assertEqual(record.superdelegates_count, 359)
+
+    def test_delegates_deletion(self):
+        data.delete_delegates()
+        all_records = models.CandidateDelegates.select().count()
+        self.assertEqual(all_records, 0)
+
 if __name__ == '__main__':
     unittest.main()
