@@ -4,7 +4,6 @@ var $body = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
-var $playToggleBtn = null;
 var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
@@ -58,7 +57,6 @@ var onDocumentLoad = function(e) {
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $playToggleBtn = $('.toggle-btn');
     $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
@@ -83,7 +81,7 @@ var onDocumentLoad = function(e) {
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $body.on('click', '.toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
@@ -414,6 +412,10 @@ var getCard = function(url, $card, i) {
 }
 
 var checkLivestreamStatus = function() {
+    if (LIVE && $audioPlayer.data('jPlayer').status.paused) {
+        $('.toggle-btn').removeClass().addClass('toggle-btn play');
+    }
+
     if (!LIVE && $mute.is(':visible')) {
         AUDIO.stopLivestream();
     }
