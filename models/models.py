@@ -2,13 +2,14 @@ import app_config
 
 from peewee import Model, PostgresqlDatabase
 from peewee import BooleanField, CharField, DateField, DateTimeField, DecimalField, ForeignKeyField, IntegerField
+from slugify import slugify
 
 db = PostgresqlDatabase(
-    app_config.database['name'],
-    user=app_config.database['user'],
-    password=app_config.database['password'],
-    host=app_config.database['host'],
-    port=app_config.database['port']
+    app_config.database['PGDATABASE'],
+    user=app_config.database['PGUSER'],
+    password=app_config.database['PGPASSWORD'],
+    host=app_config.database['PGHOST'],
+    port=app_config.database['PGPORT']
 )
 
 
@@ -93,6 +94,7 @@ class ReportingUnit(BaseModel):
     reportingunitid = CharField(null=True)
     reportingunitname = CharField(null=True)
     description = CharField(null=True)
+    electiondate = DateField()
     fipscode = CharField(null=True, max_length=5)
     initialization_data = BooleanField(null=True)
     lastupdated = DateField(null=True)
@@ -137,3 +139,29 @@ class BallotPosition(BaseModel):
     polid = CharField(null=True)
     polnum = CharField(null=True)
     seatname = CharField(null=True)
+
+
+class CandidateDelegates(BaseModel):
+    level = CharField()
+    party_total = IntegerField()
+    superdelegates_count = IntegerField()
+    last = CharField()
+    state = CharField()
+    candidateid = CharField()
+    party_need = IntegerField()
+    party = CharField()
+    delegates_count = IntegerField()
+    id = CharField()
+    d1 = IntegerField()
+    d7 = IntegerField()
+    d30 = IntegerField()
+
+    def slug(self):
+        return slugify(self.last)
+
+    def status(self):
+        return self.candidateid not in app_config.DROPPED_OUT
+
+    def delegates_pct(self):
+        estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
+        return 100 * (self.delegates_count / float(estimated_total))

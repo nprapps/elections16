@@ -1,8 +1,8 @@
 import app_config
-import feedparser
 import simplejson as json
 
 from . import utils
+from collections import OrderedDict
 from datetime import date, datetime
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
@@ -13,9 +13,6 @@ from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
-
-
-PODCAST_URL = 'http://npr.org/rss/podcast.php?id=510310'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -32,15 +29,40 @@ app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
+
 PARTY_MAPPING = {
     'dem': {
        'AP': 'Dem',
        'long': 'Democrat',
+       'class': 'democrat',
+       'adverb': 'Democratic',
     },
     'gop': {
         'AP': 'GOP',
-        'long': 'Republican'
+        'long': 'Republican',
+        'class': 'republican',
+        'adverb': 'Republican',
     }
+}
+
+
+DELEGATE_WHITELIST = {
+    'gop': [
+        'Bush',
+        'Carson',
+        'Christie',
+        'Cruz',
+        'Fiorina',
+        'Gilmore',
+        'Kasich',
+        'Paul',
+        'Rubio',
+        'Trump',
+    ],
+    'dem': [
+        'Clinton',
+        'Sanders',
+    ],
 }
 
 
@@ -106,6 +128,7 @@ def card(slug):
     context['template'] = 'basic-card'
     return render_template('cards/%s.html' % slug, **context)
 
+
 @app.route('/podcast/')
 @oauth_required
 def podcast():
@@ -113,11 +136,11 @@ def podcast():
     Render the podcast card
     """
     context = make_context()
-    podcastdata = feedparser.parse(PODCAST_URL)
-    latest = podcastdata.entries[0]
-    context['podcast_title'] = latest.title
-    context['podcast_link'] = latest.enclosures[0]['href']
-    context['podcast_description'] = latest.description
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['podcast']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
 
@@ -148,6 +171,46 @@ def results(party):
 
     return render_template('cards/results.html', **context)
 
+
+@app.route('/delegates/<party>/')
+@oauth_required
+def delegates(party):
+    """
+    Render the results card
+    """
+
+    context = make_context()
+
+    ap_party = PARTY_MAPPING[party]['AP']
+
+    candidates = models.CandidateDelegates.select().where(
+        models.CandidateDelegates.party == ap_party,
+        models.CandidateDelegates.level == 'nation',
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
+    ).order_by(
+        -models.CandidateDelegates.delegates_count,
+        models.CandidateDelegates.last
+    )
+
+    context['last_updated'] = datetime.utcnow()
+
+    context['candidates'] = candidates
+    context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
+    context['party'] = ap_party
+
+    context['party_class'] = PARTY_MAPPING[party]['class']
+    context['party_long'] = PARTY_MAPPING[party]['adverb']
+
+    context['slug'] = 'delegates-%s' % party
+    context['template'] = 'delegates'
+    context['route'] = '/delegates/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 60
+
+    return render_template('cards/delegates.html', **context)
+
+
 @app.route('/live-audio/')
 @oauth_required
 def live_audio():
@@ -172,6 +235,7 @@ def live_audio():
 
     return render_template('cards/live-audio.html', **context)
 
+
 @app.route('/data/results-<electiondate>.json')
 def results_json(electiondate):
     data = {
@@ -189,6 +253,52 @@ def results_json(electiondate):
         }
 
     return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+
+
+@app.route('/data/delegates.json')
+def delegates_json():
+    whitelist = DELEGATE_WHITELIST['gop'] + DELEGATE_WHITELIST['dem']
+    data = OrderedDict()
+
+    data['nation'] = OrderedDict((('dem', []), ('gop', [])))
+    for party in ['dem', 'gop']:
+        national_candidates = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last << whitelist
+        ).order_by(
+            -models.CandidateDelegates.delegates_count,
+            models.CandidateDelegates.last
+        )
+
+        data['nation'][party] = []
+        for result in national_candidates:
+            data['nation'][party].append(model_to_dict(result))
+
+    states = models.CandidateDelegates \
+                .select(fn.Distinct(models.CandidateDelegates.state)) \
+                .order_by(models.CandidateDelegates.state)
+
+    for state_obj in states:
+        data[state_obj.state] = OrderedDict()
+
+        for party in ['dem', 'gop']:
+            state_candidates = models.CandidateDelegates.select().where(
+                models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+                models.CandidateDelegates.state == state_obj.state,
+                models.CandidateDelegates.level == 'state',
+                models.CandidateDelegates.last << whitelist
+            ).order_by(
+                -models.CandidateDelegates.delegates_count,
+                models.CandidateDelegates.last
+            )
+
+            data[state_obj.state][party] = []
+            for result in state_candidates:
+                data[state_obj.state][party].append(model_to_dict(result))
+
+    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+
 
 @app.route('/get-caught-up/')
 @oauth_required

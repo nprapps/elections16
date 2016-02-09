@@ -155,6 +155,9 @@ def update():
 
 @task
 def deploy_server(remote='origin'):
+    """
+    Deploy and restart services
+    """
     if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
 
@@ -178,7 +181,7 @@ def deploy_server(remote='origin'):
 @task
 def deploy_client(reload=False):
     """
-    Deploy the latest app to S3 and, if configured, to our servers.
+    Deploy the latest app to S3.
     """
     require('settings', provided_by=[production, staging])
 
@@ -213,8 +216,12 @@ def deploy_client(reload=False):
     if not check_timestamp():
         reset_browsers()
 
+
 @task
 def deploy_results_cards():
+    """
+    Deploy results cards.
+    """
     require('settings', provided_by=[production, staging])
     local('rm -rf .cards_html/results')
     render.render_results_html()
@@ -240,21 +247,56 @@ def deploy_results_cards():
 
 
 @task
+def deploy_delegates_cards():
+    """
+    Deploy results cards.
+    """
+    require('settings', provided_by=[production, staging])
+
+    local('rm -rf .cards_html/delegates')
+    render.render_delegates_html()
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html/delegates',
+        'delegates',
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
+
+
+    local('rm -rf .cards_html/data')
+    render.render_delegates_json()
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html/data',
+        'data',
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
+
+@task
 def deploy_all_cards():
+    """
+    Deploy content cards.
+    """
     require('settings', provided_by=[production, staging])
     local('rm -rf .cards_html')
     COPY = copytext.Copy(app_config.COPY_PATH)
-    if app_config.DEPLOYMENT_TARGET == 'production':
-        state_var = 'prod_state'
-    elif app_config.DEPLOYMENT_TARGET == 'staging':
-        state_var = 'stage_state'
+    if env.settings == 'production':
+        state = COPY['meta']['prod_state']['value']
+    elif env.settings == 'staging':
+        state = COPY['meta']['stage_state']['value']
     else:
-        state_var = 'dev_state'
-    state = COPY['meta'][state_var]['value']
+        state = COPY['meta']['dev_state']['value']
+
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'results':
+        if row['function'] == 'results' or row['function'] == 'delegates':
             # the daemon will do results separately
             continue
         elif row['function'] == 'card':
@@ -274,16 +316,24 @@ def deploy_all_cards():
         }
     )
 
+
 @task
 def archive_site():
+    """
+    Make a site archive.
+    """
     require('settings', provided_by=[production, staging])
     now = datetime.now().strftime('%Y-%m-%d-%H:%M')
     s3archiveurl = 's3://{0}/{1}/backup-{2}/'.format(app_config.ARCHIVE_S3_BUCKET, env.settings, now)
     cmd = 'aws s3 sync {0}/ {1} --acl public-read --source-region us-west-2 --region us-east-1'.format(app_config.S3_DEPLOY_URL, s3archiveurl)
     local(cmd)
 
+
 @task
 def check_timestamp():
+    """
+    Check if a timestamp file exists.
+    """
     require('settings', provided_by=[production, staging])
 
     bucket = utils.get_bucket(app_config.S3_BUCKET)
@@ -293,6 +343,7 @@ def check_timestamp():
         return True
     else:
         return False
+
 
 @task
 def reset_browsers():

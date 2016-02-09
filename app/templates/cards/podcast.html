@@ -22,9 +22,9 @@
 
     <div class="podcast-description">
 
-        <h1>{{ podcast_title }}</h1>
+        <h1>{{ headline }}</h1>
 
-        <p>{{ podcast_description }}</p>
+        <p>{{ content|safe }}</p>
 
 
         <ul class="featured-links">
@@ -37,12 +37,12 @@
 </div>
 
 <script type="text/javascript">
-    var PODCAST_URL = 'http://download.npr.org/anon.npr-mp3/npr/nprpolitics/2016/02/20160205_nprpolitics_roundup.mp3';
+    var PODCAST_URL = '{{ audio_url }}'
 </script>
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-default-bg="https://secure.npr.org/politics/election2016/NH-podcast-1.jpg">
-    <p class="photo-credit">Joe Raedle/Getty Images</p>
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
 </span>
 {% endblock %}
