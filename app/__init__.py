@@ -192,7 +192,7 @@ def delegates(party):
         models.CandidateDelegates.last
     )
 
-    context['last_updated'] = datetime.now()
+    context['last_updated'] = datetime.utcnow()
 
     context['candidates'] = candidates
     context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
