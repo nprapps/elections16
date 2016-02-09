@@ -140,6 +140,24 @@ def render_results_json():
 
 
 @task
+def render_delegates_html():
+    from flask import url_for
+
+    view_name = 'delegates'
+    parties = ['gop', 'dem']
+
+    for party in parties:
+        with app.app.test_request_context():
+            path = url_for(view_name, party=party)
+
+        with app.app.test_request_context(path=path):
+            view = app.__dict__[view_name]
+            content = view(party)
+
+        _write_file(path, content)
+
+
+@task
 def render_delegates_json():
     from flask import url_for
 

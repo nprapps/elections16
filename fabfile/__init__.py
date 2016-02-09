@@ -247,6 +247,38 @@ def deploy_results_cards():
 
 
 @task
+def deploy_delegates_cards():
+    """
+    Deploy results cards.
+    """
+    require('settings', provided_by=[production, staging])
+
+    local('rm -rf .cards_html/delegates')
+    render.render_delegates_html()
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html/delegates',
+        'delegates',
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
+
+
+    local('rm -rf .cards_html/data')
+    render.render_delegates_json()
+    flat.deploy_folder(
+        app_config.S3_BUCKET,
+        '.cards_html/data',
+        'data',
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        }
+    )
+
+
+@task
 def deploy_all_cards():
     """
     Deploy content cards.

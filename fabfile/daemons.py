@@ -35,6 +35,7 @@ def main(run_once=False):
     results_start = 0
     card_start = 0
     archive_start = 0
+    delegates_start = 0
 
     while True:
         now = time()
@@ -60,6 +61,15 @@ def main(run_once=False):
             archive_start = now
             logger.info('archiving site')
             execute('archive_site')
+
+        if app_config.DELEGATES_DEPLOY_INTERVAL and (now - delegates_start) > app_config.DELEGATES_DEPLOY_INTERVAL:
+            sleep(15)
+            delegates_start = now
+            logger.info('load delegates')
+            execute('data.load_delegates')
+            logger.info('deploy delegates')
+            execute('deploy_delegates')
+            sleep(15)
 
         if run_once:
             logger.info('run once specified, exiting')
