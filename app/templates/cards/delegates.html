@@ -9,7 +9,7 @@
     <h3 class="needed"></h3>
     <ul class="delegates {{ party_class }}">
         {% for candidate in candidates %}
-        <li class="{{ candidate.slug() }}{% if not candidate.status %} inactive {% endif %}">
+        <li class="{{ candidate.slug() }}{% if not candidate.status() %} inactive {% endif %}">
             <div class="candidate">{{ candidate.last }}</div>
             <div class="bar-wrapper">
                 <span class="bar" style="width: {{ candidate.delegates_pct() }}%"></span>
