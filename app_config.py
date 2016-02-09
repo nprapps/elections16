@@ -169,8 +169,15 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 Election configuration
 """
 NEXT_ELECTION_DATE = '2016-02-09'
-#ELEX_FLAGS = '-t'
 ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+ELEX_DELEGATE_FLAGS = ''
+
+DELEGATE_ESTIMATES = {
+    'Dem': 2382,
+    'GOP': 1237,
+}
+
+DROPPED_OUT = ['60208']
 
 """
 Daemon configuration
@@ -179,7 +186,7 @@ COPY_DEPLOY_INTERVAL = 15
 RESULTS_DEPLOY_INTERVAL = 0
 CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 900
-
+DELEGATES_DEPLOY_INTERVAL = 3600
 
 """
 Logging
@@ -219,6 +226,8 @@ def configure_targets(deployment_target):
     global ASSETS_MAX_AGE
     global NEWSLETTER_POST_URL
     global LOG_LEVEL
+    global ELEX_FLAGS
+    global ELEX_DELEGATE_FLAGS
     global database
 
     secrets = get_secrets()
@@ -271,6 +280,7 @@ def configure_targets(deployment_target):
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
     else:

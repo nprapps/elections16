@@ -56,23 +56,18 @@ def bootstrap_db():
     models.ReportingUnit.create_table()
     models.Candidate.create_table()
     models.BallotPosition.create_table()
-
+    models.CandidateDelegates.create_table()
 
 @task
-def bootstrap_data(election_date=None):
+def load_init_data(election_date=app_config.NEXT_ELECTION_DATE):
     """
     Bootstrap races, candidates, reporting units, and ballot positions.
     """
-    if not election_date:
-        next_election = Elections().get_next_election()
-        election_date = next_election.serialize().get('electiondate')
-
-    pg_vars = _get_pg_vars()
-    with shell_env(**pg_vars):
-        local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
-        local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
-        local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
-        local('elex ballot-measures %s %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['name']))
+    with shell_env(**app_config.database):
+        local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
+        local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
+        local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
+        local('elex ballot-measures %s %s | psql %s -c "COPY ballotposition FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
 
 
 @task
@@ -82,6 +77,15 @@ def delete_results():
     """
     with shell_env(**app_config.database):
         local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(app_config.database['PGDATABASE']))
+
+
+@task
+def delete_delegates():
+    """
+    Delete results without droppping database.
+    """
+    with shell_env(**app_config.database):
+        local('psql {0} -c "set session_replication_role = replica; DELETE FROM candidatedelegates; set session_replication_role = default;"'.format(app_config.database['PGDATABASE']))
 
 
 @task
@@ -105,19 +109,23 @@ def load_results(election_date=app_config.NEXT_ELECTION_DATE):
 
 
 @task
-def load_local_results(file_path):
+def load_delegates():
     """
-    Load AP results from local file.
+    Load AP results. Defaults to next election, or specify a date as a parameter.
     """
+    local('mkdir -p .data')
+    cmd = 'elex delegates {0} > .data/delegates.csv'.format(app_config.ELEX_DELEGATE_FLAGS)
+    with shell_env(**app_config.database):
+        with settings(warn_only=True):
+            cmd_output = local(cmd, capture=True)
 
-    # Force root path every time
-    fab_path = os.path.realpath(os.path.dirname(__file__))
-    root_path = os.path.join(fab_path, '..')
-    os.chdir(root_path)
-
-    pg_vars = _get_pg_vars()
-    with shell_env(**pg_vars):
-        local('psql %s -c "COPY result FROM \'%s\' DELIMITER \',\' CSV HEADER;"' % (app_config.database['test_name'], os.path.join(root_path, file_path)))
+        if cmd_output.succeeded:
+            print("LOADING DELEGATES")
+            delete_delegates()
+            local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
+        else:
+            print("ERROR GETTING DELEGATES")
+            print(cmd_output.stderr)
 
 
 @task
@@ -143,22 +151,3 @@ def download_test_gdoc():
     html_string = get_google_doc(TEST_GOOGLE_DOC_KEY)
     with codecs.open('tests/data/testdoc.html', 'w', 'utf-8') as f:
         f.write(html_string)
-
-
-def _get_pg_vars():
-    """
-    Construct a dict of postgres environment variables to set in shell for
-    fabric commands
-    """
-    vars = {
-        'PGHOST': app_config.database['host'],
-        'PGPORT': app_config.database['port'],
-        'PGDATABASE': app_config.database['name'],
-    }
-    if app_config.database['user']:
-        vars['PGUSER'] = app_config.database['user']
-
-    if app_config.database['password']:
-        vars['PGPASSWORD'] = app_config.database['password']
-
-    return vars
