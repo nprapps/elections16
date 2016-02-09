@@ -160,7 +160,7 @@ class CandidateDelegates(BaseModel):
         return slugify(self.last)
 
     def status(self):
-        return self.candidateid in app_config.DROPPED_OUT
+        return self.candidateid not in app_config.DROPPED_OUT
 
     def delegates_pct(self):
         estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
