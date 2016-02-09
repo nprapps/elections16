@@ -140,6 +140,26 @@ def render_results_json():
 
 
 @task
+def render_delegates_json():
+    from flask import url_for
+
+    view_name = 'delegates_json'
+
+    with app.app.test_request_context():
+        path = url_for(view_name)
+        view = app.__dict__[view_name]
+        content = view()
+
+    try:
+        os.makedirs('.cards_html/data')
+    except OSError:
+        pass
+
+    with codecs.open('.cards_html/{0}'.format(path), 'w', 'utf-8') as f:
+        f.write(content)
+
+
+@task
 def render_card_route(slug):
     from flask import url_for
 
