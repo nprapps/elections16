@@ -414,7 +414,6 @@ var getCard = function(url, $card, i) {
 }
 
 var checkLivestreamStatus = function() {
-    console.log('checking', LIVE)
     if (!LIVE && $mute.is(':visible')) {
         AUDIO.stopLivestream();
     }
