@@ -2,6 +2,7 @@ import app_config
 import simplejson as json
 
 from . import utils
+from collections import OrderedDict
 from datetime import date, datetime
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
@@ -127,6 +128,7 @@ def card(slug):
     context['template'] = 'basic-card'
     return render_template('cards/%s.html' % slug, **context)
 
+
 @app.route('/podcast/')
 @oauth_required
 def podcast():
@@ -233,6 +235,7 @@ def live_audio():
 
     return render_template('cards/live-audio.html', **context)
 
+
 @app.route('/data/results-<electiondate>.json')
 def results_json(electiondate):
     data = {
@@ -250,6 +253,52 @@ def results_json(electiondate):
         }
 
     return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+
+
+@app.route('/data/delegates.json')
+def delegates_json():
+    whitelist = DELEGATE_WHITELIST['gop'] + DELEGATE_WHITELIST['dem']
+    data = OrderedDict()
+
+    data['nation'] = OrderedDict((('dem', []), ('gop', [])))
+    for party in ['dem', 'gop']:
+        national_candidates = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last << whitelist
+        ).order_by(
+            -models.CandidateDelegates.delegates_count,
+            models.CandidateDelegates.last
+        )
+
+        data['nation'][party] = []
+        for result in national_candidates:
+            data['nation'][party].append(model_to_dict(result))
+
+    states = models.CandidateDelegates \
+                .select(fn.Distinct(models.CandidateDelegates.state)) \
+                .order_by(models.CandidateDelegates.state)
+
+    for state_obj in states:
+        data[state_obj.state] = OrderedDict()
+
+        for party in ['dem', 'gop']:
+            state_candidates = models.CandidateDelegates.select().where(
+                models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+                models.CandidateDelegates.state == state_obj.state,
+                models.CandidateDelegates.level == 'state',
+                models.CandidateDelegates.last << whitelist
+            ).order_by(
+                -models.CandidateDelegates.delegates_count,
+                models.CandidateDelegates.last
+            )
+
+            data[state_obj.state][party] = []
+            for result in state_candidates:
+                data[state_obj.state][party].append(model_to_dict(result))
+
+    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+
 
 @app.route('/get-caught-up/')
 @oauth_required
