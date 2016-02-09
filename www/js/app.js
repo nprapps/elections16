@@ -405,12 +405,18 @@ var getCard = function(url, $card, i) {
                     detectMobileBg($card);
 
                     if ($card.is('#live-audio')) {
-                        AUDIO.stopLivestream();
+                        checkLivestreamStatus();
                     }
                 }
             }
         });
     }, i * 1000);
+}
+
+var checkLivestreamStatus = function() {
+    if (!LIVE && $mute.is(':visible')) {
+        AUDIO.stopLivestream();
+    }
 }
 
 var checkState = function() {
