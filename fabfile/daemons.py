@@ -68,7 +68,7 @@ def main(run_once=False):
             logger.info('load delegates')
             execute('data.load_delegates')
             logger.info('deploy delegates')
-            execute('deploy_delegates')
+            execute('deploy_delegates_cards')
             sleep(15)
 
         if run_once:

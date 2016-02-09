@@ -206,7 +206,7 @@ def delegates(party):
     context['route'] = '/delegates/%s/' % party
 
     if context['state'] != 'inactive':
-        context['refresh_rate'] = 20
+        context['refresh_rate'] = 60
 
     return render_template('cards/delegates.html', **context)
 

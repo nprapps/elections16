@@ -297,7 +297,7 @@ def deploy_all_cards():
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'results':
+        if row['function'] == 'results' or row['function'] == 'delegates':
             # the daemon will do results separately
             continue
         elif row['function'] == 'card':
