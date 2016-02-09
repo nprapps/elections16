@@ -1,0 +1,30 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<header>
+    <h2>Race To The Nomination</h2>
+    <h1>{{ party_long }} Delegate Tracker</h1>
+</header>
+<article>
+    <h3 class="needed"></h3>
+    <ul class="delegates {{ party_class }}">
+        {% for candidate in candidates %}
+        <li class="{{ candidate.slug() }}{% if not candidate.status %} inactive {% endif %}">
+            <div class="candidate">{{ candidate.last }}</div>
+            <div class="bar-wrapper">
+                <span class="bar" style="width: {{ candidate.delegates_pct() }}%"></span>
+                <span class="amt">{{ candidate.delegates_count  }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <ul class="meta">
+        {% if party == 'GOP' %}
+        <li class="footnote">Rand Paul suspended his campaign on Feb. 3.</li>
+        {% endif %}
+        <li class="timestamp"></li>
+        <li>Source: AP estimates</li>
+    </ul>
+</article>
+{% endblock %}
