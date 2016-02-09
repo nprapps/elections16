@@ -40,6 +40,26 @@ PARTY_MAPPING = {
 }
 
 
+DELEGATE_WHITELIST = {
+    'gop': [
+        'Bush',
+        'Carson',
+        'Christie',
+        'Cruz',
+        'Fiorina',
+        'Gilmore',
+        'Kasich',
+        'Paul',
+        'Rubio',
+        'Trump',
+    ],
+    'dem': [
+        'Clinton',
+        'Sanders',
+    ],
+}
+
+
 class APDatetimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -155,20 +175,17 @@ def delegates(party):
     context = make_context()
 
     ap_party = PARTY_MAPPING[party]['AP']
-    delegates = models.CandidateDelegates.select().where(
+
+    candidates = models.CandidateDelegates.select().where(
         models.CandidateDelegates.party == ap_party,
         models.CandidateDelegates.level == 'nation',
-        models.CandidateDelegates.delegates_count > 0
-    ).join(
-        models.Candidate, 
-        on=(models.CandidateDelegates.candidateid == models.Candidate.polid)
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
     ).order_by(
-        -models.CandidateDelegates.delegates_count
+        -models.CandidateDelegates.delegates_count,
+        models.CandidateDelegates.last
     )
 
-    #import ipdb; ipdb.set_trace();
-
-    context['delegates'] = delegates
+    context['candidates'] = candidates
     context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
     context['party'] = ap_party
     if party == 'dem':

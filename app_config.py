@@ -177,6 +177,8 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
+DROPPED_OUT = ['60208']
+
 """
 Daemon configuration
 """
