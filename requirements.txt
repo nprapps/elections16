@@ -34,7 +34,6 @@ docutils==0.11
 ecdsa==0.13
 elex==1.1.3
 facebook-sdk==0.4.0
-gnureadline==6.3.3
 google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9
