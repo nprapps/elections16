@@ -28,14 +28,19 @@ app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
+
 PARTY_MAPPING = {
     'dem': {
        'AP': 'Dem',
        'long': 'Democrat',
+       'class': 'democrat',
+       'adverb': 'Democratic',
     },
     'gop': {
         'AP': 'GOP',
-        'long': 'Republican'
+        'long': 'Republican',
+        'class': 'republican',
+        'adverb': 'Republican',
     }
 }
 
@@ -185,15 +190,14 @@ def delegates(party):
         models.CandidateDelegates.last
     )
 
+    context['last_updated'] = datetime.now()
+
     context['candidates'] = candidates
     context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
     context['party'] = ap_party
-    if party == 'dem':
-        context['party_class'] = 'democrat'
-        context['party_long'] = 'Democratic'
-    else:
-        context['party_class'] = 'republican'
-        context['party_long'] = 'Republican'
+
+    context['party_class'] = PARTY_MAPPING[party]['class']
+    context['party_long'] = PARTY_MAPPING[party]['adverb']
 
     context['slug'] = 'delegates-%s' % party
     context['template'] = 'delegates'
@@ -203,6 +207,7 @@ def delegates(party):
         context['refresh_rate'] = 20
 
     return render_template('cards/delegates.html', **context)
+
 
 @app.route('/live-audio/')
 @oauth_required
