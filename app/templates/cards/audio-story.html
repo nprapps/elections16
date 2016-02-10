@@ -1,0 +1,42 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<div class="segment-audio-content">
+    <ul class="segment-audio-player">
+        <li class="segment-rewind">
+            <button class="rewind"></button>
+        </li>
+        <li class="segment-play">
+            <button class="toggle-btn pause">
+            </button>
+            <span class="duration">
+                0:00
+            </span>
+        </li>
+        <li class="segment-forward">
+            <button class="forward"></button>
+        </li>
+    </ul>
+
+    <div class="podcast-description">
+        <h1>{{ headline }}</h1>
+        <h2>{{ subhed }}</h2>
+
+        <p>{{ content|safe }}</p>
+
+        <ul class="featured-links">
+            <li><a href="{{ story_url }}">Read the story</a></li>
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var AUDIO_URL = '{{ audio_url }}'
+</script>
+{% endblock %}
+
+{% block card_background %}
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
+</span>
+{% endblock %}
