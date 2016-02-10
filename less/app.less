@@ -767,9 +767,9 @@ body {
         h6 {
             color: @white;
             font-size: .9rem;
-            line-height: 1;
+            line-height: 1.3;
             padding: 1rem;
-            text-transform: uppercase;
+            text-transform: none;
         }
 
         .get-alerts {
@@ -903,6 +903,8 @@ body {
                 width: 20px;
                 display: block;
                 float: left;
+
+                &.superdels { opacity: 0.5; }
             }
             .amt {
                 display: block;
@@ -923,7 +925,45 @@ body {
             &.inactive .bar { background-color: #666; }
         }
     }
+    .key {
+        margin: 0 0 15px 8rem;
+        padding: 0;
+        list-style-type: none;
+        color: #666;
+
+        > li {
+            display: inline-block;
+            margin: 0 2rem 0 0;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        b {
+            display: inline-block;
+            float: left;
+            margin-right: 6px;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        label {
+            display: inline-block;
+            line-height: 1rem;
+            white-space: nowrap;
+        }
+    }
 }
+#delegates-dem .key {
+    b { background-color: @democrat; }
+    .superdels b { opacity: 0.5; }
+}
+#delegates-gop .key {
+    b {
+        background-color: @republican;
+        &.superdels { opacity: 0.5; }
+    }
+}
+
 
 #donate {
 
@@ -1093,6 +1133,13 @@ body {
                 width: 3.6rem;
                 height: 4.1rem;
                 border: none;
+            }
+
+            .rewind, .forward {
+                &.darken {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
             }
 
 

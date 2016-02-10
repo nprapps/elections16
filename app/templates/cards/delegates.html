@@ -6,18 +6,32 @@
     <h1>{{ party_long }} Delegate Tracker</h1>
 </header>
 <article>
-    <h3 class="needed"></h3>
+    <h3 class="needed">{{ needed|comma }} needed to win</h3>
     <ul class="delegates {{ party_class }}">
         {% for candidate in candidates %}
         <li class="{{ candidate.slug() }}{% if not candidate.status() %} inactive {% endif %}">
             <div class="candidate">{{ candidate.last }}</div>
             <div class="bar-wrapper">
-                <span class="bar" style="width: {{ candidate.delegates_pct() }}%"></span>
+                <span class="bar" style="width: {{ candidate.pledged_delegates_pct() }}%"></span>
+                <span class="bar superdels" style="width: {{ candidate.superdelegates_pct() }}%"></span>
                 <span class="amt">{{ candidate.delegates_count  }}</span>
             </div>
         </li>
         {% endfor %}
     </ul>
+
+    {% if party == 'Dem' %}
+    <ul class="key">
+        <li class="key-item dels">
+            <b></b>
+            <label>Pledged delegates</li>
+        </li>
+        <li class="key-item superdels">
+            <b></b>
+            <label>Superdelegates</li>
+        </li>
+    </ul>
+    {% endif %}
 
     <ul class="meta">
         {% if party == 'GOP' %}
