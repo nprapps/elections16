@@ -103,6 +103,9 @@ class DocParserTestCase(unittest.TestCase):
     def test_audio_url_extraction(self):
         self.assertEqual(self.parser.audio_url, 'http://play.podtrac.com/npr-510310/npr.mc.tritondigital.com/NPR_510310/media/anon.npr-mp3/npr/nprpolitics/2016/02/20160205_nprpolitics_roundup.mp3?orgId=1&d=2261&p=510310&story=465741966&t=podcast&e=465741966&ft=pod&f=510310')
 
+    def test_story_url_extraction(self):
+        self.assertEqual(self.parser.audio_url, 'http://play.podtrac.com/npr-510310/npr.mc.tritondigital.com/NPR_510310/media/anon.npr-mp3/npr/nprpolitics/2016/02/20160205_nprpolitics_roundup.mp3?orgId=1&d=2261&p=510310&story=465741966&t=podcast&e=465741966&ft=pod&f=510310')
+
     def test_credit_extraction(self):
         self.assertEqual(self.parser.credit, 'this is a photo credit')
 
