@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import unittest
+import calendar
 
-import app_config
 from app import utils
 from fabfile import data
 from models import models
 from peewee import *
+from time import time
 
 
 class ResultsLoadingTestCase(unittest.TestCase):
@@ -63,6 +64,13 @@ class DelegatesLoadingTestCase(unittest.TestCase):
     """
     def setUp(self):
         data.load_delegates()
+        self.now = time()
+
+    def test_delegates_timestamp(self):
+        filesystem_datetime = utils.get_delegates_updated_time()
+        filesystem_ts = calendar.timegm(filesystem_datetime.timetuple())
+        # Compare timestamps; can be +/- 10 seconds
+        self.assertAlmostEqual(self.now, filesystem_ts, delta=10)
 
     def test_delegates_length(self):
         results_length = models.CandidateDelegates.select().where(

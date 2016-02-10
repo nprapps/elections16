@@ -6,6 +6,7 @@ Commands that update or process the application data.
 import app_config
 
 from app.gdoc import get_google_doc
+from app.utils import set_delegates_updated_time
 from elex.api import Elections
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
@@ -123,6 +124,7 @@ def load_delegates():
             print("LOADING DELEGATES")
             delete_delegates()
             local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
+            set_delegates_updated_time()
         else:
             print("ERROR GETTING DELEGATES")
             print(cmd_output.stderr)
