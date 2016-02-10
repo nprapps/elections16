@@ -53,3 +53,4 @@ www/assets/*
 !www/assets/assetsignore
 www/live-data/*
 .data
+.delegates_updated

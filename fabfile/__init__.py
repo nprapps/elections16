@@ -265,8 +265,6 @@ def deploy_delegates_cards():
         }
     )
 
-
-
     local('rm -rf .cards_html/data')
     render.render_delegates_json()
     flat.deploy_folder(

@@ -179,6 +179,8 @@ DELEGATE_ESTIMATES = {
 
 DROPPED_OUT = ['60208', '60339', '60051']
 
+DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
+
 """
 Daemon configuration
 """
