@@ -86,6 +86,22 @@ class DelegatesLoadingTestCase(unittest.TestCase):
 
         self.assertEqual(record.superdelegates_count, 359)
 
+    def test_pledged_delegates_percent(self):
+        record = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last == 'Clinton'
+        ).get()
+        pledged_delegate_percent = record.pledged_delegates_pct()
+        self.assertEqual(pledged_delegate_percent, 8.942065491183879)
+
+    def test_super_delegates_percent(self):
+        record = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last == 'Clinton'
+        ).get()
+        super_delegate_percent = record.superdelegates_pct()
+        self.assertEqual(super_delegate_percent, 15.071368597816962)
+
     def test_delegates_deletion(self):
         data.delete_delegates()
         all_records = models.CandidateDelegates.select().count()
