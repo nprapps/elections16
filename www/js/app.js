@@ -195,6 +195,11 @@ var onCardChange = function(e) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
         playedAudio = true;
     }
+
+    if ($thisCard.is('.audio-story') && !playedAudio) {
+        AUDIO.setMedia(AUDIO_URL);
+        playedAudio = true;
+    }
 }
 
 var checkOverflow = function(cardHeight, $slide) {
