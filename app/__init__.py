@@ -146,6 +146,22 @@ def podcast():
 
     return render_template('cards/podcast.html', **context)
 
+@app.route('/audio-story/<key>')
+@oauth_required
+def audio_story(key):
+    """
+    Render the podcast card
+    """
+    context = make_context()
+
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'audio-story-%s' % key
+    context['template'] = 'audio-story'
+
+    return render_template('cards/audio-story.html', **context)
+
 
 @app.route('/results/<party>/')
 @oauth_required
