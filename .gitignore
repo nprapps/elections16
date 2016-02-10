@@ -42,6 +42,7 @@ www/js/app_config.js
 www/js/copy.js
 www/test/test.html
 www/comments/index.html
+www/current-state.json
 confs/rendered/*
 
 # Local data

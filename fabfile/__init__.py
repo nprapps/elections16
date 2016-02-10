@@ -187,6 +187,7 @@ def deploy_client(reload=False):
 
     update()
     render.render_all()
+    render.render_current_state(folder='www')
 
     # Clear files that should never be deployed
     local('rm -rf www/live-data')
