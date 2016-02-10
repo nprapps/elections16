@@ -166,7 +166,7 @@ class CandidateDelegates(BaseModel):
         estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
         return 100 * ((self.delegates_count - self.superdelegates_count) / float(estimated_total))
 
-    def pledged_superdelegates_pct(self):
+    def superdelegates_pct(self):
         estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
         return 100 * (self.superdelegates_count / float(estimated_total))
 

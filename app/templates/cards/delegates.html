@@ -13,7 +13,7 @@
             <div class="candidate">{{ candidate.last }}</div>
             <div class="bar-wrapper">
                 <span class="bar" style="width: {{ candidate.pledged_delegates_pct() }}%"></span>
-                <span class="bar superdels" style="width: {{ candidate.pledged_superdelegates_pct() }}%"></span>
+                <span class="bar superdels" style="width: {{ candidate.superdelegates_pct() }}%"></span>
                 <span class="amt">{{ candidate.delegates_count  }}</span>
             </div>
         </li>
