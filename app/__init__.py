@@ -28,23 +28,6 @@ app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
-
-PARTY_MAPPING = {
-    'dem': {
-       'AP': 'Dem',
-       'long': 'Democrat',
-       'class': 'democrat',
-       'adverb': 'Democratic',
-    },
-    'gop': {
-        'AP': 'GOP',
-        'long': 'Republican',
-        'class': 'republican',
-        'adverb': 'Republican',
-    }
-}
-
-
 DELEGATE_WHITELIST = {
     'gop': [
         'Bush',
@@ -167,7 +150,7 @@ def delegates(party):
 
     context = make_context()
 
-    ap_party = PARTY_MAPPING[party]['AP']
+    ap_party = utils.PARTY_MAPPING[party]['AP']
 
     candidates = models.CandidateDelegates.select().where(
         models.CandidateDelegates.party == ap_party,
@@ -184,8 +167,8 @@ def delegates(party):
     context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
     context['party'] = ap_party
 
-    context['party_class'] = PARTY_MAPPING[party]['class']
-    context['party_long'] = PARTY_MAPPING[party]['adverb']
+    context['party_class'] = utils.PARTY_MAPPING[party]['class']
+    context['party_long'] = utils.PARTY_MAPPING[party]['adverb']
 
     context['slug'] = 'delegates-%s' % party
     context['template'] = 'delegates'
