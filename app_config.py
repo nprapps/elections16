@@ -190,6 +190,8 @@ CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 3600
 DELEGATES_DEPLOY_INTERVAL = 3600
 
+
+
 """
 Logging
 """
@@ -231,6 +233,11 @@ def configure_targets(deployment_target):
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
     global database
+    global COPY_DEPLOY_INTERVAL
+    global RESULTS_DEPLOY_INTERVAL
+    global CARD_DEPLOY_INTERVAL
+    global SITE_ARCHIVE_INTERVAL
+    global DELEGATES_DEPLOY_INTERVAL
 
     secrets = get_secrets()
 
@@ -257,6 +264,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 0
+        CARD_DEPLOY_INTERVAL = 60
+        SITE_ARCHIVE_INTERVAL = 900
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -269,6 +283,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -297,6 +318,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
 
     DEPLOYMENT_TARGET = deployment_target
 
