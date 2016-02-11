@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from models import models
+from peewee import fn
 from playhouse.shortcuts import model_to_dict
 from pytz import timezone
 from time import time
@@ -83,6 +84,21 @@ DEM_CANDIDATES = [
     'Hillary Clinton',
     'Bernie Sanders'
 ]
+
+PARTY_MAPPING = {
+    'dem': {
+       'AP': 'Dem',
+       'long': 'Democrat',
+       'class': 'democrat',
+       'adverb': 'Democratic',
+    },
+    'gop': {
+        'AP': 'GOP',
+        'long': 'Republican',
+        'class': 'republican',
+        'adverb': 'Republican',
+    }
+}
 
 def comma_filter(value):
     """
