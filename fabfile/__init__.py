@@ -154,7 +154,7 @@ def update():
     """
     Update all application data not in repository (copy, assets, etc).
     """
-    install_font(force=False)
+    utils.install_font(force=False)
     text.update()
     assets.sync()
     data.update()
@@ -376,22 +376,6 @@ def reset_browsers():
         }
     )
 
-
-@task
-def install_font(force='true'):
-    """
-    Install font
-    """
-    logger.info('Installing font')
-    if force != 'true':
-        try:
-            with open('www/css/icon/elections16.css') and open('www/css/font/elections16.svg'):
-                logger.info('Font installed, skipping.')
-                return
-        except IOError:
-            pass
-
-    local('node_modules/fontello-cli/bin/fontello-cli install --config fontello/config.json --css www/css/icon --font www/css/font/')
 
 """
 Destruction
