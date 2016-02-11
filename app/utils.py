@@ -247,6 +247,21 @@ def never_cache_preview(response):
     return response
 
 
+def open_db():
+    """
+    Open db connection
+    """
+    models.db.connect()
+
+
+def close_db(response):
+    """
+    Close db connection
+    """
+    models.db.close()
+    return response
+
+
 def get_results(party, electiondate):
     """
     Results getter
