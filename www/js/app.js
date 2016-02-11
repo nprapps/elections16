@@ -81,7 +81,9 @@ var onDocumentLoad = function(e) {
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $body.on('click', '.toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
