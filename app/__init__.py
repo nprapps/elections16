@@ -363,6 +363,9 @@ def current_state():
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
+app.before_request(utils.open_db)
+app.after_request(utils.close_db)
+
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
     app.after_request(utils.never_cache_preview)
