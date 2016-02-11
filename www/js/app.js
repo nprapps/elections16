@@ -30,7 +30,6 @@ var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
-var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;

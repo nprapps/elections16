@@ -181,6 +181,8 @@ DROPPED_OUT = ['60208', '60339', '60051']
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
+LIVESTREAM_POINTER_FILE = 'http://www.npr.org/streams/mp3/nprlive1.m3u'
+
 """
 Daemon configuration
 """
