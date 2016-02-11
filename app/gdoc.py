@@ -9,7 +9,6 @@ ATTR_WHITELIST = {
     'a': ['href'],
     'img': ['src', 'alt'],
 }
-TAGS_BLACKLIST = []
 
 def get_google_doc(key):
     """
@@ -60,6 +59,7 @@ class DocParser:
         self.credit = None
         self.audio_url = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
+        self.tags_blacklist = []
         self.parse()
 
     def parse(self):
@@ -108,10 +108,10 @@ class DocParser:
                 if href == next_href:
                     next_text = next_tag.get_text()
                     tag.append(next_text)
-                    TAGS_BLACKLIST.append(next_tag)
+                    self.tags_blacklist.append(next_tag)
 
     def remove_blacklisted_tags(self, tag):
-        if tag in TAGS_BLACKLIST:
+        if tag in self.tags_blacklist:
             tag.decompose()
 
     def create_italic(self, tag):
