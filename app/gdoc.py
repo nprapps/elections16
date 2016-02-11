@@ -1,7 +1,7 @@
 import app_config
 import urlparse
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from oauth.blueprint import get_credentials
 
 DOC_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
@@ -9,7 +9,7 @@ ATTR_WHITELIST = {
     'a': ['href'],
     'img': ['src', 'alt'],
 }
-
+TAGS_BLACKLIST = []
 
 def get_google_doc(key):
     """
@@ -74,6 +74,7 @@ class DocParser:
 
         for tag in self.soup.findAll('a'):
             self.remove_comments(tag)
+            self.check_next(tag)
 
         for tag in self.soup.body.findAll():
             self.remove_empty(tag)
@@ -85,6 +86,7 @@ class DocParser:
             self.find_token(tag, 'AUDIOURL', 'audio_url')
             self.find_image_token(tag, 'BACKGROUNDIMAGE', 'image')
             self.find_image_token(tag, 'MOBILEIMAGE', 'mobile_image')
+            self.remove_blacklisted_tags(tag)
 
     def remove_comments(self, tag):
         """
@@ -92,6 +94,25 @@ class DocParser:
         """
         if tag.get('id', '').startswith('cmnt'):
             tag.parent.extract()
+
+    def check_next(self, tag):
+        """
+        If next tag is link with same href, combine them.
+        """
+        if type(tag.next_sibling) == element.Tag and tag.next_sibling.name == 'a':
+            next_tag = tag.next_sibling
+            if tag.get('href') and next_tag.get('href'):
+                href = self._parse_href(tag.get('href'))
+                next_href = self._parse_href(next_tag.get('href'))
+
+                if href == next_href:
+                    next_text = next_tag.get_text()
+                    tag.append(next_text)
+                    TAGS_BLACKLIST.append(next_tag)
+
+    def remove_blacklisted_tags(self, tag):
+        if tag in TAGS_BLACKLIST:
+            tag.decompose()
 
     def create_italic(self, tag):
         """
