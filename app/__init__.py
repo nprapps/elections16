@@ -229,7 +229,7 @@ def live_audio():
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
 
-    pointer = m3u8.load('http://www.npr.org/streams/mp3/nprlive1.m3u')
+    pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
     context['live_audio_url'] = pointer.segments[0].uri
 
     context['slug'] = 'live-audio'
