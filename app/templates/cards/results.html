@@ -8,7 +8,7 @@
     <h2>The Results Are In</h2>
     {% endif %}
 
-    <h1>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %} Caucuses</h1>
+    <h1>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %} Primary</h1>
 </header>
 
 <article>
@@ -44,7 +44,6 @@
         </tbody>
     </table>
     <ul class="meta">
-        {% if results[0].party == 'Dem' %}<li class="footnote" style="text-transform: none;">{{ COPY.meta.iowa_dem_disclaimer|smarty }}</li>{% endif %}
         <li>Source: AP</li>
     </ul>
 </article>

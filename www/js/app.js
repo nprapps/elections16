@@ -4,7 +4,6 @@ var $body = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
-var $playToggleBtn = null;
 var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
@@ -37,6 +36,8 @@ var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
 var currentCard = null;
+var exitedCardID = null;
+var cardExitEvent = null;
 if (!LIVE) {
     var LIVE = false;
 }
@@ -56,7 +57,6 @@ var onDocumentLoad = function(e) {
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $playToggleBtn = $('.toggle-btn');
     $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
@@ -81,7 +81,7 @@ var onDocumentLoad = function(e) {
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $body.on('click', '.toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
@@ -226,13 +226,13 @@ var onDragEnd = function(e, pointer) {
     }
 
     if (dragDirection === 'previous') {
-        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-        ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        cardExitEvent = 'card-swipe-previous';
     } else if (dragDirection === 'next') {
-        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-        ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        cardExitEvent = 'card-swipe-next';
     }
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onKeydown = function(e) {
@@ -255,15 +255,15 @@ var onKeydown = function(e) {
         ANALYTICS.trackEvent('keyboard-nav-wrong-target')
     } else {
         if (keyDirection === 'previous') {
-            var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-            ANALYTICS.trackEvent('keyboard-nav-previous', exitedCardID);
+            exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+            cardExitEvent = 'keyboard-nav-previous';
         } else if (keyDirection === 'next') {
-            var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-            ANALYTICS.trackEvent('keyboard-nav-next', exitedCardID);
+            exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+            cardExitEvent = 'keyboard-nav-next';
         }
     }
 
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onFlickityNavClick = function(e) {
@@ -275,13 +275,13 @@ var onFlickityNavClick = function(e) {
     var newCardIndex = flickity.selectedIndex;
 
     if ($(this).hasClass('previous')) {
-        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-        ANALYTICS.trackEvent('nav-click-previous', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        cardExitEvent = 'nav-click-previous'
     } else if ($(this).hasClass('next')) {
-        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-        ANALYTICS.trackEvent('nav-click-next', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        cardExitEvent = 'nav-click-next';
     }
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onCardSettle = function() {
@@ -309,10 +309,9 @@ var onBeginClick = function(e) {
     logCardExit('title');
 }
 
-var logCardExit = function(id) {
-    var timeBucket = calculateTimeBucket(slideStartTime)[0];
+var logCardExit = function(id, exitEvent) {
     var timeValue = calculateSlideExitTime(id);
-    ANALYTICS.trackEvent('card-exit', id, timeBucket, timeValue);
+    ANALYTICS.trackEvent('card-exit', id, exitEvent, timeValue);
 }
 
 var calculateSlideExitTime = function(id) {
@@ -404,12 +403,22 @@ var getCard = function(url, $card, i) {
                     detectMobileBg($card);
 
                     if ($card.is('#live-audio')) {
-                        AUDIO.stopLivestream();
+                        checkLivestreamStatus();
                     }
                 }
             }
         });
     }, i * 1000);
+}
+
+var checkLivestreamStatus = function() {
+    if (LIVE && $audioPlayer.data('jPlayer').status.paused) {
+        $('.toggle-btn').removeClass().addClass('toggle-btn play');
+    }
+
+    if (!LIVE && $mute.is(':visible')) {
+        AUDIO.stopLivestream();
+    }
 }
 
 var checkState = function() {

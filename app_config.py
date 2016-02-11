@@ -103,7 +103,8 @@ CARD_GOOGLE_DOC_KEYS = {
     'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
     'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
     'live_coverage_active': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
-    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ'
+    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ',
+    'podcast': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ'
 }
 
 """
@@ -168,17 +169,26 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 Election configuration
 """
 NEXT_ELECTION_DATE = '2016-02-09'
-ELEX_FLAGS = '-t'
-# ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+ELEX_FLAGS = ''
+ELEX_DELEGATE_FLAGS = ''
+
+DELEGATE_ESTIMATES = {
+    'Dem': 2382,
+    'GOP': 1237,
+}
+
+DROPPED_OUT = ['60208', '60339', '60051']
+
+DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
 """
 Daemon configuration
 """
 COPY_DEPLOY_INTERVAL = 15
-RESULTS_DEPLOY_INTERVAL = 0
+RESULTS_DEPLOY_INTERVAL = 15
 CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 900
-
+DELEGATES_DEPLOY_INTERVAL = 3600
 
 """
 Logging
@@ -218,6 +228,22 @@ def configure_targets(deployment_target):
     global ASSETS_MAX_AGE
     global NEWSLETTER_POST_URL
     global LOG_LEVEL
+    global ELEX_FLAGS
+    global ELEX_DELEGATE_FLAGS
+    global database
+
+    secrets = get_secrets()
+
+    """
+    Database
+    """
+    database = {
+        'PGDATABASE': PROJECT_SLUG,
+        'PGUSER': secrets.get('POSTGRES_USER', PROJECT_SLUG),
+        'PGPASSWORD': secrets.get('POSTGRES_PASSWORD', PROJECT_SLUG),
+        'PGHOST': secrets.get('POSTGRES_HOST', 'localhost'),
+        'PGPORT': secrets.get('POSTGRES_PORT', '5432')
+    }
 
     if deployment_target == 'production':
         S3_BUCKET = 'elections.npr.org'
@@ -243,6 +269,22 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+    elif deployment_target == 'test':
+        S3_BUCKET = 'stage-elections16.apps.npr.org'
+        S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
+        S3_DEPLOY_URL = 's3://stage-elections16.apps.npr.org'
+        SERVERS = STAGING_SERVERS
+        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
+        DISQUS_SHORTNAME = 'nprviz-test'
+        DEBUG = True
+        ASSETS_MAX_AGE = 20
+        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
+        database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -264,16 +306,3 @@ Run automated configuration
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
 configure_targets(DEPLOYMENT_TARGET)
-
-"""
-Database
-"""
-secrets = get_secrets()
-database = {
-    'name': PROJECT_SLUG,
-    'test_name': '%stest' % PROJECT_SLUG,
-    'user': secrets.get('POSTGRES_USER', None),
-    'password': secrets.get('POSTGRES_PASSWORD', None),
-    'host': secrets.get('POSTGRES_HOST', 'localhost'),
-    'port': secrets.get('POSTGRES_PORT', '5432')
-}

@@ -1,9 +1,9 @@
 from datetime import datetime
+from time import time
 from decimal import Decimal
 from pytz import timezone
 
-import operator
-import re
+import app_config
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -197,3 +197,21 @@ def collate_other_candidates(results, party):
 
     return results, other_votecount, other_votepct
 
+
+def set_delegates_updated_time():
+    """
+    Write timestamp to filesystem
+    """
+    now = time()
+    with open(app_config.DELEGATE_TIMESTAMP_FILE, 'w') as f:
+        f.write(str(now))
+
+
+def get_delegates_updated_time():
+    """
+    Read timestamp from file system and return UTC datetime object.
+    """
+    with open(app_config.DELEGATE_TIMESTAMP_FILE) as f:
+        updated_ts = f.read()
+
+    return datetime.utcfromtimestamp(float(updated_ts))
