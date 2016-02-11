@@ -3,7 +3,7 @@ import datetime
 import logging
 
 from . import utils
-from app.utils import comma_filter, percent_filter, open_db, close_db
+from app.utils import comma_filter, percent_filter, open_db, close_db, never_cache_preview
 from flask import Flask, make_response, render_template
 from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
@@ -129,6 +129,7 @@ def index():
 
 app.before_request(open_db)
 app.after_request(close_db)
+app.after_request(never_cache_preview)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
