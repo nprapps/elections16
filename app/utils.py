@@ -100,11 +100,13 @@ PARTY_MAPPING = {
     }
 }
 
+
 def comma_filter(value):
     """
     Format a number with commas.
     """
     return '{:,}'.format(value)
+
 
 def percent_filter(value):
     """
@@ -113,11 +115,13 @@ def percent_filter(value):
     one_decimal = '{:.1f}%'.format(value)
     return one_decimal
 
+
 def normalize_percent_filter(value):
     """
     Multiply value times 100
     """
     return Decimal(value) * Decimal(100)
+
 
 def ordinal_filter(num):
     """
@@ -132,13 +136,13 @@ def ordinal_filter(num):
 
     return unicode(num) + suffix
 
+
 def ap_month_filter(month):
     """
     Convert a month name into AP abbreviated style.
     """
-    i = MONTHS.index(month)
-
     return AP_MONTHS[int(month) - 1]
+
 
 def ap_date_filter(value):
     """
@@ -153,6 +157,7 @@ def ap_date_filter(value):
 
     return output
 
+
 def ap_time_filter(value):
     """
     Converts a time string in hh:mm format into AP style.
@@ -163,11 +168,13 @@ def ap_time_filter(value):
     value_year = value_tz.replace(year=2016)
     return value_year.strftime('%-I:%M')
 
+
 def ap_state_filter(usps):
     """
     Convert a USPS state abbreviation into AP style.
     """
     return USPS_TO_AP_STATE[unicode(usps)]
+
 
 def ap_time_period_filter(value):
     """
