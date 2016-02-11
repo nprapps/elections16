@@ -3,7 +3,6 @@ import simplejson as json
 
 from . import utils
 from collections import OrderedDict
-from datetime import date, datetime
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
@@ -64,19 +63,6 @@ DELEGATE_WHITELIST = {
         'Sanders',
     ],
 }
-
-
-class APDatetimeEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            thedate = utils.ap_date_filter(obj.strftime('%m/%d/%Y'))
-            thetime = utils.ap_time_filter(obj.strftime('%I:%M'))
-            theperiod = utils.ap_time_period_filter(obj.strftime('%p'))
-            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
-        elif isinstance(obj, date):
-            return obj.isoformat()
-        else:
-            return super(APDatetimeEncoder, self).default(obj)
 
 
 @app.route('/preview/<path:path>/')
@@ -156,7 +142,7 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated = get_results(party, app_config.NEXT_ELECTION_DATE)
+    results, other_votecount, other_votepct, last_updated = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
 
     context['results'] = results
     context['other_votecount'] = other_votecount
@@ -244,7 +230,7 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated = get_results(party, electiondate)
+        results, other_votecount, other_votepct, lastupdated = utils.get_results(party, electiondate)
         data[party] = {
             'results': results,
             'other_votecount': other_votecount,
@@ -252,7 +238,7 @@ def results_json(electiondate):
             'lastupdated': lastupdated
         }
 
-    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 
 @app.route('/data/delegates.json')
@@ -297,7 +283,7 @@ def delegates_json():
             for result in state_candidates:
                 data[state_obj.state][party].append(model_to_dict(result))
 
-    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 
 @app.route('/get-caught-up/')
@@ -387,52 +373,12 @@ def current_state():
     return jsonify(**data)
 
 
-def get_results(party, electiondate):
-    """
-    Results getter
-    """
-    ap_party = PARTY_MAPPING[party]['AP']
-    party_results = models.Result.select().where(
-        models.Result.electiondate == electiondate,
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
-    )
-
-    filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(party_results), ap_party)
-
-    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
-
-    serialized_results = []
-    for result in sorted_results:
-        serialized_results.append(model_to_dict(result, backrefs=True))
-
-    latest_result = models.Result.select(
-        fn.Max(models.Result.lastupdated).alias('lastupdated')
-    ).where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
-    ).get()
-
-    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
-
-
-def never_cache_preview(response):
-    """
-    Ensure preview is never cached
-    """
-    response.cache_control.max_age = 0
-    response.cache_control.no_cache = True
-    response.cache_control.must_revalidate = True
-    response.cache_control.no_store = True
-    return response
-
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
-    app.after_request(never_cache_preview)
+    app.after_request(utils.never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app
