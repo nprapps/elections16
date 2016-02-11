@@ -1,9 +1,12 @@
 from datetime import datetime
-from time import time
 from decimal import Decimal
+from models import models
+from playhouse.shortcuts import model_to_dict
 from pytz import timezone
+from time import time
 
 import app_config
+import simplejson as json
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -215,3 +218,57 @@ def get_delegates_updated_time():
         updated_ts = f.read()
 
     return datetime.utcfromtimestamp(float(updated_ts))
+
+
+def never_cache_preview(response):
+    """
+    Ensure preview is never cached
+    """
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.no_store = True
+    return response
+
+
+def get_results(party, electiondate):
+    """
+    Results getter
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    party_results = models.Result.select().where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    )
+
+    filtered, other_votecount, other_votepct = collate_other_candidates(list(party_results), ap_party)
+
+    secondary_sort = sorted(filtered, key=candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
+
+    serialized_results = []
+    for result in sorted_results:
+        serialized_results.append(model_to_dict(result, backrefs=True))
+
+    latest_result = models.Result.select(
+        fn.Max(models.Result.lastupdated).alias('lastupdated')
+    ).where(
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
+    ).get()
+
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+
+
+class APDatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            thedate = utils.ap_date_filter(obj.strftime('%m/%d/%Y'))
+            thetime = utils.ap_time_filter(obj.strftime('%I:%M'))
+            theperiod = utils.ap_time_period_filter(obj.strftime('%p'))
+            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
+        elif isinstance(obj, date):
+            return obj.isoformat()
+        else:
+            return super(APDatetimeEncoder, self).default(obj)
