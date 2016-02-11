@@ -1,4 +1,5 @@
 import app_config
+import m3u8
 import simplejson as json
 
 from . import utils
@@ -227,6 +228,9 @@ def live_audio():
 
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
+
+    pointer = m3u8.load('http://www.npr.org/streams/mp3/nprlive1.m3u')
+    context['live_audio_url'] = pointer.segments[0].uri
 
     context['slug'] = 'live-audio'
     context['template'] = 'live-audio'
