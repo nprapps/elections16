@@ -7,10 +7,11 @@ import unittest
 from app import utils
 from app.gdoc import DocParser
 from datetime import datetime
+from fabfile import data
 from render_utils import make_gdoc_context
 
 
-class AppTestCase(unittest.TestCase):
+class AppConfigTestCase(unittest.TestCase):
     """
     Testing dynamic conversion of Python app_config into Javascript.
     """
@@ -68,6 +69,43 @@ class AppTestCase(unittest.TestCase):
         doc = DocParser(html_string)
         context = make_gdoc_context(doc)
         self.assertEqual(doc, context['content'])
+
+    def test_results_json(self):
+        self.assertEqual(True, True)
+
+
+class AppDelegatesTestCase(unittest.TestCase):
+    def setUp(self):
+        data.load_delegates()
+        client = app.app.test_client()
+        response = client.get('/data/delegates.json')
+        self.delegates_data = json.loads(response.data)
+
+    def test_has_national_data(self):
+        self.assertTrue('nation' in self.delegates_data.keys())
+
+    def test_expected_number_of_states(self):
+        """
+        60 states expected; 50 states, national, plus 8 territories and weird
+        'US' catchall.
+        """
+        self.assertEqual(len(self.delegates_data.keys()), 60)
+
+    def test_national_delegate_count(self):
+        for candidate in self.delegates_data['nation']['dem']:
+            if candidate['last'] == 'Sanders':
+                delegates = candidate['delegates_count']
+                break
+
+        self.assertEqual(delegates, 168)
+
+    def test_state_delegate_count(self):
+        for candidate in self.delegates_data['IA']['dem']:
+            if candidate['last'] == 'Clinton':
+                delegates = candidate['superdelegates_count']
+                break
+
+        self.assertEqual(delegates, 3)
 
 if __name__ == '__main__':
     unittest.main()
