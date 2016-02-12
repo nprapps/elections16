@@ -299,6 +299,18 @@ def get_results(party, electiondate):
     return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
 
 
+def tally_results(party, electiondate):
+    """
+    Add results for a given party on a given date.
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    tally = models.Result.select(fn.SUM(models.Result.votecount)).where(
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    ).scalar()
+    return tally
+
+
 class APDatetimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):

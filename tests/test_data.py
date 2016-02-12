@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import unittest
+import app_config
 import calendar
+import unittest
 
 from app import utils
 from fabfile import data
@@ -56,6 +57,10 @@ class ResultsLoadingTestCase(unittest.TestCase):
         filtered_length = len(filtered)
         whitelist_length = len(utils.GOP_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
+
+    def test_vote_tally(self):
+        tally = utils.tally_results('gop', app_config.NEXT_ELECTION_DATE)
+        self.assertEqual(tally, 186874)
 
 
 class DelegatesLoadingTestCase(unittest.TestCase):
