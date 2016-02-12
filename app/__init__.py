@@ -223,7 +223,8 @@ def results_json(electiondate):
             'results': results,
             'other_votecount': other_votecount,
             'other_votepct': other_votepct,
-            'lastupdated': lastupdated
+            'lastupdated': lastupdated,
+            'total_votecount': utils.tally_results(party, electiondate),
         }
 
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
