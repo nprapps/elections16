@@ -101,6 +101,10 @@ CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
     'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
     'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+    'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+    'live_coverage_active': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ',
+    'podcast': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ'
 }
 
 """
@@ -164,17 +168,30 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-01'
+NEXT_ELECTION_DATE = '2016-02-09'
 ELEX_FLAGS = ''
-# ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+ELEX_DELEGATE_FLAGS = ''
+
+DELEGATE_ESTIMATES = {
+    'Dem': 2382,
+    'GOP': 1237,
+}
+
+DROPPED_OUT = ['60208', '60339', '60051']
+
+DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
+
+LIVESTREAM_POINTER_FILE = 'http://www.npr.org/streams/mp3/nprlive1.m3u'
 
 """
 Daemon configuration
 """
-COPY_DEPLOY_INTERVAL = 0
+COPY_DEPLOY_INTERVAL = 15
 RESULTS_DEPLOY_INTERVAL = 0
 CARD_DEPLOY_INTERVAL = 60
-SITE_ARCHIVE_INTERVAL = 900
+SITE_ARCHIVE_INTERVAL = 3600
+DELEGATES_DEPLOY_INTERVAL = 3600
+
 
 
 """
@@ -215,6 +232,27 @@ def configure_targets(deployment_target):
     global ASSETS_MAX_AGE
     global NEWSLETTER_POST_URL
     global LOG_LEVEL
+    global ELEX_FLAGS
+    global ELEX_DELEGATE_FLAGS
+    global database
+    global COPY_DEPLOY_INTERVAL
+    global RESULTS_DEPLOY_INTERVAL
+    global CARD_DEPLOY_INTERVAL
+    global SITE_ARCHIVE_INTERVAL
+    global DELEGATES_DEPLOY_INTERVAL
+
+    secrets = get_secrets()
+
+    """
+    Database
+    """
+    database = {
+        'PGDATABASE': PROJECT_SLUG,
+        'PGUSER': secrets.get('POSTGRES_USER', PROJECT_SLUG),
+        'PGPASSWORD': secrets.get('POSTGRES_PASSWORD', PROJECT_SLUG),
+        'PGHOST': secrets.get('POSTGRES_HOST', 'localhost'),
+        'PGPORT': secrets.get('POSTGRES_PORT', '5432')
+    }
 
     if deployment_target == 'production':
         S3_BUCKET = 'elections.npr.org'
@@ -228,6 +266,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 0
+        CARD_DEPLOY_INTERVAL = 60
+        SITE_ARCHIVE_INTERVAL = 900
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -240,6 +285,29 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
+    elif deployment_target == 'test':
+        S3_BUCKET = 'stage-elections16.apps.npr.org'
+        S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
+        S3_DEPLOY_URL = 's3://stage-elections16.apps.npr.org'
+        SERVERS = STAGING_SERVERS
+        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
+        DISQUS_SHORTNAME = 'nprviz-test'
+        DEBUG = True
+        ASSETS_MAX_AGE = 20
+        NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
+        LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1455306554.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
+        database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -252,6 +320,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
 
     DEPLOYMENT_TARGET = deployment_target
 
@@ -261,16 +336,3 @@ Run automated configuration
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
 configure_targets(DEPLOYMENT_TARGET)
-
-"""
-Database
-"""
-secrets = get_secrets()
-database = {
-    'name': PROJECT_SLUG,
-    'test_name': '%stest' % PROJECT_SLUG,
-    'user': secrets.get('POSTGRES_USER', None),
-    'password': secrets.get('POSTGRES_PASSWORD', None),
-    'host': secrets.get('POSTGRES_HOST', 'localhost'),
-    'port': secrets.get('POSTGRES_PORT', '5432')
-}

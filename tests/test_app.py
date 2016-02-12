@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-
-from app import utils
-from datetime import datetime
-
 import app
 import app_config
 import json
 import unittest
+
+from app import utils
+from app.gdoc import DocParser
+from datetime import datetime
+from fabfile import data
+from render_utils import make_gdoc_context
+
 
 class AppConfigTestCase(unittest.TestCase):
     """
@@ -24,28 +27,20 @@ class AppConfigTestCase(unittest.TestCase):
 
     def test_app_config_staging(self):
         response = self.client.get('/js/app_config.js')
-
         data = self.parse_data(response)
-
-        assert data['DEBUG'] == True
+        self.assertEqual(data['DEBUG'], True)
 
     def test_app_config_production(self):
         app_config.configure_targets('production')
-
         response = self.client.get('/js/app_config.js')
-
         data = self.parse_data(response)
-
-        assert data['DEBUG'] == False
-
-        app_config.configure_targets('staging')
+        app_config.configure_targets('test')
+        self.assertFalse(data['DEBUG'])
 
     def test_app_config_no_db_credentials(self):
         from render_utils import flatten_app_config
-
         config = flatten_app_config()
-
-        assert not config.get('database')
+        self.assertIsNone(config.get('database'))
 
     def test_date_filter(self):
         test_date = datetime(2016, 2, 1, 4, 0, 0)
@@ -67,6 +62,50 @@ class AppConfigTestCase(unittest.TestCase):
         output = utils.ap_time_period_filter(test_date)
         self.assertEqual(output, 'p.m.')
 
+    def test_make_gdoc_context(self):
+        with open('tests/data/testdoc.html') as f:
+            html_string = f.read()
+
+        doc = DocParser(html_string)
+        context = make_gdoc_context(doc)
+        self.assertEqual(doc, context['content'])
+
+    def test_results_json(self):
+        self.assertEqual(True, True)
+
+
+class AppDelegatesTestCase(unittest.TestCase):
+    def setUp(self):
+        data.load_delegates()
+        client = app.app.test_client()
+        response = client.get('/data/delegates.json')
+        self.delegates_data = json.loads(response.data)
+
+    def test_has_national_data(self):
+        self.assertTrue('nation' in self.delegates_data.keys())
+
+    def test_expected_number_of_states(self):
+        """
+        60 states expected; 50 states, national, plus 8 territories and weird
+        'US' catchall.
+        """
+        self.assertEqual(len(self.delegates_data.keys()), 60)
+
+    def test_national_delegate_count(self):
+        for candidate in self.delegates_data['nation']['dem']:
+            if candidate['last'] == 'Sanders':
+                delegates = candidate['delegates_count']
+                break
+
+        self.assertEqual(delegates, 168)
+
+    def test_state_delegate_count(self):
+        for candidate in self.delegates_data['IA']['dem']:
+            if candidate['last'] == 'Clinton':
+                delegates = candidate['superdelegates_count']
+                break
+
+        self.assertEqual(delegates, 3)
 
 if __name__ == '__main__':
     unittest.main()

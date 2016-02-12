@@ -22,14 +22,14 @@
 
     <div class="podcast-description">
 
-        <h1>{{ podcast_title }}</h1>
+        <h1>{{ headline }}</h1>
 
-        <p>{{ podcast_description }}</p>
+        <p>{{ content|safe }}</p>
 
 
         <ul class="featured-links">
-            <li><a href="http://www.npr.org/podcasts/510310/npr-politics-podcast" class="begin">View all episodes</a></li>
-            <li><a href="http://www.npr.org/rss/podcast.php?id=510310" class="begin" title="RSS">Subscribe</a></li>
+            <li><a href="http://www.npr.org/podcasts/510310/npr-politics-podcast">View all episodes</a></li>
+            <li><a href="http://www.npr.org/rss/podcast.php?id=510310" title="RSS">Subscribe</a></li>
 
         </ul>
 
@@ -37,12 +37,12 @@
 </div>
 
 <script type="text/javascript">
-    var PODCAST_URL = '{{ podcast_link }}';
+    var PODCAST_URL = '{{ audio_url }}'
 </script>
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-default-bg="https://secure.npr.org/politics/election2016/post-iowa-podcast.jpg">
-    <p class="photo-credit">Christopher Furlong/Getty Images</p>
+<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{{ credit }}</p>
 </span>
 {% endblock %}

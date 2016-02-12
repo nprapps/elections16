@@ -35,6 +35,8 @@ www/*.html
 www/css/*.min.*.css
 www/css/*.min.css
 www/css/*.less.css
+www/css/font/
+www/css/icon/
 www/js/*.min.*.js
 www/js/*.min.js
 www/js/templates.js
@@ -42,6 +44,7 @@ www/js/app_config.js
 www/js/copy.js
 www/test/test.html
 www/comments/index.html
+www/current-state.json
 confs/rendered/*
 
 # Local data
@@ -52,3 +55,4 @@ www/assets/*
 !www/assets/assetsignore
 www/live-data/*
 .data
+.delegates_updated

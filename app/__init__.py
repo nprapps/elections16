@@ -1,18 +1,18 @@
 import app_config
-import feedparser
-import json
+import m3u8
+import simplejson as json
 
 from . import utils
+from collections import OrderedDict
 from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
 from models import models
 from oauth.blueprint import oauth, oauth_required
-from render_utils import make_context, smarty_filter, urlencode_filter
+from peewee import fn
+from playhouse.shortcuts import model_to_dict
+from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
-
-
-PODCAST_URL = 'http://npr.org/rss/podcast.php?id=510310'
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -29,16 +29,25 @@ app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
-PARTY_MAPPING = {
-    'dem': {
-       'AP': 'Dem',
-       'long': 'Democrat',
-    },
-    'gop': {
-        'AP': 'GOP',
-        'long': 'Republican'
-    }
+DELEGATE_WHITELIST = {
+    'gop': [
+        'Bush',
+        'Carson',
+        'Christie',
+        'Cruz',
+        'Fiorina',
+        'Gilmore',
+        'Kasich',
+        'Paul',
+        'Rubio',
+        'Trump',
+    ],
+    'dem': [
+        'Clinton',
+        'Sanders',
+    ],
 }
+
 
 @app.route('/preview/<path:path>/')
 @oauth_required
@@ -59,7 +68,7 @@ def index():
     """
     context = make_context()
 
-    state = context['COPY']['meta']['state']['value']
+    state = context['state']
     script = context['COPY'][state]
 
     content = ''
@@ -75,7 +84,6 @@ def index():
             content += app.view_functions[function]()
 
     context['content'] = content
-    context['state'] = state
     return make_response(render_template('index.html', **context))
 
 
@@ -88,8 +96,8 @@ def card(slug):
     context = make_context()
     context['slug'] = slug
     context['template'] = 'basic-card'
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/%s.html' % slug, **context)
+
 
 @app.route('/podcast/')
 @oauth_required
@@ -98,14 +106,13 @@ def podcast():
     Render the podcast card
     """
     context = make_context()
-    podcastdata = feedparser.parse(PODCAST_URL)
-    latest = podcastdata.entries[0]
-    context['podcast_title'] = latest.title
-    context['podcast_link'] = latest.enclosures[0]['href']
-    context['podcast_description'] = latest.description
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['podcast']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/podcast.html', **context)
 
@@ -116,20 +123,19 @@ def results(party):
     """
     Render the results card
     """
+
     context = make_context()
-    party_results = models.Result.select().where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
-    )
 
-    secondary_sort = sorted(list(party_results), key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
+    results, other_votecount, other_votepct, last_updated = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
 
-    context['results'] = sorted_results
+    context['results'] = results
+    context['other_votecount'] = other_votecount
+    context['other_votepct'] = other_votepct
+    context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
+    context['last_updated'] = last_updated
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party
-    context['state'] = context['COPY']['meta']['state']['value']
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
@@ -137,63 +143,199 @@ def results(party):
     return render_template('cards/results.html', **context)
 
 
+@app.route('/delegates/<party>/')
+@oauth_required
+def delegates(party):
+    """
+    Render the results card
+    """
+
+    context = make_context()
+
+    ap_party = utils.PARTY_MAPPING[party]['AP']
+
+    candidates = models.CandidateDelegates.select().where(
+        models.CandidateDelegates.party == ap_party,
+        models.CandidateDelegates.level == 'nation',
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
+    ).order_by(
+        -models.CandidateDelegates.delegates_count,
+        models.CandidateDelegates.last
+    )
+
+    context['last_updated'] = utils.get_delegates_updated_time()
+
+    context['candidates'] = candidates
+    context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
+    context['party'] = ap_party
+
+    context['party_class'] = utils.PARTY_MAPPING[party]['class']
+    context['party_long'] = utils.PARTY_MAPPING[party]['adverb']
+
+    context['slug'] = 'delegates-%s' % party
+    context['template'] = 'delegates'
+    context['route'] = '/delegates/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 60
+
+    return render_template('cards/delegates.html', **context)
+
+
+@app.route('/live-audio/')
+@oauth_required
+def live_audio():
+    context = make_context()
+
+    live_audio_state = context['COPY']['meta']['live_audio']['value']
+
+    if live_audio_state == 'live':
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
+        context['live'] = True
+    else:
+        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_inactive']
+        context['live'] = False
+
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
+    context['live_audio_url'] = pointer.segments[0].uri
+
+    context['slug'] = 'live-audio'
+    context['template'] = 'live-audio'
+    context['route'] = '/live-audio/'
+    context['refresh_rate'] = 60
+
+    return render_template('cards/live-audio.html', **context)
+
+
+@app.route('/data/results-<electiondate>.json')
+def results_json(electiondate):
+    data = {
+        'gop': None,
+        'dem': None,
+    }
+
+    for party in data.keys():
+        results, other_votecount, other_votepct, lastupdated = utils.get_results(party, electiondate)
+        data[party] = {
+            'results': results,
+            'other_votecount': other_votecount,
+            'other_votepct': other_votepct,
+            'lastupdated': lastupdated,
+            'total_votecount': utils.tally_results(party, electiondate),
+        }
+
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
+
+
+@app.route('/data/delegates.json')
+def delegates_json():
+    whitelist = DELEGATE_WHITELIST['gop'] + DELEGATE_WHITELIST['dem']
+    data = OrderedDict()
+
+    data['nation'] = OrderedDict((('dem', []), ('gop', [])))
+    for party in ['dem', 'gop']:
+        national_candidates = models.CandidateDelegates.select().where(
+            models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
+            models.CandidateDelegates.level == 'nation',
+            models.CandidateDelegates.last << whitelist
+        ).order_by(
+            -models.CandidateDelegates.delegates_count,
+            models.CandidateDelegates.last
+        )
+
+        data['nation'][party] = []
+        for result in national_candidates:
+            data['nation'][party].append(model_to_dict(result))
+
+    states = models.CandidateDelegates \
+                .select(fn.Distinct(models.CandidateDelegates.state)) \
+                .order_by(models.CandidateDelegates.state)
+
+    for state_obj in states:
+        data[state_obj.state] = OrderedDict()
+
+        for party in ['dem', 'gop']:
+            state_candidates = models.CandidateDelegates.select().where(
+                models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
+                models.CandidateDelegates.state == state_obj.state,
+                models.CandidateDelegates.level == 'state',
+                models.CandidateDelegates.last << whitelist
+            ).order_by(
+                -models.CandidateDelegates.delegates_count,
+                models.CandidateDelegates.last
+            )
+
+            data[state_obj.state][party] = []
+            for result in state_candidates:
+                data[state_obj.state][party].append(model_to_dict(result))
+
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
+
+
 @app.route('/get-caught-up/')
 @oauth_required
 def get_caught_up():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/get-caught-up/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
+
+    return render_template('cards/link-roundup.html', **context)
+
+@app.route('/whats-happening/')
+@oauth_required
+def whats_happening():
+    context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['whats_happening']
+    doc = get_google_doc_html(key)
+    context.update(make_gdoc_context(doc))
+
+    context['slug'] = 'whats-happening'
+    context['template'] = 'link-roundup'
+    context['route'] = '/whats-happening/'
+    context['refresh_rate'] = 60
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/what-happened/')
 @oauth_required
 def what_happened():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['subhed'] = doc.subhed
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
     context['route'] = '/what-happened/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
 
     return render_template('cards/link-roundup.html', **context)
 
 @app.route('/title/')
 @oauth_required
 def title():
-    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     context = make_context()
+
+    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
     doc = get_google_doc_html(key)
-    context['content'] = doc
-    context['headline'] = doc.headline
-    context['banner'] = doc.banner
-    context['image'] = doc.image
-    context['mobile_image'] = doc.mobile_image
-    context['credit'] = doc.credit
+    context.update(make_gdoc_context(doc))
+
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
     context['refresh_rate'] = 60
-    context['state'] = context['COPY']['meta']['state']['value']
     return render_template('cards/title.html', **context)
 
 
@@ -212,30 +354,23 @@ def gdoc(key):
 @oauth_required
 def current_state():
     context = make_context()
-    state = context['COPY']['meta']['state']['value']
 
     data = {
-        'state': state
+        'state': context['state']
     }
 
     return jsonify(**data)
 
-def never_cache_preview(response):
-    """
-    Ensure preview is never cached
-    """
-    response.cache_control.max_age = 0
-    response.cache_control.no_cache = True
-    response.cache_control.must_revalidate = True
-    response.cache_control.no_store = True
-    return response
 
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
+app.before_request(utils.open_db)
+app.after_request(utils.close_db)
+
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
-    app.after_request(never_cache_preview)
+    app.after_request(utils.never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app

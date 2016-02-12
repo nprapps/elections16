@@ -97,6 +97,7 @@ fab update
 fab data.bootstrap_db
 fab data.load_results
 fab data.create_calls
+fab data.load_delegates
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
@@ -127,6 +128,38 @@ To run on a server:
 ```
 fab staging master servers.fabcast:data.load_results:2015-11-03
 ```
+
+Controlling State
+------------------
+
+There are four states to the app: before, during, after and inactive.
+
+You can control the app state separately for local development, staging, and production through the `meta` sheet of the copy spreadsheet. Those variables are called `dev_state`, `stage_state`, and `prod_state` respectively.
+
+Defining a state determines the card stack that the app renders. Those card stacks are defined in their respective sheets in the copy spreadsheet.
+
+Additionally, you can control the state of the live audio in the app. For live audio to function in the app, the `live_audio` card must be in the stack that matches the state of the app, and the `live_audio` variable in the `meta` sheet must be set to `live`. If the live audio card is in the current stack, but you want to turn the live audio off, set `live_audio` in the `meta` sheet to `inactive`.
+
+Generating custom font
+----------------------
+
+This project uses a custom font build powered by [Fontello](http://fontello.com) 
+If the font does not exist, it will be created when running `fab update`.
+To force generation of the custom font, run:
+
+```
+fab utils.install_font:true
+```
+
+Editing the font is a little tricky -- you have to use the Fontello web gui.
+To open the gui with your font configuration, run:
+
+```
+fab utils.open_font
+```
+
+Now edit the font, download the font pack, copy the new config.json into this
+project's `fontello` directory, and run `fab utils.install_font:true` again.
 
 Hide project secrets
 --------------------

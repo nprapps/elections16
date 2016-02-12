@@ -4,7 +4,7 @@ var $body = null;
 var $cardsWrapper = null;
 var $titlecard = null;
 var $audioPlayer = null;
-var $playToggleBtn = null;
+var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
 var $globalControls = null;
@@ -20,6 +20,9 @@ var $flickityNav = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
+var $alert = null;
+var $alertAction = null;
+var $closeAlert = null;
 
 // Global references
 var candidates = {}
@@ -27,12 +30,16 @@ var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
-var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;
 var timeOnSlides = {};
 var currentCard = null;
+var exitedCardID = null;
+var cardExitEvent = null;
+if (!LIVE) {
+    var LIVE = false;
+}
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -49,7 +56,7 @@ var onDocumentLoad = function(e) {
     $cards = $('.card');
     $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $playToggleBtn = $('.toggle-btn');
+    $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
     $globalNav = $('.global-nav');
@@ -65,17 +72,23 @@ var onDocumentLoad = function(e) {
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
     $linkRoundupLinks = $('.link-roundup a');
+    $alert = $('.alert');
+    $alertAction = $('.alert-action');
+    $closeAlert = $('.close-alert');
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $playToggleBtn.on('click', AUDIO.toggleAudio);
+    $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
     $supportBtn.on('click', onSupportBtnClick);
+    $closeAlert.on('click', onCloseAlertClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -167,10 +180,6 @@ var onCardChange = function(e) {
         $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
-        if (currentState == 'during' && !playedAudio) {
-            AUDIO.setMedia(LIVE_AUDIO_URL);
-            playedAudio = true;
-        }
     } else {
         $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
@@ -180,6 +189,11 @@ var onCardChange = function(e) {
     if ($thisCard.is('#podcast') && !playedAudio) {
         // PODCAST_URL is defined in the podcast template
         AUDIO.setMedia(PODCAST_URL);
+        playedAudio = true;
+    }
+
+    if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
+        AUDIO.setMedia(LIVE_AUDIO_URL);
         playedAudio = true;
     }
 }
@@ -213,13 +227,13 @@ var onDragEnd = function(e, pointer) {
     }
 
     if (dragDirection === 'previous') {
-        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-        ANALYTICS.trackEvent('card-swipe-previous', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        cardExitEvent = 'card-swipe-previous';
     } else if (dragDirection === 'next') {
-        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-        ANALYTICS.trackEvent('card-swipe-next', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        cardExitEvent = 'card-swipe-next';
     }
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onKeydown = function(e) {
@@ -242,15 +256,15 @@ var onKeydown = function(e) {
         ANALYTICS.trackEvent('keyboard-nav-wrong-target')
     } else {
         if (keyDirection === 'previous') {
-            var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-            ANALYTICS.trackEvent('keyboard-nav-previous', exitedCardID);
+            exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+            cardExitEvent = 'keyboard-nav-previous';
         } else if (keyDirection === 'next') {
-            var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-            ANALYTICS.trackEvent('keyboard-nav-next', exitedCardID);
+            exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+            cardExitEvent = 'keyboard-nav-next';
         }
     }
 
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onFlickityNavClick = function(e) {
@@ -262,13 +276,13 @@ var onFlickityNavClick = function(e) {
     var newCardIndex = flickity.selectedIndex;
 
     if ($(this).hasClass('previous')) {
-        var exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
-        ANALYTICS.trackEvent('nav-click-previous', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex + 1).attr('id');
+        cardExitEvent = 'nav-click-previous'
     } else if ($(this).hasClass('next')) {
-        var exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
-        ANALYTICS.trackEvent('nav-click-next', exitedCardID);
+        exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
+        cardExitEvent = 'nav-click-next';
     }
-    logCardExit(exitedCardID);
+    logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onCardSettle = function() {
@@ -296,10 +310,9 @@ var onBeginClick = function(e) {
     logCardExit('title');
 }
 
-var logCardExit = function(id) {
-    var timeBucket = calculateTimeBucket(slideStartTime)[0];
+var logCardExit = function(id, exitEvent) {
     var timeValue = calculateSlideExitTime(id);
-    ANALYTICS.trackEvent('card-exit', id, timeBucket, timeValue);
+    ANALYTICS.trackEvent('card-exit', id, exitEvent, timeValue);
 }
 
 var calculateSlideExitTime = function(id) {
@@ -336,10 +349,6 @@ var getTimeBucket = function(seconds) {
 }
 
 var onUnload = function(e) {
-    // log global time
-    var totalTimeArray = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('total-time-on-site', currentState, totalTimeArray[0], totalTimeArray[1]);
-
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
     calculateSlideExitTime(currentSlideId);
@@ -347,8 +356,10 @@ var onUnload = function(e) {
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
-            var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
-            ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            if (timeOnSlides[slide] > 0) {
+                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
+            }
         }
     }
 }
@@ -391,10 +402,24 @@ var getCard = function(url, $card, i) {
 
                     $card.html(htmlString);
                     detectMobileBg($card);
+
+                    if ($card.is('#live-audio')) {
+                        checkLivestreamStatus();
+                    }
                 }
             }
         });
     }, i * 1000);
+}
+
+var checkLivestreamStatus = function() {
+    if (LIVE && $audioPlayer.data('jPlayer').status.paused) {
+        $('.toggle-btn').removeClass().addClass('toggle-btn play');
+    }
+
+    if (!LIVE && $mute.is(':visible')) {
+        AUDIO.stopLivestream();
+    }
 }
 
 var checkState = function() {
@@ -404,13 +429,26 @@ var checkState = function() {
         ifModified: true,
         success: function(data, status) {
             if (status === 'success' && data['state'] !== currentState) {
+                var oldState = currentState;
                 currentState = data['state']
-                if (currentState === 'during') {
-                    AUDIO.setLive();
+                if (oldState === 'before' && currentState === 'during') {
+                    setLiveAlert();
                 }
             }
         }
     });
+}
+
+var setLiveAlert = function() {
+    $alert.removeClass().addClass('alert signal-during');
+    $alertAction.off('click');
+    $alertAction.on('click', function() {
+        location.reload(true);
+    });
+}
+
+var onCloseAlertClick = function() {
+    $alert.addClass('alert-slide-up')
 }
 
 var onResize = function() {

@@ -10,13 +10,13 @@
             </div>
         </div>
 
-        <div class="countdown-banner {% if state == 'during' %} live-banner {% endif %}">
+        <div class="countdown-banner {% if state == 'during' %} live-banner begin {% endif %}">
             <h6>{{ banner }}</h6>
         </div>
 
         <h1>{{ headline }}</h1>
         <p>{{ content|safe }}</p>
-        <button class="begin">
+        <button class="begin title-button">
             {% if state == 'before' or state == 'inactive' %}
             Get Caught Up
             {% elif state == 'during' %}
@@ -25,7 +25,7 @@
             View the results
             {% endif %}
 
-            <i class="fa fa-angle-right"></i></button>
+            <i class="icon icon-angle-right"></i></button>
         </button>
     </div>
 {% endblock %}

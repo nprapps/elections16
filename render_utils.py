@@ -47,6 +47,9 @@ class Includer(object):
 
     def _relativize_path(self, path):
         relative_path = path
+        if relative_path.startswith('www/'):
+            relative_path = relative_path[4:]
+
         depth = len(request.path.split('/')) - (2 + self.asset_depth)
 
         while depth > 0:
@@ -157,7 +160,7 @@ def flatten_app_config():
 
     return config
 
-def make_context(asset_depth=0):
+def make_context(asset_depth=0, gdoc=None):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
@@ -177,7 +180,28 @@ def make_context(asset_depth=0):
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
 
+    if app_config.DEPLOYMENT_TARGET == 'production':
+        state_var = 'prod_state'
+    elif app_config.DEPLOYMENT_TARGET == 'staging':
+        state_var = 'stage_state'
+    else:
+        state_var = 'dev_state'
+
+    context['state'] = context['COPY']['meta'][state_var]['value']
+
     return context
+
+def make_gdoc_context(gdoc):
+    gdoc_context = {}
+    gdoc_context['content'] = gdoc
+
+    keywords = ['headline', 'subhed', 'banner', 'image', 'mobile_image', 'credit', 'audio_url']
+
+    for keyword in keywords:
+        if getattr(gdoc, keyword):
+            gdoc_context['%s' % keyword] = getattr(gdoc, keyword)
+
+    return gdoc_context
 
 def urlencode_filter(s):
     """
