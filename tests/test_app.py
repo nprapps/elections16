@@ -10,7 +10,7 @@ from datetime import datetime
 from render_utils import make_gdoc_context
 
 
-class AppConfigTestCase(unittest.TestCase):
+class AppTestCase(unittest.TestCase):
     """
     Testing dynamic conversion of Python app_config into Javascript.
     """
