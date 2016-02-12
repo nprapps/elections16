@@ -131,6 +131,7 @@ def results(party):
     context['results'] = results
     context['other_votecount'] = other_votecount
     context['other_votepct'] = other_votepct
+    context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
     context['last_updated'] = last_updated
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
@@ -222,7 +223,8 @@ def results_json(electiondate):
             'results': results,
             'other_votecount': other_votecount,
             'other_votepct': other_votepct,
-            'lastupdated': lastupdated
+            'lastupdated': lastupdated,
+            'total_votecount': utils.tally_results(party, electiondate),
         }
 
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
