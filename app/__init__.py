@@ -236,7 +236,7 @@ def delegates_json():
     data['nation'] = OrderedDict((('dem', []), ('gop', [])))
     for party in ['dem', 'gop']:
         national_candidates = models.CandidateDelegates.select().where(
-            models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+            models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
             models.CandidateDelegates.level == 'nation',
             models.CandidateDelegates.last << whitelist
         ).order_by(
@@ -257,7 +257,7 @@ def delegates_json():
 
         for party in ['dem', 'gop']:
             state_candidates = models.CandidateDelegates.select().where(
-                models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+                models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
                 models.CandidateDelegates.state == state_obj.state,
                 models.CandidateDelegates.level == 'state',
                 models.CandidateDelegates.last << whitelist
