@@ -40,8 +40,14 @@
                     <td class="votes">{{ other_votecount|comma }}</td>
                     <td class="pct">{{ other_votepct|normalize_percent|percent }}</td>
                 </tr>
-
         </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td class="votes">{{ total_votecount|comma }}</td>
+                <td class="pct">100.0%</td>
+            </tr>
+        </tfoot>
     </table>
     <ul class="meta">
         <li>Source: AP</li>
