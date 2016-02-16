@@ -36,6 +36,7 @@ def bootstrap_db():
     create_calls()
     load_delegates()
 
+
 @task
 def create_db():
     with settings(warn_only=True):
@@ -57,6 +58,7 @@ def create_db():
             servers.start_service('uwsgi')
             servers.start_service('deploy')
 
+
 @task
 def create_tables():
     models.Result.create_table()
@@ -66,6 +68,7 @@ def create_tables():
     models.Candidate.create_table()
     models.BallotPosition.create_table()
     models.CandidateDelegates.create_table()
+
 
 @task
 def load_init_data():
