@@ -231,7 +231,7 @@ var startTest = function() {
     for (var i = 0; i < COPY.donate.length; i++) {
         if (COPY.donate[i].test === donateLanguageTest) {
             var row = COPY.donate[i];
-            $donateHeadline.text(row.headline);
+            $donateHeadline.html(row.headline);
             $donateText.html(row.text);
             if (donateButtonTest === 'tailored') {
                 $donateLink.find('a').text(row.button);
