@@ -27,9 +27,9 @@ var ANALYTICS = (function () {
     //
     //     var orientation = 'portrait';
     //
-    //     if (window.orientation == 90 || window.orientation == -90) {
-    //         orientation = 'landscape';
-    //     }
+        // if (window.orientation == 90 || window.orientation == -90) {
+        //     orientation = 'landscape';
+        // }
     //
     //     _gaq.push(['_setCustomVar', 6, 'Orientation', orientation, 3]);
     //
@@ -71,7 +71,40 @@ var ANALYTICS = (function () {
     //         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     //     })();
 
-        // New GA: NPR Visuals
+        var orientation = 'portrait';
+        if (window.orientation == 90 || window.orientation == -90) {
+            orientation = 'landscape';
+        }
+
+        var screenType = Modernizr.touch ? 'touch' : 'traditional';
+
+        var customDimensions = {
+            'dimension1': null, // story ID (seamus ID for stub?)
+            'dimension2': APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, // topics
+            'dimension3': APP_CONFIG.NPR_GOOGLE_ANALYTICS.PRIMARY_TOPIC, // primary topic
+            'dimension4': null, // story theme, what is this?
+            'dimension5': null, // program
+            'dimension6': null, // parents, what is this?
+            'dimension7': null, // story tags
+            'dimension8': null, // byline
+            'dimension9': null, // content partner organization
+            'dimension10': null, // publish date, does this make sense for our project?
+            'dimension11': null, // page type, what are we?
+            'dimension12': null, // original referrer, how do i get this?
+            'dimension13': null, // original landing page, how do i get this?
+            'dimension14': null, // localized station, read the cookie
+            'dimension15': null, // favorite station, read the cookie
+            'dimension16': null, // audio listener, read the cookie
+            'dimension17': null, // days since first session, read the cookie
+            'dimension18': null, // first session date, read the cookie
+            'dimension19': null, // registered user
+            'dimension20': null, // logged in sessions
+            'dimension21': null, // registration date
+            'dimension22': document.title, // story title
+            'dimension23': orientation, // screen orientation
+            'dimension24': screenType // screen type
+        };
+
         (function(i,s,o,g,r,a,m) {
             i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -80,9 +113,9 @@ var ANALYTICS = (function () {
 
         ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
         ga('create', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto', 'dotOrgTracker');
+        ga('dotOrgTracker.set', customDimensions)
         ga('send', 'pageview');
         ga('dotOrgTracker.send', 'pageview')
-
      }
 
     /*
