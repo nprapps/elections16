@@ -70,10 +70,11 @@ def create_tables():
     models.CandidateDelegates.create_table()
 
 @task
-def load_init_data(election_date=app_config.NEXT_ELECTION_DATE):
+def load_init_data():
     """
     Bootstrap races, candidates, reporting units, and ballot positions.
     """
+    election_date = app_config.NEXT_ELECTION_DATE
     with shell_env(**app_config.database):
         local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
         local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
@@ -100,10 +101,11 @@ def delete_delegates():
 
 
 @task
-def load_results(election_date=app_config.NEXT_ELECTION_DATE):
+def load_results():
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
+    election_date = app_config.NEXT_ELECTION_DATE
     local('mkdir -p .data')
     cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**app_config.database):
