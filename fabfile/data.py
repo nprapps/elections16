@@ -7,13 +7,11 @@ import app_config
 
 from app.gdoc import get_google_doc
 from app.utils import set_delegates_updated_time
-from elex.api import Elections
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
 import codecs
-import os
 import servers
 
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
