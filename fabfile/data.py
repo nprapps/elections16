@@ -32,6 +32,14 @@ def bootstrap_db():
     """
     Build the database.
     """
+    create_db()
+    create_tables()
+    load_results()
+    create_calls()
+    load_delegates()
+
+@task
+def create_db():
     with settings(warn_only=True):
         if env.get('settings'):
             servers.stop_service('uwsgi')
@@ -51,6 +59,8 @@ def bootstrap_db():
             servers.start_service('uwsgi')
             servers.start_service('deploy')
 
+@task
+def create_tables():
     models.Result.create_table()
     models.Call.create_table()
     models.Race.create_table()
