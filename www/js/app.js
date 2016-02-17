@@ -544,15 +544,58 @@ var makeListOfCandidates = function(candidates) {
 }
 
 var resultsCountdown = function() {
-    // determine if a results card exists
+    // TODO: only do this if a results card is in view AND results are being updated
+
     // determine if results are being updated
-    // start countdown at same interval as results update interval
-        // start spinner animation
-    // increment countdown
-    // at 0, stop incrementing and check for whether the data has been reloaded
-        // stop spinner animation
-    // when the data has been reloaded, reset the countdown and start over
+    var resultsUpdating = false;
+    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL > 0) {
+        resultsUpdating = true;
+    }
+
+    var $indicator = $('.update-indicator');
+    var $indicatorSpinner = $indicator.find('.icon');
+    var $indicatorText = $indicator.find('.text');
+    var counter = 0;
+    var interval = null;
+
+    var startIndicator = function() {
+        $indicatorSpinner.addClass('animate-spin');
+        counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
+        updateText();
+        interval = setInterval(updateIndicator,1000);
+    }
+
+    var updateIndicator = function() {
+        counter--;
+        updateText();
+        if (counter == 0) {
+            stopIndicator();
+        }
+    }
+
+    var stopIndicator = function() {
+        clearInterval(interval);
+        $indicatorSpinner.removeClass('animate-spin');
+
+        // TODO: check for whether the data has been reloaded
+        // TODO: when the data has been reloaded, reset the countdown and start over
+        startIndicator();
+    }
+
+    var updateText = function() {
+        if (counter > 9) {
+            $indicatorText.text('0:' + counter);
+        } else {
+            $indicatorText.text('0:0' + counter);
+        }
+    }
+
+    if (resultsUpdating) {
+        startIndicator();
+    }
 }
+resultsCountdown();
+
 
 var onNewsletterSubmit = function(e) {
     e.preventDefault();
