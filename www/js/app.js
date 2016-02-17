@@ -543,6 +543,17 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+var resultsCountdown = function() {
+    // determine if a results card exists
+    // determine if results are being updated
+    // start countdown at same interval as results update interval
+        // start spinner animation
+    // increment countdown
+    // at 0, stop incrementing and check for whether the data has been reloaded
+        // stop spinner animation
+    // when the data has been reloaded, reset the countdown and start over
+}
+
 var onNewsletterSubmit = function(e) {
     e.preventDefault();
 
