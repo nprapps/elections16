@@ -209,14 +209,14 @@ def render_index():
         _write_file('', content.decode('utf-8'))
 
 @task()
-def render_current_state():
+def render_current_state(folder='.cards_html'):
     """
     Render HTML templates and compile assets.
     """
     with _fake_context('/current-state.json'):
         view = _view_from_name('current_state')
         content = view().data
-        with codecs.open('.cards_html/current-state.json', 'w', 'utf-8') as f:
+        with codecs.open('%s/current-state.json' % folder, 'w', 'utf-8') as f:
             f.write(content)
 
 def _write_file(path, content):
@@ -287,4 +287,3 @@ def render_all():
         # NB: Flask response object has utf-8 encoded the data
         with open(filename, 'w') as f:
             f.write(content)
-

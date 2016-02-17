@@ -49,7 +49,7 @@ DEFAULT_MAX_AGE = 60
 RELOAD_TRIGGER = True
 RELOAD_CHECK_INTERVAL = 60
 
-PRODUCTION_SERVERS = ['54.244.238.237']
+PRODUCTION_SERVERS = ['54.189.43.202']
 STAGING_SERVERS = ['54.212.140.247']
 
 
@@ -177,16 +177,22 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
-DROPPED_OUT = ['60208']
+DROPPED_OUT = ['60208', '60339', '60051', '45650']
+
+DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
+
+LIVESTREAM_POINTER_FILE = 'http://www.npr.org/streams/mp3/nprlive1.m3u'
 
 """
 Daemon configuration
 """
 COPY_DEPLOY_INTERVAL = 15
-RESULTS_DEPLOY_INTERVAL = 15
+RESULTS_DEPLOY_INTERVAL = 0
 CARD_DEPLOY_INTERVAL = 60
-SITE_ARCHIVE_INTERVAL = 900
+SITE_ARCHIVE_INTERVAL = 3600
 DELEGATES_DEPLOY_INTERVAL = 3600
+
+
 
 """
 Logging
@@ -229,6 +235,11 @@ def configure_targets(deployment_target):
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
     global database
+    global COPY_DEPLOY_INTERVAL
+    global RESULTS_DEPLOY_INTERVAL
+    global CARD_DEPLOY_INTERVAL
+    global SITE_ARCHIVE_INTERVAL
+    global DELEGATES_DEPLOY_INTERVAL
 
     secrets = get_secrets()
 
@@ -255,6 +266,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 0
+        CARD_DEPLOY_INTERVAL = 60
+        SITE_ARCHIVE_INTERVAL = 900
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -267,6 +285,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -279,7 +304,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1455306554.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
@@ -295,6 +320,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 20
+        SITE_ARCHIVE_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
 
     DEPLOYMENT_TARGET = deployment_target
 

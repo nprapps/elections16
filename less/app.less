@@ -1,7 +1,8 @@
+@import "less/lib/font-awesome/variables.less";
+@import "less/lib/font-awesome/spinning.less";
 @import "less/lib/bootstrap/normalize"; //Just including normalize.css
 @import "less/lib/flickity";
 @import "less/lib/prefixer";
-@import "lib/font-awesome/font-awesome.less";
 
 // Global variables
 // -------------------------
@@ -18,8 +19,10 @@
     }
 }
 
+.nobr	{ white-space:nowrap; }
+
 //images
-@img-root: "../assets";
+@img-root: "../../assets";
 
 .img-responsive(@display: block;) {
     display: @display;
@@ -117,7 +120,7 @@
 @accent2        : #498dcb; // blue in comps
 @winner         : #f19e14;
 @white          : #eee;
-
+@brightwhite    : #fff;
 
 
 // fonts
@@ -223,6 +226,11 @@ body {
             width: 4.5rem;
         }
     }
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 // header
@@ -423,8 +431,8 @@ body {
 
             &.muted:before {
                 display: block;
-                content: "\f026";
-                font-family: FontAwesome;
+                content: "\e801";
+                font-family: elections16;
                 color: @white;
                 font-size: 16px;
                 padding: 5px 8px 5px 7px;
@@ -436,8 +444,8 @@ body {
             }
             &.playing:before {
                 display: block;
-                content: "\f028";
-                font-family: FontAwesome;
+                content: "\e804";
+                font-family: elections16;
                 color: @white;
                 font-size: 16px;
                 padding: 5px 4px 5px 3px;
@@ -656,7 +664,7 @@ body {
 
         i {
             font-size: 1.6rem;
-            padding-left: .5rem;
+            padding-left: 0;
         }
 
         @media @screen-small-above {
@@ -767,9 +775,9 @@ body {
         h6 {
             color: @white;
             font-size: .9rem;
-            line-height: 1;
+            line-height: 1.3;
             padding: 1rem;
-            text-transform: uppercase;
+            text-transform: none;
         }
 
         .get-alerts {
@@ -903,6 +911,8 @@ body {
                 width: 20px;
                 display: block;
                 float: left;
+
+                &.superdels { opacity: 0.5; }
             }
             .amt {
                 display: block;
@@ -923,56 +933,75 @@ body {
             &.inactive .bar { background-color: #666; }
         }
     }
+    .key {
+        margin: 0 0 15px 8rem;
+        padding: 0;
+        list-style-type: none;
+        color: #666;
+
+        > li {
+            display: inline-block;
+            margin: 0 2rem 0 0;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        b {
+            display: inline-block;
+            float: left;
+            margin-right: 6px;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        label {
+            display: inline-block;
+            line-height: 1rem;
+            white-space: nowrap;
+        }
+    }
 }
+#delegates-dem .key {
+    b { background-color: @democrat; }
+    .superdels b { opacity: 0.5; }
+}
+#delegates-gop .key {
+    b {
+        background-color: @republican;
+        &.superdels { opacity: 0.5; }
+    }
+}
+
 
 #donate {
 
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    //content: '';
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-
-    .card-background {
-        background-repeat: no-repeat;
-        .background-size(cover);
-        background-position: center center;
+    @media @screen-small-above {
         position: absolute;
         top: 0;
+        right: 0;
+        bottom: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: .3;
-
-        @media @screen-small-above {
-            opacity: .8;
-        }
-
-        .photo-credit {
-            color: #333;
-            opacity: 1;
-        }
+        //content: '';
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
     }
+
 
     .card-inner {
         max-width: 37rem;
-        margin: 4rem 1rem 1rem 1rem;
-        padding: 3rem;
+        margin: 5rem 1rem 0 1rem;
+        padding: 0 3rem;
 
         @media @screen-small-above {
             margin: 0 auto;
-            background: rgba(0, 0, 0, .7);
         }
 
         h2 {
-            text-transform: uppercase;
-            font-size: 3rem;
+            text-transform: none;
+            font-size: 2.5rem;
+            line-height: 1;
         }
 
         p {
@@ -981,19 +1010,20 @@ body {
 
         .donate-link {
             margin: 2rem 0;
+            white-space: nowrap;
+            font-size: 1rem;
 
             a {
                 padding: 1rem;
-                background: rgba(73, 141, 203, 1);
+                background: @accent1;
+                border: none;
 
-                @media @screen-small-above {
-                    background: rgba(73, 141, 203, 0.7);
-                }
-
-                &:hover,
-                &:active {
-                    color: #fff;
-                    background: rgba(73, 141, 203, 1);
+                .no-touch & {
+                    &:hover,
+                    &:active {
+                        color: #fff;
+                        background: #CD3F3D;
+                    }
                 }
             }
         }
@@ -1073,7 +1103,7 @@ body {
 
             .segment-rewind {
                 position: absolute;
-                top:0;
+                top:0.5rem;
                 left: 0;
             }
 
@@ -1095,6 +1125,13 @@ body {
                 border: none;
             }
 
+            .rewind, .forward {
+                &.darken {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            }
+
 
             .segment-play {
                 margin: 0 2rem;
@@ -1102,44 +1139,36 @@ body {
                 button {
                     border: none;
                     background-color: transparent;
-                }
-
-                .play, .pause, .loading {
-                    position: relative;
-                    width: 5rem;
-                    height: 5rem;
-                    margin-bottom: .5rem;
+                    width: 7rem;
+                    text-align: center;
+                    margin-bottom: 0.5rem;
                     outline: none;
                 }
 
                 .play:before {
-                    content: "\f04b";
-                    font-family: FontAwesome;
-                    color: @white;
+                    content: "\e802";
+                    font-family: elections16;
+                    color: @brightwhite;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 20px;
+                    line-height: 5rem;
                 }
 
                 .pause:before {
-                    content: "\f04c";
-                    font-family: FontAwesome;
-                    color: @white;
+                    content: "\e806";
+                    font-family: elections16;
+                    color: @brightwhite;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 7px;
+                    line-height: 5rem;
                 }
 
                 .loading:before {
-                    content: "\f110";
-                    font-family: FontAwesome;
+                    content: "\e805";
+                    font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 7px;
+                    line-height: 5rem;
+                    -webkit-animation: fa-spin 2s infinite linear;
+                    animation: fa-spin 2s infinite linear;
                 }
 
                 .duration {
@@ -1149,7 +1178,7 @@ body {
 
             .segment-forward {
                 position: absolute;
-                top:0;
+                top:0.5rem;
                 right: 0;
             }
         }
@@ -1294,50 +1323,53 @@ body {
 
             .segment-play {
                 margin: 0;
-                padding: 1.4rem 2rem 1rem 2rem;
+                /*padding: 1.4rem 2rem 1rem 2rem;*/
                 background-color: rgba(255, 255, 255, .4);
+                cursor: pointer;
 
                 button {
                     border: none;
                     background-color: transparent;
                 }
 
-                .play, .pause, .loading {
-                    position: relative;
-                    width: 5rem;
-                    height: 5rem;
-                    margin-bottom: .5rem;
-                    outline: none;
-                }
+                /*.play, .pause, .loading {*/
+                    /*position: relative;*/
+                    /*width: 5rem;*/
+                    /*height: 5rem;*/
+                    /*margin-bottom: .5rem;*/
+                    /*outline: none;*/
+                /*}*/
 
                 .play:before {
-                    content: "\f04b";
-                    font-family: FontAwesome;
+                    content: "\e802";
+                    font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 13px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 13px;*/
                 }
 
                 .pause:before {
-                    content: "\f04c";
-                    font-family: FontAwesome;
+                    content: "\e806";
+                    font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 5px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 5px;*/
                 }
 
                 .loading:before {
-                    content: "\f110";
-                    font-family: FontAwesome;
+                    content: "\e805";
+                    font-family: elections16;
                     color: @white;
                     font-size: 5rem;
-                    position: absolute;
-                    top: 0;
-                    left: 7px;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 7px;*/
+                    -webkit-animation: fa-spin 2s infinite linear;
+                    animation: fa-spin 2s infinite linear;
                 }
 
 
@@ -1345,6 +1377,10 @@ body {
 
         }
 
+        .broadcast-description {
+            max-width: 20rem;
+            margin: 0 auto;
+        }
         .segment-source {
             .knockout();
             font-size: 1.5rem;
@@ -1355,13 +1391,9 @@ body {
 
         h1 {
             font-size: 3rem;
-            line-height: 1;
+            line-height: 1.3;
             text-shadow: 2px 2px 2px #222;
             text-align: center;
-
-            // @media @screen-small-above {
-            //     text-align: left;
-            // }
         }
 
         h2 {
@@ -1372,8 +1404,8 @@ body {
 
         p {
             .gotham();
-            font-size: 1rem;
-            line-height: 1.7;
+            font-size: .9rem;
+            line-height: 1.5;
             color: @white;
             text-shadow: 2px 2px 2px #222;
         }
@@ -1642,7 +1674,6 @@ body {
     }
     h3 { margin-bottom: 22px; }
     table {
-        border-bottom: 1px solid @white;
         margin-bottom: 15px;
 
         caption {
@@ -1669,6 +1700,13 @@ body {
 
             &:first-child { padding-left: 0; }
         }
+
+        tfoot {
+            border-top: 1px solid #666;
+            border-bottom: 1px solid #666;
+            color: #787878;
+        }
+
         .winner {
             font-weight: bold;
             color: @winner;

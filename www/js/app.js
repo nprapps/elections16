@@ -23,6 +23,9 @@ var $linkRoundupLinks = null;
 var $alert = null;
 var $alertAction = null;
 var $closeAlert = null;
+var $donateHeadline = null;
+var $donateText = null;
+var $donateLink = null;
 
 // Global references
 var candidates = {}
@@ -30,7 +33,6 @@ var isTouch = Modernizr.touch;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
-var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;
@@ -41,6 +43,10 @@ var cardExitEvent = null;
 if (!LIVE) {
     var LIVE = false;
 }
+var testLogged = false;
+var donateLanguageTest = null;
+var donateButtonTest = null;
+
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -76,18 +82,23 @@ var onDocumentLoad = function(e) {
     $alert = $('.alert');
     $alertAction = $('.alert-action');
     $closeAlert = $('.close-alert');
+    $donateHeadline = $('.donate-headline');
+    $donateText = $('.donate-text');
+    $donateLink = $('.donate-link');
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $body.on('click', '.toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
-    $supportBtn.on('click', onSupportBtnClick);
     $closeAlert.on('click', onCloseAlertClick);
+    $donateLink.on('click', onDonateLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -195,6 +206,11 @@ var onCardChange = function(e) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
         playedAudio = true;
     }
+
+    if ($thisCard.is('#donate') && !testLogged) {
+        startTest();
+        testLogged = true;
+    }
 }
 
 var checkOverflow = function(cardHeight, $slide) {
@@ -203,6 +219,33 @@ var checkOverflow = function(cardHeight, $slide) {
     } else {
         $slide.find('.card-background').height('100%');
     }
+}
+
+var startTest = function() {
+    var possibleDonateLanguage = ['a', 'b', 'c']
+    var possibleButtonLanguage = ['tailored', 'generic'];
+
+    donateLanguageTest = possibleDonateLanguage[getRandomInt(0, possibleDonateLanguage.length)];
+    donateButtonTest = possibleButtonLanguage[getRandomInt(0, possibleButtonLanguage.length)];
+
+    for (var i = 0; i < COPY.donate.length; i++) {
+        if (COPY.donate[i].test === donateLanguageTest) {
+            var row = COPY.donate[i];
+            $donateHeadline.html(row.headline);
+            $donateText.html(row.text);
+            if (donateButtonTest === 'tailored') {
+                $donateLink.find('a').text(row.button);
+            } else {
+                $donateLink.find('a').text('Donate');
+            }
+        }
+    }
+
+    ANALYTICS.trackEvent('tests-run', donateLanguageTest + '-' + donateButtonTest);
+}
+
+var getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 var onDragStart = function(e, pointer) {
@@ -464,9 +507,10 @@ var onResize = function() {
 }
 
 
-var onSupportBtnClick = function(e) {
+var onDonateLinkClick = function(e) {
     var timesToClick = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
+    var testSlug = donateLanguageTest + '-' + donateButtonTest;
+    ANALYTICS.trackEvent('donate-link-click', testSlug, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {

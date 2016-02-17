@@ -1,9 +1,13 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
+from models import models
+from peewee import fn
+from playhouse.shortcuts import model_to_dict
 from pytz import timezone
+from time import time
 
-import operator
-import re
+import app_config
+import simplejson as json
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -81,11 +85,28 @@ DEM_CANDIDATES = [
     'Bernie Sanders'
 ]
 
+PARTY_MAPPING = {
+    'dem': {
+       'AP': 'Dem',
+       'long': 'Democrat',
+       'class': 'democrat',
+       'adverb': 'Democratic',
+    },
+    'gop': {
+        'AP': 'GOP',
+        'long': 'Republican',
+        'class': 'republican',
+        'adverb': 'Republican',
+    }
+}
+
+
 def comma_filter(value):
     """
     Format a number with commas.
     """
     return '{:,}'.format(value)
+
 
 def percent_filter(value):
     """
@@ -94,11 +115,13 @@ def percent_filter(value):
     one_decimal = '{:.1f}%'.format(value)
     return one_decimal
 
+
 def normalize_percent_filter(value):
     """
     Multiply value times 100
     """
     return Decimal(value) * Decimal(100)
+
 
 def ordinal_filter(num):
     """
@@ -113,13 +136,13 @@ def ordinal_filter(num):
 
     return unicode(num) + suffix
 
+
 def ap_month_filter(month):
     """
     Convert a month name into AP abbreviated style.
     """
-    i = MONTHS.index(month)
-
     return AP_MONTHS[int(month) - 1]
+
 
 def ap_date_filter(value):
     """
@@ -134,6 +157,7 @@ def ap_date_filter(value):
 
     return output
 
+
 def ap_time_filter(value):
     """
     Converts a time string in hh:mm format into AP style.
@@ -144,11 +168,13 @@ def ap_time_filter(value):
     value_year = value_tz.replace(year=2016)
     return value_year.strftime('%-I:%M')
 
+
 def ap_state_filter(usps):
     """
     Convert a USPS state abbreviation into AP style.
     """
     return USPS_TO_AP_STATE[unicode(usps)]
+
 
 def ap_time_period_filter(value):
     """
@@ -197,3 +223,102 @@ def collate_other_candidates(results, party):
 
     return results, other_votecount, other_votepct
 
+
+def set_delegates_updated_time():
+    """
+    Write timestamp to filesystem
+    """
+    now = time()
+    with open(app_config.DELEGATE_TIMESTAMP_FILE, 'w') as f:
+        f.write(str(now))
+
+
+def get_delegates_updated_time():
+    """
+    Read timestamp from file system and return UTC datetime object.
+    """
+    with open(app_config.DELEGATE_TIMESTAMP_FILE) as f:
+        updated_ts = f.read()
+
+    return datetime.utcfromtimestamp(float(updated_ts))
+
+
+def never_cache_preview(response):
+    """
+    Ensure preview is never cached
+    """
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.no_store = True
+    return response
+
+
+def open_db():
+    """
+    Open db connection
+    """
+    models.db.connect()
+
+
+def close_db(response):
+    """
+    Close db connection
+    """
+    models.db.close()
+    return response
+
+
+def get_results(party, electiondate):
+    """
+    Results getter
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    party_results = models.Result.select().where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    )
+
+    filtered, other_votecount, other_votepct = collate_other_candidates(list(party_results), ap_party)
+
+    secondary_sort = sorted(filtered, key=candidate_sort_lastname)
+    sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
+
+    serialized_results = []
+    for result in sorted_results:
+        serialized_results.append(model_to_dict(result, backrefs=True))
+
+    latest_result = models.Result.select(
+        fn.Max(models.Result.lastupdated).alias('lastupdated')
+    ).where(
+        models.Result.party == PARTY_MAPPING[party]['AP'],
+        models.Result.level == 'state'
+    ).get()
+
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+
+
+def tally_results(party, electiondate):
+    """
+    Add results for a given party on a given date.
+    """
+    ap_party = PARTY_MAPPING[party]['AP']
+    tally = models.Result.select(fn.SUM(models.Result.votecount)).where(
+        models.Result.party == ap_party,
+        models.Result.level == 'state'
+    ).scalar()
+    return tally
+
+
+class APDatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            thedate = ap_date_filter(obj.strftime('%m/%d/%Y'))
+            thetime = ap_time_filter(obj.strftime('%I:%M'))
+            theperiod = ap_time_period_filter(obj.strftime('%p'))
+            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
+        elif isinstance(obj, date):
+            return obj.isoformat()
+        else:
+            return super(APDatetimeEncoder, self).default(obj)

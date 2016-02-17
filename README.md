@@ -140,6 +140,27 @@ Defining a state determines the card stack that the app renders. Those card stac
 
 Additionally, you can control the state of the live audio in the app. For live audio to function in the app, the `live_audio` card must be in the stack that matches the state of the app, and the `live_audio` variable in the `meta` sheet must be set to `live`. If the live audio card is in the current stack, but you want to turn the live audio off, set `live_audio` in the `meta` sheet to `inactive`.
 
+Generating custom font
+----------------------
+
+This project uses a custom font build powered by [Fontello](http://fontello.com) 
+If the font does not exist, it will be created when running `fab update`.
+To force generation of the custom font, run:
+
+```
+fab utils.install_font:true
+```
+
+Editing the font is a little tricky -- you have to use the Fontello web gui.
+To open the gui with your font configuration, run:
+
+```
+fab utils.open_font
+```
+
+Now edit the font, download the font pack, copy the new config.json into this
+project's `fontello` directory, and run `fab utils.install_font:true` again.
+
 Hide project secrets
 --------------------
 
