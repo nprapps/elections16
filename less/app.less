@@ -1015,16 +1015,15 @@ body {
 
             a {
                 padding: 1rem;
-                background: rgba(73, 141, 203, 1);
+                background: @accent1;
+                border: none;
 
-                @media @screen-small-above {
-                    background: rgba(73, 141, 203, 0.7);
-                }
-
-                &:hover,
-                &:active {
-                    color: #fff;
-                    background: rgba(73, 141, 203, 1);
+                .no-touch & {
+                    &:hover,
+                    &:active {
+                        color: #fff;
+                        background: #CD3F3D;
+                    }
                 }
             }
         }
