@@ -115,6 +115,9 @@ var onDocumentLoad = function(e) {
     if (window.navigator.standalone) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
+
+    // TODO: find a more appropriate place for this
+    resultsCountdown();
 }
 
 var setupFlickity = function() {
@@ -544,19 +547,25 @@ var makeListOfCandidates = function(candidates) {
 }
 
 var resultsCountdown = function() {
-    // TODO: only do this if a results card is in view AND results are being updated
+    var $indicator = null;
+    var $indicatorSpinner = null;
+    var $indicatorText = null;
+    var counter = null;
+    var interval = null;
 
     // determine if results are being updated
-    var resultsUpdating = false;
+    var isUpdating = false;
     if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL > 0) {
-        resultsUpdating = true;
+        isUpdating = true;
     }
 
-    var $indicator = $('.update-indicator');
-    var $indicatorSpinner = $indicator.find('.icon');
-    var $indicatorText = $indicator.find('.text');
-    var counter = 0;
-    var interval = null;
+    // determine if this card is a results card
+    var $activeCard = $('.card.results.is-selected');
+    var isActiveCard = false;
+    if ($activeCard) {
+        isActiveCard = true;
+        $indicator = $activeCard.find('.update-indicator');
+    }
 
     var startIndicator = function() {
         $indicatorSpinner.addClass('animate-spin');
@@ -590,12 +599,25 @@ var resultsCountdown = function() {
         }
     }
 
-    if (resultsUpdating) {
+    // Only do this if a results card is in view AND results are being updated
+    if (isUpdating && isActiveCard) {
+        $indicator.append('<b class="icon icon-spin3"></b> <span class="text"></span>');
+
+        $indicatorSpinner = $indicator.find('.icon');
+        $indicatorText = $indicator.find('.text');
+
         startIndicator();
+    } else {
+        // TODO: account for when the user has moved to another card — what do we do about any existing refresh?
+        // TODO: also: swiping between results cards w/ spinners
+        if ($indicator) {
+            $indicator.empty();
+        }
+        if (interval) {
+            clearInterval(interval);
+        }
     }
 }
-resultsCountdown();
-
 
 var onNewsletterSubmit = function(e) {
     e.preventDefault();
