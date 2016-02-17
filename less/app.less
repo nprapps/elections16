@@ -1601,24 +1601,39 @@ body {
 }
 
 #feedback {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    //content: '';
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-
-
     .card-inner {
         max-width: @max-width-content;
-        margin: 5rem 1rem 1rem 1rem;
+        margin: 1rem;
 
         @media @screen-small-above {
             margin: 0 auto;
+        }
+    }
+
+    .upcoming-events {
+        h3 {
+            .knockout();
+            text-transform: none;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        dl {
+            margin: 0 0 1.5rem 0;
+
+            dt {
+                .knockout();
+                color: #fff;
+                font-size: 1rem;
+                margin-top: 2rem;
+                padding-bottom: 3px;
+                border-bottom: 3px solid #444;
+            }
+
+            dd {
+                margin: 1rem 0;
+                font-size: 1rem;
+            }
         }
     }
 
