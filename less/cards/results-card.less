@@ -1,0 +1,72 @@
+//results card
+
+.results {
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+        padding: 2rem;
+
+        h1 {
+            color: #ccc;
+            @media @screen-small-above {
+                font-size: 3rem;
+            }
+        }
+
+        h2 {
+            color: #fff;
+            @media @screen-small-above {
+                font-size: 1.3rem;
+            }
+        }
+
+    }
+    h3 { margin-bottom: 22px; }
+    table {
+        margin-bottom: 15px;
+
+        caption {
+            margin-bottom: 11px;
+            .knockout();
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 0;
+            text-align: left;
+            color: @white;
+        }
+
+        th {
+            border-bottom: 3px solid @white;
+            padding: 0 0 7px 7px;
+            vertical-align: bottom;
+            .knockout();
+            text-transform: uppercase;
+            color: @white;
+
+            &:first-child { padding-left: 0; }
+        }
+
+        td {
+            padding: 7px 0 7px 7px;
+
+            &:first-child { padding-left: 0; }
+        }
+
+        tfoot {
+            border-top: 1px solid #666;
+            border-bottom: 1px solid #666;
+            color: #787878;
+        }
+
+        .winner {
+            font-weight: bold;
+            color: @winner;
+        }
+
+        .votes,
+        .pct {
+            text-align: right;
+            width: 20%;
+        }
+    }
+}
