@@ -23,6 +23,8 @@ var ANALYTICS = (function () {
 
         var screenType = Modernizr.touch ? 'touch' : 'traditional';
 
+        var station = Cookies.get('station');
+
         var customDimensions = {
             'dimension1': null, // story ID (seamus ID for stub?)
             'dimension2': APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, // topics
@@ -35,16 +37,16 @@ var ANALYTICS = (function () {
             'dimension9': null, // content partner organization
             'dimension10': null, // publish date, does this make sense for our project?
             'dimension11': null, // page type, what are we?
-            'dimension12': null, // original referrer, how do i get this?
-            'dimension13': null, // original landing page, how do i get this?
-            'dimension14': null, // localized station, read the cookie
+            'dimension12': null, // original referrer, from localstorage
+            'dimension13': null, // original landing page, from localstorage
+            'dimension14': station ? station : null, // localized station, read the cookie
             'dimension15': null, // favorite station, read the cookie
-            'dimension16': null, // audio listener, read the cookie
-            'dimension17': null, // days since first session, read the cookie
-            'dimension18': null, // first session date, read the cookie
-            'dimension19': null, // registered user
-            'dimension20': null, // logged in sessions
-            'dimension21': null, // registration date
+            'dimension16': null, // audio listener, from localstorage
+            'dimension17': null, // days since first session, from localstorage
+            'dimension18': null, // first session date, from localstorage
+            'dimension19': null, // registered user, from localstorage
+            'dimension20': null, // logged in sessions, from localstorage
+            'dimension21': null, // registration date, from localstorage
             'dimension22': document.title, // story title
             'dimension23': orientation, // screen orientation
             'dimension24': screenType // screen type
@@ -58,9 +60,9 @@ var ANALYTICS = (function () {
 
         ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
         ga('create', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto', 'dotOrgTracker');
-        ga('dotOrgTracker.set', customDimensions)
+        ga('dotOrgTracker.set', customDimensions);
         ga('send', 'pageview');
-        ga('dotOrgTracker.send', 'pageview')
+        ga('dotOrgTracker.send', 'pageview');
      }
 
     /*
