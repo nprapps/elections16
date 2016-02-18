@@ -8,7 +8,7 @@
     <h2>The Results Are In</h2>
     {% endif %}
 
-    <h1>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican {% elif results[0].party == 'Dem' %} Democratic {% endif %} Primary</h1>
+    <h1>{{ results[0].statename }} {% if results[0].party == 'GOP' %} Republican Primary{% elif results[0].party == 'Dem' %} Democratic Caucuses{% endif %}</h1>
 </header>
 
 <article>
