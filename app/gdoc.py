@@ -57,6 +57,9 @@ class DocParser:
         self.image = None
         self.mobile_image = None
         self.credit = None
+        self.preview_image = None
+        self.preview_mobile_image = None
+        self.preview_credit = None
         self.audio_url = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
         self.tags_blacklist = []
@@ -83,9 +86,13 @@ class DocParser:
             self.find_token(tag, 'SUBHED', 'subhed')
             self.find_token(tag, 'BANNER', 'banner')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
+            self.find_token(tag, 'PREVIEWPHOTOCREDIT', 'preview_credit')
             self.find_token(tag, 'AUDIOURL', 'audio_url')
             self.find_image_token(tag, 'BACKGROUNDIMAGE', 'image')
             self.find_image_token(tag, 'MOBILEIMAGE', 'mobile_image')
+            self.find_image_token(tag, 'PREVIEWBACKGROUNDIMAGE', 'preview_image')
+            self.find_image_token(tag, 'PREVIEWMOBILEIMAGE', 'preview_mobile_image')
+
             self.remove_blacklisted_tags(tag)
 
     def remove_comments(self, tag):

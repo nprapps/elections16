@@ -129,7 +129,8 @@ SERVICES
 NPR_GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
     'DOMAIN': PRODUCTION_S3_BUCKET,
-    'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
+    'TOPICS': 'P1014,1001,1003,139482413,139544303,1091', # e.g. '1014,3,1003,1002,1001'
+    'PRIMARY_TOPIC': 'Politics'
 }
 
 VIZ_GOOGLE_ANALYTICS = {
@@ -287,9 +288,9 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        COPY_DEPLOY_INTERVAL = 10
-        RESULTS_DEPLOY_INTERVAL = 10
-        CARD_DEPLOY_INTERVAL = 20
+        COPY_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
@@ -323,7 +324,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 10
-        RESULTS_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 10
         CARD_DEPLOY_INTERVAL = 20
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 3600

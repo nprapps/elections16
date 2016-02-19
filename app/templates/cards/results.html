@@ -53,6 +53,9 @@
         </tfoot>
     </table>
     <ul class="meta">
+        {% if results[0].party == 'Dem' and results[0].statename == 'Nevada' %}
+        <li class="footnote">{{ COPY.meta.nev_dem_disclaimer }}</li>
+        {% endif %}
         <li>Source: AP</li>
     </ul>
 </article>
