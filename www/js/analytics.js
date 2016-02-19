@@ -15,14 +15,28 @@ var ANALYTICS = (function () {
     /*
      * Google Analytics
      */
-    var setupGoogle = function() {
+
+    var embedGa = function() {
+        (function(i,s,o,g,r,a,m) {
+            i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    }
+
+    var setupVizAnalytics = function() {
+        ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
+        ga('send', 'pageview');
+    }
+
+    var setupDotOrgAnalytics = function() {
+        ga('create', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto', 'dotOrgTracker');
+
         var orientation = 'portrait';
         if (window.orientation == 90 || window.orientation == -90) {
             orientation = 'landscape';
         }
-
         var screenType = Modernizr.touch ? 'touch' : 'traditional';
-
         var station = Cookies.get('station');
 
         var customDimensions = {
@@ -52,17 +66,29 @@ var ANALYTICS = (function () {
             'dimension24': screenType // screen type
         };
 
-        (function(i,s,o,g,r,a,m) {
-            i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
-        ga('create', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto', 'dotOrgTracker');
-        ga('dotOrgTracker.set', customDimensions);
-        ga('send', 'pageview');
-        ga('dotOrgTracker.send', 'pageview');
+        var storage = new CrossStorageClient('http://www.npr.org/politics/election2016/cross-storage-iframe.html');
+        storage.onConnect().then(function() {
+          // Set a key with a TTL of 90 seconds
+            return storage.get('daysSinceFirstVisit', 'firstVisitDate', 'hasListenedToAudio', 'isLoggedIn', 'isRegistered', 'originalLandingPage', 'originalReferrer', 'regDate');
+            }).then(function(res) {
+                customDimensions['dimension17'] = res[0];
+                customDimensions['dimension18'] = res[1];
+                customDimensions['dimension16'] = res[2];
+                customDimensions['dimension20'] = res[3];
+                customDimensions['dimension19'] = res[4];
+                customDimensions['dimension13'] = res[5];
+                customDimensions['dimension12'] = res[6];
+                customDimensions['dimension21'] = res[7];
+                ga('dotOrgTracker.set', customDimensions);
+                ga('dotOrgTracker.send', 'pageview');
+            }).catch(function(err) {
+                console.log(err);
+            });
+    }
+    var setupGoogle = function() {
+        embedGa();
+        setupVizAnalytics();
+        setupDotOrgAnalytics();
      }
 
     /*
