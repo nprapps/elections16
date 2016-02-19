@@ -134,7 +134,6 @@ var ANALYTICS = (function () {
         }
 
         storage.set('originalReferrer', referrerString);
-        console.log(referrerString);
         return referrerString;
     }
 
