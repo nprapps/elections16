@@ -76,7 +76,7 @@ var ANALYTICS = (function () {
             customDimensions['dimension20'] = res[2] ? res[2] : null;
             customDimensions['dimension19'] = res[3] ? res[3] : null;
             customDimensions['dimension13'] = res[4] ? res[4] : setOriginalLandingPage(storage);
-            customDimensions['dimension12'] = res[5] ? res[5] : setOriginalReferrer(storage);
+            customDimensions['dimension12'] = res[5] ? res[5] :  setOriginalReferrer(storage);
             customDimensions['dimension21'] = res[6] ? res[6] : null;
             ga('dotOrgTracker.set', customDimensions);
             ga('dotOrgTracker.send', 'pageview');
@@ -111,26 +111,42 @@ var ANALYTICS = (function () {
     }
 
     var setOriginalLandingPage = function(storage) {
-        var url = APP_CONFIG.S3_BASE_URL; // remove parameters
+        var url = APP_CONFIG.S3_BASE_URL;
         storage.set('originalLandingPage', url);
         return url;
     }
 
     var setOriginalReferrer = function(storage) {
-        var referrer = document.referrer;
         var referrerString = null;
-        if (!referrer) {
-            referrerString = 'direct';
+
+        var utmSource = getParameterByName('utm_source', window.location.href);
+        if (utmSource) {
+            referrerString = utmSource;
         } else {
-            referrerString = referrer.replace(/.*?:\/\//g, ""); // needs to get just host name
+            var referrer = document.referrer;
+            if (!referrer) {
+                referrerString = 'direct';
+            } else {
+                var l = document.createElement('a');
+                l.href = referrer;
+                referrerString = l.hostname;
+            }
         }
 
-        // exceptions: campaign parameters -- if utm_source, read the source
-
         storage.set('originalReferrer', referrerString);
+        console.log(referrerString);
         return referrerString;
     }
 
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
     var setupGoogle = function() {
         embedGa();
