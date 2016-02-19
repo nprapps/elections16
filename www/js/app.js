@@ -104,6 +104,10 @@ var onDocumentLoad = function(e) {
     $window.on('beforeunload', onUnload);
 
     setupFlickity();
+
+    resultsCountdown($('#results-dem'));
+    resultsCountdown($('#results-gop'));
+
     setPolls();
     AUDIO.setupAudio();
 
@@ -115,6 +119,7 @@ var onDocumentLoad = function(e) {
     if (window.navigator.standalone) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
+
 }
 
 var setupFlickity = function() {
@@ -418,7 +423,7 @@ var setPolls = function() {
             var fullRefreshRate = refreshRate * 1000;
 
             var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
-            setInterval(cardGetter, fullRefreshRate)
+            setInterval(cardGetter, fullRefreshRate);
         }
     }
 
@@ -447,6 +452,10 @@ var getCard = function(url, $card, i) {
 
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
+                    }
+
+                    if ($card.is('.results')) {
+                        resultsCountdown($card);
                     }
                 }
             }
@@ -541,6 +550,55 @@ var makeListOfCandidates = function(candidates) {
     }
 
     return candidateList;
+}
+
+var resultsCountdown = function($card) {
+    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
+        return;
+    }
+
+    var counter = null;
+    var interval = null;
+
+    var $indicator = $card.find('.update-indicator');
+    $indicator
+        .empty()
+        .append('<b class="icon icon-spin3"></b> <span class="text"></span>');
+
+    var $indicatorSpinner = $indicator.find('.icon');
+    var $indicatorText = $indicator.find('.text');
+
+    var startIndicator = function() {
+        $indicatorSpinner.removeClass('animate-spin');
+        counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
+        updateText();
+        interval = setInterval(updateIndicator,1000);
+    }
+
+    var updateIndicator = function() {
+        counter--;
+        updateText();
+        if (counter == 0) {
+            stopIndicator();
+        }
+    }
+
+    var stopIndicator = function() {
+        clearInterval(interval);
+        $indicatorSpinner.addClass('animate-spin');
+        $indicatorText.text('Loading');
+    }
+
+    var updateText = function() {
+        if (counter > 9) {
+            $indicatorText.text('0:' + counter);
+        } else {
+            $indicatorText.text('0:0' + counter);
+        }
+    }
+
+    startIndicator();
+
 }
 
 var onNewsletterSubmit = function(e) {
