@@ -40,17 +40,17 @@ var ANALYTICS = (function () {
         var station = Cookies.get('station');
 
         var customDimensions = {
-            'dimension1': null, // story ID (seamus ID for stub?)
-            'dimension2': APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, // topics
-            'dimension3': APP_CONFIG.NPR_GOOGLE_ANALYTICS.PRIMARY_TOPIC, // primary topic
-            'dimension4': null, // story theme, what is this?
-            'dimension5': null, // program
-            'dimension6': null, // parents, what is this?
+            'dimension1': null, // story ID (this is the SEAMUS ID)
+            'dimension2': APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, // topics, see Google spreadsheet for ids. First id begins with P for primary
+            'dimension3': APP_CONFIG.NPR_GOOGLE_ANALYTICS.PRIMARY_TOPIC, // primary topic -- name of the topic, not the ID
+            'dimension4': null, // story theme, which is the html theme in Seamus
+            'dimension5': null, // program, english name of program
+            'dimension6': null, // parents, roll up program, theme, topics, etc.
             'dimension7': null, // story tags
             'dimension8': null, // byline
             'dimension9': null, // content partner organization
-            'dimension10': null, // publish date, does this make sense for our project?
-            'dimension11': null, // page type, what are we?
+            'dimension10': null, // publish date, yyyymmddhh
+            'dimension11': null, // page type, seamus page type
             'dimension12': null, // original referrer, from localstorage
             'dimension13': null, // original landing page, from localstorage
             'dimension14': station ? station : null, // localized station, read the cookie
@@ -68,17 +68,16 @@ var ANALYTICS = (function () {
 
         var storage = new CrossStorageClient('http://www.npr.org/politics/election2016/cross-storage-iframe.html');
         storage.onConnect().then(function() {
-          // Set a key with a TTL of 90 seconds
-            return storage.get('daysSinceFirstVisit', 'firstVisitDate', 'hasListenedToAudio', 'isLoggedIn', 'isRegistered', 'originalLandingPage', 'originalReferrer', 'regDate');
+            return storage.get('firstVisitDate', 'hasListenedToAudio', 'isLoggedIn', 'isRegistered', 'originalLandingPage', 'originalReferrer', 'regDate');
         }).then(function(res) {
-            customDimensions['dimension17'] = res[0] ? res[0] : 0;
-            customDimensions['dimension18'] = res[1] ? res[1] : getTodaysDate();
-            customDimensions['dimension16'] = res[2] ? res[2] : null;
-            customDimensions['dimension20'] = res[3] ? res[3] : null;
-            customDimensions['dimension19'] = res[4] ? res[4] : null;
-            customDimensions['dimension13'] = res[5] ? res[5] : APP_CONFIG.S3_BUCKET;
-            customDimensions['dimension12'] = res[6] ? res[6] : readReferrer();
-            customDimensions['dimension21'] = res[7] ? res[7] : null;
+            customDimensions['dimension17'] = res[0] ?  setDaysSinceFirstVisit(storage, res[0]) : 0;
+            customDimensions['dimension18'] = res[0] ? res[0] : setFirstVisitDate(storage);
+            customDimensions['dimension16'] = res[1] ? res[1] : null;
+            customDimensions['dimension20'] = res[2] ? res[2] : null;
+            customDimensions['dimension19'] = res[3] ? res[3] : null;
+            customDimensions['dimension13'] = res[4] ? res[4] : setOriginalLandingPage(storage);
+            customDimensions['dimension12'] = res[5] ? res[5] : setOriginalReferrer(storage);
+            customDimensions['dimension21'] = res[6] ? res[6] : null;
             ga('dotOrgTracker.set', customDimensions);
             ga('dotOrgTracker.send', 'pageview');
         }).catch(function(err) {
@@ -86,7 +85,18 @@ var ANALYTICS = (function () {
         });
     }
 
-    var getTodaysDate = function() {
+    var setDaysSinceFirstVisit = function(storage, firstDate) {
+        var firstDateISO = firstDate.substring(0, 4) + '-' + firstDate.substring(4, 6) + '-' + firstDate.substring(6);
+        var firstDateTime = new Date(firstDateISO)
+        var now = new Date();
+
+        var oneDay = 24 * 60 * 60 * 1000;
+        var daysSince = Math.round(Math.abs((firstDateTime.getTime() - now.getTime())/(oneDay)));
+
+        return daysSince;
+    }
+
+    var setFirstVisitDate = function(storage) {
         var now = new Date();
         var year = now.getFullYear().toString();
         var day = now.getDate().toString();
@@ -95,18 +105,29 @@ var ANALYTICS = (function () {
             month = '0' + month.toString();
         }
         var dateString = year + month + day;
+
+        storage.set('firstVisitDate', dateString);
         return dateString;
     }
 
-    var readReferrer = function() {
+    var setOriginalLandingPage = function(storage) {
+        var url = APP_CONFIG.S3_BASE_URL; // remove parameters
+        storage.set('originalLandingPage', url);
+        return url;
+    }
+
+    var setOriginalReferrer = function(storage) {
         var referrer = document.referrer;
         var referrerString = null;
         if (!referrer) {
             referrerString = 'direct';
         } else {
-            referrerString = referrer.replace(/.*?:\/\//g, "");
+            referrerString = referrer.replace(/.*?:\/\//g, ""); // needs to get just host name
         }
 
+        // exceptions: campaign parameters -- if utm_source, read the source
+
+        storage.set('originalReferrer', referrerString);
         return referrerString;
     }
 
