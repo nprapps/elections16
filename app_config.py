@@ -257,7 +257,7 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKET = 'elections.npr.org'
-        S3_BASE_URL = 'https://elections.npr.org'
+        S3_BASE_URL = 'http://elections.npr.org'
         S3_DEPLOY_URL = 's3://elections.npr.org'
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -265,7 +265,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
-        NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
