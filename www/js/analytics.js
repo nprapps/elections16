@@ -70,21 +70,47 @@ var ANALYTICS = (function () {
         storage.onConnect().then(function() {
           // Set a key with a TTL of 90 seconds
             return storage.get('daysSinceFirstVisit', 'firstVisitDate', 'hasListenedToAudio', 'isLoggedIn', 'isRegistered', 'originalLandingPage', 'originalReferrer', 'regDate');
-            }).then(function(res) {
-                customDimensions['dimension17'] = res[0];
-                customDimensions['dimension18'] = res[1];
-                customDimensions['dimension16'] = res[2];
-                customDimensions['dimension20'] = res[3];
-                customDimensions['dimension19'] = res[4];
-                customDimensions['dimension13'] = res[5];
-                customDimensions['dimension12'] = res[6];
-                customDimensions['dimension21'] = res[7];
-                ga('dotOrgTracker.set', customDimensions);
-                ga('dotOrgTracker.send', 'pageview');
-            }).catch(function(err) {
-                console.log(err);
-            });
+        }).then(function(res) {
+            customDimensions['dimension17'] = res[0] ? res[0] : 0;
+            customDimensions['dimension18'] = res[1] ? res[1] : getTodaysDate();
+            customDimensions['dimension16'] = res[2] ? res[2] : null;
+            customDimensions['dimension20'] = res[3] ? res[3] : null;
+            customDimensions['dimension19'] = res[4] ? res[4] : null;
+            customDimensions['dimension13'] = res[5] ? res[5] : APP_CONFIG.S3_BUCKET;
+            customDimensions['dimension12'] = res[6] ? res[6] : readReferrer();
+            customDimensions['dimension21'] = res[7] ? res[7] : null;
+            ga('dotOrgTracker.set', customDimensions);
+            ga('dotOrgTracker.send', 'pageview');
+        }).catch(function(err) {
+            console.log(err);
+        });
     }
+
+    var getTodaysDate = function() {
+        var now = new Date();
+        var year = now.getFullYear().toString();
+        var day = now.getDate().toString();
+        var month = now.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month.toString();
+        }
+        var dateString = year + month + day;
+        return dateString;
+    }
+
+    var readReferrer = function() {
+        var referrer = document.referrer;
+        var referrerString = null;
+        if (!referrer) {
+            referrerString = 'direct';
+        } else {
+            referrerString = referrer.replace(/.*?:\/\//g, "");
+        }
+
+        return referrerString;
+    }
+
+
     var setupGoogle = function() {
         embedGa();
         setupVizAnalytics();
