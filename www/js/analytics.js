@@ -80,8 +80,6 @@ var ANALYTICS = (function () {
             customDimensions['dimension21'] = res[6] ? res[6] : null;
             ga('dotOrgTracker.set', customDimensions);
             ga('dotOrgTracker.send', 'pageview');
-        }).catch(function(err) {
-            console.log(err);
         });
     }
 
