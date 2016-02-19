@@ -453,10 +453,10 @@ var getCard = function(url, $card, i) {
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
                     }
+                }
 
-                    if ($card.is('.results')) {
-                        resultsCountdown($card);
-                    }
+                if ($card.is('.results')) {
+                    resultsCountdown($card);
                 }
             }
         });
