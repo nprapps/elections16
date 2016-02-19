@@ -45,7 +45,7 @@ var ANALYTICS = (function () {
             'dimension3': APP_CONFIG.NPR_GOOGLE_ANALYTICS.PRIMARY_TOPIC, // primary topic -- name of the topic, not the ID
             'dimension4': null, // story theme, which is the html theme in Seamus
             'dimension5': null, // program, english name of program
-            'dimension6': null, // parents, roll up program, theme, topics, etc.
+            'dimension6': APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, // parents, roll up program, theme, topics, etc.
             'dimension7': null, // story tags
             'dimension8': null, // byline
             'dimension9': null, // content partner organization
