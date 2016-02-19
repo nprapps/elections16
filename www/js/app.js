@@ -23,6 +23,9 @@ var $linkRoundupLinks = null;
 var $alert = null;
 var $alertAction = null;
 var $closeAlert = null;
+var $donateHeadline = null;
+var $donateText = null;
+var $donateLink = null;
 
 // Global references
 var candidates = {}
@@ -40,6 +43,10 @@ var cardExitEvent = null;
 if (!LIVE) {
     var LIVE = false;
 }
+var testLogged = false;
+var donateLanguageTest = null;
+var donateButtonTest = null;
+
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -75,6 +82,9 @@ var onDocumentLoad = function(e) {
     $alert = $('.alert');
     $alertAction = $('.alert-action');
     $closeAlert = $('.close-alert');
+    $donateHeadline = $('.donate-headline');
+    $donateText = $('.donate-text');
+    $donateLink = $('.donate-link');
 
     rem = getEmPixels();
 
@@ -87,13 +97,17 @@ var onDocumentLoad = function(e) {
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
-    $supportBtn.on('click', onSupportBtnClick);
     $closeAlert.on('click', onCloseAlertClick);
+    $donateLink.on('click', onDonateLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
 
     setupFlickity();
+
+    resultsCountdown($('#results-dem'));
+    resultsCountdown($('#results-gop'));
+
     setPolls();
     AUDIO.setupAudio();
 
@@ -105,6 +119,7 @@ var onDocumentLoad = function(e) {
     if (window.navigator.standalone) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
+
 }
 
 var setupFlickity = function() {
@@ -196,6 +211,11 @@ var onCardChange = function(e) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
         playedAudio = true;
     }
+
+    if ($thisCard.is('#donate') && !testLogged) {
+        startTest();
+        testLogged = true;
+    }
 }
 
 var checkOverflow = function(cardHeight, $slide) {
@@ -204,6 +224,33 @@ var checkOverflow = function(cardHeight, $slide) {
     } else {
         $slide.find('.card-background').height('100%');
     }
+}
+
+var startTest = function() {
+    var possibleDonateLanguage = ['a', 'b', 'c']
+    var possibleButtonLanguage = ['tailored', 'generic'];
+
+    donateLanguageTest = possibleDonateLanguage[getRandomInt(0, possibleDonateLanguage.length)];
+    donateButtonTest = possibleButtonLanguage[getRandomInt(0, possibleButtonLanguage.length)];
+
+    for (var i = 0; i < COPY.donate.length; i++) {
+        if (COPY.donate[i].test === donateLanguageTest) {
+            var row = COPY.donate[i];
+            $donateHeadline.html(row.headline);
+            $donateText.html(row.text);
+            if (donateButtonTest === 'tailored') {
+                $donateLink.find('a').text(row.button);
+            } else {
+                $donateLink.find('a').text('Donate');
+            }
+        }
+    }
+
+    ANALYTICS.trackEvent('tests-run', donateLanguageTest + '-' + donateButtonTest);
+}
+
+var getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 var onDragStart = function(e, pointer) {
@@ -376,7 +423,7 @@ var setPolls = function() {
             var fullRefreshRate = refreshRate * 1000;
 
             var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
-            setInterval(cardGetter, fullRefreshRate)
+            setInterval(cardGetter, fullRefreshRate);
         }
     }
 
@@ -405,6 +452,10 @@ var getCard = function(url, $card, i) {
 
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
+                    }
+
+                    if ($card.is('.results')) {
+                        resultsCountdown($card);
                     }
                 }
             }
@@ -465,9 +516,10 @@ var onResize = function() {
 }
 
 
-var onSupportBtnClick = function(e) {
+var onDonateLinkClick = function(e) {
     var timesToClick = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
+    var testSlug = donateLanguageTest + '-' + donateButtonTest;
+    ANALYTICS.trackEvent('donate-link-click', testSlug, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
@@ -498,6 +550,55 @@ var makeListOfCandidates = function(candidates) {
     }
 
     return candidateList;
+}
+
+var resultsCountdown = function($card) {
+    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
+        return;
+    }
+
+    var counter = null;
+    var interval = null;
+
+    var $indicator = $card.find('.update-indicator');
+    $indicator
+        .empty()
+        .append('<b class="icon icon-spin3"></b> <span class="text"></span>');
+
+    var $indicatorSpinner = $indicator.find('.icon');
+    var $indicatorText = $indicator.find('.text');
+
+    var startIndicator = function() {
+        $indicatorSpinner.removeClass('animate-spin');
+        counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
+        updateText();
+        interval = setInterval(updateIndicator,1000);
+    }
+
+    var updateIndicator = function() {
+        counter--;
+        updateText();
+        if (counter == 0) {
+            stopIndicator();
+        }
+    }
+
+    var stopIndicator = function() {
+        clearInterval(interval);
+        $indicatorSpinner.addClass('animate-spin');
+        $indicatorText.text('Loading');
+    }
+
+    var updateText = function() {
+        if (counter > 9) {
+            $indicatorText.text('0:' + counter);
+        } else {
+            $indicatorText.text('0:0' + counter);
+        }
+    }
+
+    startIndicator();
+
 }
 
 var onNewsletterSubmit = function(e) {

@@ -1,0 +1,105 @@
+//newsletter card
+
+#newsletter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    //content: '';
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+
+    .card-inner {
+        max-width: 37rem;
+        margin: 5rem 1rem 1rem 1rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    header {
+        max-width: @max-width-content;
+        margin: 0 auto;
+        padding-bottom: 22px;
+    }
+    p {
+        margin: 0;
+        &.footnote {
+            color: #999;
+            font-size: 0.8rem;
+
+            a {
+                border: none;
+            }
+        }
+    }
+    form {
+        padding: 22px 0;
+        max-width: 500px;
+    }
+    input {
+        position: relative;
+        min-height: 44px;
+        width: 100%;
+        box-sizing: border-box;
+        border: none;
+        line-height: 44px;
+        padding: 0 11px;
+        display: block;
+        margin-bottom: 11px;
+    }
+    button {
+        border: none;
+        padding: 0 11px;
+        .knockout();
+        text-transform: uppercase;
+        line-height: 33px;
+        background-color: @accent2;
+        color: @white;
+
+        .no-touch & {
+            &:hover,
+            &:active {
+                opacity: 0.7;
+            }
+        }
+    }
+    .message {
+        margin-top: 11px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px 15px 13px 15px;
+
+        h3 {
+            margin: 0 0 3px 0;
+            font-size: 1rem;
+        }
+        p { margin: 0; }
+
+        &.error {
+            margin-top: 22px;
+            border-color: rgba(204, 91, 78, 0.3);
+            background-color: rgba(204, 91, 78, 0.1);
+
+            h3, p { color: @accent1; }
+            p { opacity: 0.8; }
+        }
+        &.success {
+            margin-top: 0;
+            border-color: rgba(241, 158, 20, 0.3);
+            background-color: rgba(241, 158, 20, 0.1);
+
+            h3, p { color: @winner; }
+            p { opacity: 0.8; }
+        }
+    }
+}
+
+.newsletter-signup {
+    .transition(opacity 0.3s ease-in-out);
+}
