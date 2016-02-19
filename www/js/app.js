@@ -104,6 +104,10 @@ var onDocumentLoad = function(e) {
     $window.on('beforeunload', onUnload);
 
     setupFlickity();
+
+    resultsCountdown($('#results-dem'));
+    resultsCountdown($('#results-gop'));
+
     setPolls();
     AUDIO.setupAudio();
 
@@ -116,8 +120,6 @@ var onDocumentLoad = function(e) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
 
-    // TODO: find a more appropriate place for this
-    resultsCountdown();
 }
 
 var setupFlickity = function() {
@@ -421,7 +423,7 @@ var setPolls = function() {
             var fullRefreshRate = refreshRate * 1000;
 
             var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
-            setInterval(cardGetter, fullRefreshRate)
+            setInterval(cardGetter, fullRefreshRate);
         }
     }
 
@@ -450,6 +452,10 @@ var getCard = function(url, $card, i) {
 
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
+                    }
+
+                    if ($card.is('.results')) {
+                        resultsCountdown($card);
                     }
                 }
             }
@@ -546,29 +552,24 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
-var resultsCountdown = function() {
-    var $indicator = null;
-    var $indicatorSpinner = null;
-    var $indicatorText = null;
+var resultsCountdown = function($card) {
+    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
+        return;
+    }
+
     var counter = null;
     var interval = null;
 
-    // determine if results are being updated
-    var isUpdating = false;
-    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL > 0) {
-        isUpdating = true;
-    }
+    var $indicator = $card.find('.update-indicator');
+    $indicator
+        .empty()
+        .append('<b class="icon icon-spin3"></b> <span class="text"></span>');
 
-    // determine if this card is a results card
-    var $activeCard = $('.card.results.is-selected');
-    var isActiveCard = false;
-    if ($activeCard) {
-        isActiveCard = true;
-        $indicator = $activeCard.find('.update-indicator');
-    }
+    var $indicatorSpinner = $indicator.find('.icon');
+    var $indicatorText = $indicator.find('.text');
 
     var startIndicator = function() {
-        $indicatorSpinner.addClass('animate-spin');
+        $indicatorSpinner.removeClass('animate-spin');
         counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
         updateText();
         interval = setInterval(updateIndicator,1000);
@@ -584,11 +585,8 @@ var resultsCountdown = function() {
 
     var stopIndicator = function() {
         clearInterval(interval);
-        $indicatorSpinner.removeClass('animate-spin');
-
-        // TODO: check for whether the data has been reloaded
-        // TODO: when the data has been reloaded, reset the countdown and start over
-        startIndicator();
+        $indicatorSpinner.addClass('animate-spin');
+        $indicatorText.text('Loading');
     }
 
     var updateText = function() {
@@ -599,24 +597,8 @@ var resultsCountdown = function() {
         }
     }
 
-    // Only do this if a results card is in view AND results are being updated
-    if (isUpdating && isActiveCard) {
-        $indicator.append('<b class="icon icon-spin3"></b> <span class="text"></span>');
+    startIndicator();
 
-        $indicatorSpinner = $indicator.find('.icon');
-        $indicatorText = $indicator.find('.text');
-
-        startIndicator();
-    } else {
-        // TODO: account for when the user has moved to another card — what do we do about any existing refresh?
-        // TODO: also: swiping between results cards w/ spinners
-        if ($indicator) {
-            $indicator.empty();
-        }
-        if (interval) {
-            clearInterval(interval);
-        }
-    }
 }
 
 var onNewsletterSubmit = function(e) {
