@@ -93,7 +93,7 @@ var ANALYTICS = (function () {
         var oneDay = 24 * 60 * 60 * 1000;
         var daysSince = Math.round(Math.abs((firstDateTime.getTime() - now.getTime())/(oneDay)));
 
-        return daysSince;
+        return daysSince.toString();
     }
 
     var setFirstVisitDate = function(storage) {
