@@ -288,9 +288,9 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        COPY_DEPLOY_INTERVAL = 30
-        RESULTS_DEPLOY_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        COPY_DEPLOY_INTERVAL = 1000
+        RESULTS_DEPLOY_INTERVAL = 1000
+        CARD_DEPLOY_INTERVAL = 1000
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
@@ -323,9 +323,9 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        COPY_DEPLOY_INTERVAL = 15
-        RESULTS_DEPLOY_INTERVAL = 15
-        CARD_DEPLOY_INTERVAL = 30
+        COPY_DEPLOY_INTERVAL = 1000
+        RESULTS_DEPLOY_INTERVAL = 1000
+        CARD_DEPLOY_INTERVAL = 1000
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 3600
 
