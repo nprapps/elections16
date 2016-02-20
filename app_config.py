@@ -129,7 +129,8 @@ SERVICES
 NPR_GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
     'DOMAIN': PRODUCTION_S3_BUCKET,
-    'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
+    'TOPICS': 'P1014,1001,1003,139482413,139544303,1091', # e.g. '1014,3,1003,1002,1001'
+    'PRIMARY_TOPIC': 'Politics'
 }
 
 VIZ_GOOGLE_ANALYTICS = {
@@ -168,7 +169,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-09'
+NEXT_ELECTION_DATE = '2016-02-20'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -187,7 +188,7 @@ LIVESTREAM_POINTER_FILE = 'http://www.npr.org/streams/mp3/nprlive1.m3u'
 Daemon configuration
 """
 COPY_DEPLOY_INTERVAL = 15
-RESULTS_DEPLOY_INTERVAL = 3600
+RESULTS_DEPLOY_INTERVAL = 30
 CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 3600
 DELEGATES_DEPLOY_INTERVAL = 3600
@@ -256,7 +257,7 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKET = 'elections.npr.org'
-        S3_BASE_URL = 'https://elections.npr.org'
+        S3_BASE_URL = 'http://elections.npr.org'
         S3_DEPLOY_URL = 's3://elections.npr.org'
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -264,12 +265,12 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
-        NEWSLETTER_POST_URL = 'https://secure.npr.org/newsletter/subscribe/politics'
+        NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.WARNING
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
-        RESULTS_DEPLOY_INTERVAL = 0
+        RESULTS_DEPLOY_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 60
         SITE_ARCHIVE_INTERVAL = 900
         DELEGATES_DEPLOY_INTERVAL = 3600
@@ -285,11 +286,11 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1454350478.json'
-        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        COPY_DEPLOY_INTERVAL = 10
-        RESULTS_DEPLOY_INTERVAL = 10
-        CARD_DEPLOY_INTERVAL = 20
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''
+        COPY_DEPLOY_INTERVAL = 30
+        RESULTS_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
@@ -322,7 +323,7 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        COPY_DEPLOY_INTERVAL = 10
+        COPY_DEPLOY_INTERVAL = 15
         RESULTS_DEPLOY_INTERVAL = 15
         CARD_DEPLOY_INTERVAL = 20
         SITE_ARCHIVE_INTERVAL = 0

@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
-    <p class="photo-credit">{{ credit }}</p>
+<span class="card-background" data-mobile-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_mobile_image %}{{ preview_mobile_image }}{% else %}{{ mobile_image }}{% endif %}" data-default-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit">{% if DEPLOYMENT_TARGET != 'production' and preview_credit %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}</p>
 </span>
 {% endblock %}
