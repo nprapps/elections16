@@ -624,7 +624,7 @@ var onNewsletterSubmit = function(e) {
     // wait state
     clearStatusMessage();
     var waitMsg = '<div class="message wait">'
-    waitMsg += '<p><i class="fa fa-spinner fa-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
+    waitMsg += '<p><i class="icon icon-spinner animate-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
     waitMsg += '</div>'
     $el.append(waitMsg);
     $subscribeBtn.hide();
