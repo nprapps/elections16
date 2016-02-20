@@ -2,7 +2,7 @@
 
 {% block card_content %}
 <header>
-    {% if state == 'during' %}
+    {% if state == 'during' or state == 'before' %}
     <h2>Current Status</h2>
     {% else %}
     <h2>The Results Are In</h2>
