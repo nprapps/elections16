@@ -154,7 +154,7 @@ To get ready for a new live election event, ensure you do the following before r
 6. Ensure `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` is set to 15.
 8. If you made any changes to app_config, deploy the latest to Github and make sure it is merged into the stable branch.
 9. Deploy the latest to the server: `fab production stable deploy_server`
-10. Bootstrap the database on the server: `fab production servers.bootstrap_db`
+10. Bootstrap the database on the server: `fab production servers.fabcast:data.bootstrap_db`
 11. Go to [54.189.43.202/elections16/calls](54.189.43.202/elections16/calls)  and set all races to accept AP calls unless Domenico/Beth have noted an exception.
 
 ### Changing the card stack
@@ -163,18 +163,14 @@ To get ready for a new live election event, ensure you do the following before r
 2. If we are going to during mode with live audio, make sure `live_audio` in the `meta` sheet of the copy spreadsheet is set to `live`.
 3. Pull the spreadsheet locally with `fab text`.
 4. Ensure that all the cards are supposed to be in the stack. Check [this document](https://docs.google.com/drawings/d/1wzBoldr0cE5K6a0_eLAMm0lVjvcLqcVFaFvDZ_aPOx8/edit) to see what each stack should contain. Also make sure that audio is playing in the app if applicable.
-5. If everything looks good, stop the deploy service on production: `fab production servers.stop_service:deploy`.
-6. Change `prod_state` to the state you are moving to.
-7. Start the deploy service again: `fab production servers.start_service:deploy`.
-8. Deploy the latest to the client: `fab production stable servers.fabcast:deploy_client`
+5. If everything looks good, deploy the latest to the client: `fab production stable servers.fabcast:deploy_client`
 
 ### Ending the live event
 
 It is likely that the live audio coverage will end before the data stops coming in and before the after mode cards are ready. To account for  this scenario, do the following:
 
 1. Change `live_audio` in the `meta` sheet of the copy spreadsheet to `inactive`.
-2. Then, to ensure everything gets out, run  `fab production stable deploy_server`.
-3. If you have the app open with live audio running, make sure that the audio stops itself within a few minutes.
+2. If you have the app open with live audio running, make sure that the audio stops itself within a few minutes.
 
 When the after cards are ready, follow the steps for changing the card stack.
 
