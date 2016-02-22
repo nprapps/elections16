@@ -1,0 +1,56 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<header>
+    {% if state == 'during' or state == 'before' %}
+    <h2>Current Status</h2>
+    {% else %}
+    <h2>The Results Are In</h2>
+    {% endif %}
+
+    <h1>Republican Results</h1>
+</header>
+
+<article>
+    <ul class="meta">
+        <li>
+            As of XX, XX <span class="ap-period">XX</span> EST
+            <span class="update-indicator"></span>
+        </li>
+        <li>XX% of precincts reporting (XX of XX)</li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="votes">Votes</th>
+                <th class="pct">Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="winner">
+                <td>Name Name <b class="icon icon-check"></b></td>
+                <td class="votes">TK TK TK</td>
+                <td class="pct">TK%</td>
+            </tr>
+            <tr>
+                <td>Other</td>
+                <td class="votes">TK TK TK</td>
+                <td class="pct">TK%</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td class="votes">TK TK TK</td>
+                <td class="pct">100%</td>
+            </tr>
+        </tfoot>
+    </table>
+    <ul class="meta">
+        <li class="footnote">TK TK TK</li>
+        <li>Source: AP</li>
+    </ul>
+</article>
+
+{% endblock %}
