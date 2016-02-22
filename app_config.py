@@ -308,7 +308,7 @@ def configure_targets(deployment_target):
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
-        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        ELEX_DELEGATE_FLAGS = ''
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
     else:
