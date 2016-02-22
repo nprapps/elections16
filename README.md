@@ -152,9 +152,10 @@ To get ready for a new live election event, ensure you do the following before r
 4. Check the results cards locally and make sure the data is zeroed out, showing the correct elections and candidates.
 5. Ensure `ELEX_FLAGS` under the `production` deployment target in `app_config.py` is empty.
 6. Ensure `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` is set to 15.
-8. If you made any changes to app_config, deploy the latest to Github and make sure it is merged into the stable branch.
-9. Deploy the latest to the server: `fab production stable deploy_server`
-10. Bootstrap the database on the server: `fab production servers.fabcast:data.bootstrap_db`
+7. If you made any changes to app_config, deploy the latest to Github and make sure it is merged into the stable branch.
+8. Ensure the server's code base is up-to-date: `fab production stable servers.checkout_latest`
+9. Bootstrap the database on the server: `fab production servers.fabcast:data.bootstrap_db`
+10. Deploy to the server and restart the deploy service: `fab production stable deploy_server`
 11. Go to [54.189.43.202/elections16/calls](54.189.43.202/elections16/calls)  and set all races to accept AP calls unless Domenico/Beth have noted an exception.
 
 ### Changing the card stack
@@ -163,7 +164,8 @@ To get ready for a new live election event, ensure you do the following before r
 2. If we are going to during mode with live audio, make sure `live_audio` in the `meta` sheet of the copy spreadsheet is set to `live`.
 3. Pull the spreadsheet locally with `fab text`.
 4. Ensure that all the cards are supposed to be in the stack. Check [this document](https://docs.google.com/drawings/d/1wzBoldr0cE5K6a0_eLAMm0lVjvcLqcVFaFvDZ_aPOx8/edit) to see what each stack should contain. Also make sure that audio is playing in the app if applicable.
-5. If everything looks good, deploy the latest to the client: `fab production stable servers.fabcast:deploy_client`
+5. Ensure production server code base is up-to-date: `fab production stable servers.checkout_latest`
+6. Deploy the latest to the client: `fab production stable servers.fabcast:deploy_client`
 
 ### Ending the live event
 
