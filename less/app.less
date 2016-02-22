@@ -400,6 +400,23 @@ body {
 // Global Card Styles
 // -------------------------
 
+.flickity-page-dots {
+    bottom: 0;
+    padding: 70px 0 10px 0;
+    z-index: 100;
+
+
+    .dot {
+        background: transparent;
+        opacity: 1;
+        border: 1px solid #fff;
+
+        &.is-selected {
+            background: #fff;
+        }
+    }
+}
+
 .flickity-prev-next-button {
     background-color: transparent;
     width: 40px;
