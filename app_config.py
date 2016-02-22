@@ -174,7 +174,7 @@ ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
 DELEGATE_ESTIMATES = {
-    'Dem': 2382,
+    'Dem': 2383,
     'GOP': 1237,
 }
 
@@ -233,6 +233,7 @@ def configure_targets(deployment_target):
     global ASSETS_MAX_AGE
     global NEWSLETTER_POST_URL
     global LOG_LEVEL
+    global NEXT_ELECTION_DATE
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
     global database
@@ -286,13 +287,14 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        NEXT_ELECTION_DATE = '2016-03-01'
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 30
-        RESULTS_DEPLOY_INTERVAL = 30
+        RESULTS_DEPLOY_INTERVAL = 0
         CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
-        DELEGATES_DEPLOY_INTERVAL = 3600
+        DELEGATES_DEPLOY_INTERVAL = 0
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
