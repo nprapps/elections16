@@ -288,11 +288,11 @@ def configure_targets(deployment_target):
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
         NEXT_ELECTION_DATE = '2016-03-01'
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''
-        COPY_DEPLOY_INTERVAL = 0
-        RESULTS_DEPLOY_INTERVAL = 60
-        CARD_DEPLOY_INTERVAL = 0
+        COPY_DEPLOY_INTERVAL = 30
+        RESULTS_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 0
     elif deployment_target == 'test':
@@ -307,8 +307,8 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-t'
-        ELEX_DELEGATE_FLAGS = ''
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
     else:
