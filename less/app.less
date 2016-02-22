@@ -413,9 +413,18 @@ body {
         background: transparent;
         opacity: 1;
         border: 1px solid #777;
+        width: 4px;
+        height: 4px;
+        margin: 0 4px;
 
         &.is-selected {
             background: #aaa;
+        }
+
+        @media @screen-small-above {
+            width: 8px;
+            height: 8px;
+            margin: 0 8px;
         }
     }
 }
@@ -424,12 +433,15 @@ body {
     background-color: transparent;
     width: 40px;
     height: 40px;
+    top: auto;
+    bottom: -26px;
+    z-index: 101;
+
     @media @screen-small-above {
         width: 52px;
         height: 52px;
         top: auto;
         bottom: -26px;
-        z-index: 101;
     }
 
     &.previous {
