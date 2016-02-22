@@ -105,7 +105,7 @@ class DelegatesLoadingTestCase(unittest.TestCase):
             models.CandidateDelegates.last == 'Clinton'
         ).get()
         pledged_delegate_percent = record.pledged_delegates_pct()
-        self.assertEqual(pledged_delegate_percent, 8.942065491183879)
+        self.assertEqual(pledged_delegate_percent, 8.938313050776332)
 
     def test_super_delegates_percent(self):
         record = models.CandidateDelegates.select().where(
@@ -113,7 +113,7 @@ class DelegatesLoadingTestCase(unittest.TestCase):
             models.CandidateDelegates.last == 'Clinton'
         ).get()
         super_delegate_percent = record.superdelegates_pct()
-        self.assertEqual(super_delegate_percent, 15.071368597816962)
+        self.assertEqual(super_delegate_percent, 15.065044062106589)
 
     def test_delegates_deletion(self):
         data.delete_delegates()
