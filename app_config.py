@@ -174,7 +174,7 @@ ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
 DELEGATE_ESTIMATES = {
-    'Dem': 2382,
+    'Dem': 2383,
     'GOP': 1237,
 }
 
