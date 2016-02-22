@@ -402,17 +402,20 @@ body {
 
 .flickity-page-dots {
     bottom: 0;
-    padding: 70px 0 10px 0;
+    padding: 15px 0 15px 0;
     z-index: 100;
+    //background: rgba(34, 34, 34, 1);
+    background: #2c2c2c;
+    border-top: 1px solid #333;
 
 
     .dot {
         background: transparent;
         opacity: 1;
-        border: 1px solid #fff;
+        border: 1px solid #777;
 
         &.is-selected {
-            background: #fff;
+            background: #aaa;
         }
     }
 }
@@ -422,8 +425,11 @@ body {
     width: 40px;
     height: 40px;
     @media @screen-small-above {
-        width: 4rem;
-        height: 4rem;
+        width: 52px;
+        height: 52px;
+        top: auto;
+        bottom: -26px;
+        z-index: 101;
     }
 
     &.previous {
@@ -444,7 +450,7 @@ body {
         }
 
         @media @screen-medium-above {
-            right: 30px;
+            right: 18px;
 
 
         }
@@ -461,8 +467,9 @@ body {
         width: 35%;
         height: 35%;
         @media @screen-small-above {
-            width: 2.5rem;
-            height: 2.5rem;
+            top: 14px;
+            width: 25px;
+            height: 25px;
         }
     }
 

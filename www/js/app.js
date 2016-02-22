@@ -17,6 +17,7 @@ var $newsletterForm = null;
 var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
+var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
@@ -148,6 +149,7 @@ var setupFlickity = function() {
     }
 
     $flickityNav = $('.flickity-prev-next-button');
+    $flickityDots = $('.flickity-page-dots');
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
@@ -195,10 +197,12 @@ var onCardChange = function(e) {
         $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
+        $flickityDots.show();
     } else {
         $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
         $flickityNav.hide();
+        $flickityDots.hide();
     }
 
     if ($thisCard.is('#podcast') && !playedAudio) {
