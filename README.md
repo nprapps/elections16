@@ -11,6 +11,9 @@ Elections 2016
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Data commands](#data-commands)
+* [Controlling State](#controlling-state)
+* [Live Events](#live-events)
+* [Generating Custom Font](#generating-custom-font)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
@@ -371,7 +374,7 @@ Python unit tests are stored in the ``tests`` directory. Run them with ``fab tes
 Run Javascript tests
 --------------------
 
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
+Run JavaScript tests with `fab js_tests`
 
 Compile static assets
 ---------------------
