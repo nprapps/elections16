@@ -552,6 +552,14 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+var resultsMultiToggle = function() {
+    $stateResults = $('.state-result');
+    $stateResults.on('click', function(evt) {
+        $(this).toggleClass('open');
+    });
+}
+resultsMultiToggle();
+
 var resultsCountdown = function($card) {
     if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
         return;

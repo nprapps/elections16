@@ -83,7 +83,6 @@
 .results-multi,
 #results-multi {
     .condensed {
-        opacity: 0.5;
         display: -webkit-flex;
         display: flex;
         width: 100%;
@@ -93,11 +92,10 @@
         align-content: stretch;
         -webkit-justify-content: space-between;
         justify-content: space-between;
-
-        &:hover {
-            opacity: 1;
-            cursor: pointer;
-        }
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
 
         h2,
         .top-votes,
@@ -137,6 +135,10 @@
         .arrow {
             -webkit-flex-basis: 2rem;
             flex-basis: 2rem;
+            @media @screen-small-above {
+                -webkit-flex-basis: 1rem;
+                flex-basis: 1rem;
+            }
             text-align: right;
         }
     }
@@ -152,14 +154,34 @@
         }
     }
 
+    .icon-down-open,
+    .icon-right-open {
+        color: #bababa;
+    }
+
     .state-result {
         background: @republicanFade;
         padding: 0.8rem 1rem;
         margin-bottom: 0.5rem;
+        opacity: 0.7;
 
         &.open {
+            opacity: 0.9;
+
             .condensed { display: none; }
             .expanded { display: block; }
+        }
+
+        &:hover {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+
+            .icon-down-open,
+            .icon-right-open {
+                color: @brightwhite;
+                transition: color 0.1s ease;
+            }
         }
     }
 
