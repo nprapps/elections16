@@ -2,24 +2,12 @@
 
 .link-roundup {
 
-
-
-    article {
-        max-width: @max-width-content;
-        margin: 0 4rem 2rem 4rem;
-
-        @media @screen-small-above {
-            margin: 0 auto;
-        }
-    }
-
     header {
         .background-size(cover);
         background-position: center center;
         position: relative;
         min-height: 8rem;
         margin-bottom: 22px;
-        padding: 2rem;
         border-bottom: 5px solid @accent2;
         border-top: 1px solid #222;
 
@@ -60,15 +48,27 @@
         }
         .header-content {
             width: 100%;
+            padding: 2rem;
             max-width: @max-width-content;
             margin: 0 auto;
-            padding: 0 33px;
+            @media @screen-small-above {
+                padding: 2rem 0;
+            }
         }
 
         .photo-credit {
             bottom: 5px;
             right: 5px;
             opacity: .7;
+        }
+    }
+
+    article {
+        max-width: 44.4rem;
+        margin: 0 4rem 2rem 4rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
         }
     }
 
