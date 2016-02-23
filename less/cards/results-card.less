@@ -78,4 +78,42 @@
             width: 20%;
         }
     }
+
+    .condensed {
+        display: flex;
+        align-items: center;
+        .clearfix();
+
+        h2,
+        table,
+        .meta {
+            margin: 0;
+            width: 33%;
+        }
+
+        .meta { text-align: right; }
+    }
+    .expanded {
+        display: none;
+    }
+
+    .state-result {
+        background: @republicanFade;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+
+        &.open {
+            .condensed { display: none; }
+            .expanded { display: block; }
+        }
+    }
+
+    @media @screen-small-above {
+        .desktop { display: inline; }
+        .mobile { display: none; }
+    }
+    @media @screen-small {
+        .desktop { display: none; }
+        .mobile { display: inline; }
+    }
 }
