@@ -126,13 +126,14 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    results, other_votecount, other_votepct, last_updated, hide_other = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
 
     context['results'] = results
     context['other_votecount'] = other_votecount
     context['other_votepct'] = other_votepct
     context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
     context['last_updated'] = last_updated
+    context['hide_other'] = hide_other
     context['slug'] = 'results-%s' % party
     context['template'] = 'results'
     context['route'] = '/results/%s/' % party

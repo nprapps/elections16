@@ -279,8 +279,13 @@ def get_results(party, electiondate):
         models.Result.party == ap_party,
         models.Result.level == 'state'
     )
-
+    results_length = len(list(party_results))
     filtered, other_votecount, other_votepct = collate_other_candidates(list(party_results), ap_party)
+
+    if results_length == len(filtered):
+        hide_other = True
+    else:
+        hide_other = False
 
     secondary_sort = sorted(filtered, key=candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
@@ -296,7 +301,7 @@ def get_results(party, electiondate):
         models.Result.level == 'state'
     ).get()
 
-    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated, hide_other
 
 
 def tally_results(party, electiondate):
