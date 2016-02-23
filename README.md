@@ -177,6 +177,12 @@ It is likely that the live audio coverage will end before the data stops coming 
 1. Change `live_audio` in the `meta` sheet of the copy spreadsheet to `inactive`.
 2. If you have the app open with live audio running, make sure that the audio stops itself within a few minutes.
 
+Once all results are in or the AP stops tabulating data, you can turn off the results loader by doing the following:
+
+1. Change `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` to 0.
+2. Commit your changes and merge into stable.
+3. Deploy the latest to stable: `fab production stable deploy_server`.
+
 When the after cards are ready, follow the steps for changing the card stack.
 
 
