@@ -498,6 +498,7 @@ var setLiveAlert = function() {
     $alert.removeClass().addClass('alert signal-during');
     $alertAction.off('click');
     $alertAction.on('click', function() {
+        ANALYTICS.trackEvent('alert-click', 'live-event');
         location.reload(true);
     });
 }
