@@ -1,22 +1,14 @@
 //title card
 
-.content-well() {
-    max-width: @max-width-content;
-    margin: 0 3rem 2rem 3rem;
-
-    @media @screen-small-above {
-        margin: 0 auto;
-    }
-
-    .no-touch & {
-        padding-bottom: 100px;
-    }
-}
-
 .title {
 
     .card-inner {
-        .content-well();
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
     }
 
     .card-background {

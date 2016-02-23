@@ -1,22 +1,14 @@
 //podcast card
 
-.content-well() {
-    max-width: @max-width-content;
-    margin: 0 2rem 2rem 2rem;
-
-    @media @screen-small-above {
-        margin: 0 auto;
-    }
-
-    .no-touch & {
-        padding-bottom: 100px;
-    }
-}
-
 #podcast {
 
     .card-inner {
-        .content-well();
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
     }
 
     .card-background {
@@ -147,11 +139,6 @@
             font-size: 2.5rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
-            text-align: center;
-
-            @media @screen-small-above {
-                text-align: left;
-            }
         }
 
         p {

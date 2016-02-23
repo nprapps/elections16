@@ -2,18 +2,30 @@
 
 .link-roundup {
 
+
+
+    article {
+        max-width: @max-width-content;
+        margin: 0 3.7rem 2rem 3.7rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
     header {
         .background-size(cover);
         background-position: center center;
         position: relative;
-        min-height: 16rem;
+        min-height: 8rem;
         margin-bottom: 22px;
-        padding: 0;
+        padding: 2rem;
         border-bottom: 5px solid @accent2;
         border-top: 1px solid #222;
 
         @media @screen-small-above {
             border-top: 1px solid #444;
+            min-height: 13rem;
         }
 
         h1 {
@@ -52,7 +64,15 @@
             margin: 0 auto;
             padding: 0 33px;
         }
+
+        .photo-credit {
+            bottom: 5px;
+            right: 5px;
+            opacity: .7;
+        }
     }
+
+
     // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
     ol {
         counter-reset: li;
