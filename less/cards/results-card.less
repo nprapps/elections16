@@ -83,15 +83,22 @@
 .results-multi,
 #results-multi {
     .condensed {
+        opacity: 0.5;
         display: flex;
         width: 100%;
         align-items: center;
         align-content: stretch;
         justify-content: space-between;
 
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+
         h2,
         .top-votes,
-        .meta {
+        .meta,
+        .arrow {
             margin: 0;
         }
 
@@ -102,7 +109,9 @@
                 flex-basis: 9rem;
             }
         }
-        .top-votes { flex-basis: 15rem; }
+        .top-votes {
+            flex-basis: 13rem;
+        }
         table {
             font-size: 0.85rem;
             margin: 0;
@@ -117,11 +126,21 @@
             }
             white-space: nowrap;
         }
+        .arrow {
+            flex-basis: 2rem;
+            text-align: right;
+        }
     }
     .expanded {
         display: none;
 
         h2 { margin-bottom: 0.5rem; }
+
+        .icon-down-open {
+            font-size: .9rem;
+            float: right;
+            display: inline-block;
+        }
     }
 
     .state-result {
