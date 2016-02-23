@@ -247,7 +247,7 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated = utils.get_results(party, electiondate)
+        results, other_votecount, other_votepct, lastupdated, hide_other = utils.get_results(party, electiondate)
         data[party] = {
             'results': results,
             'other_votecount': other_votecount,
