@@ -78,29 +78,56 @@
             width: 20%;
         }
     }
+}
 
+.results-multi,
+#results-multi {
     .condensed {
         display: flex;
+        width: 100%;
         align-items: center;
-        .clearfix();
+        align-content: stretch;
+        justify-content: space-between;
 
         h2,
-        table,
+        .top-votes,
         .meta {
             margin: 0;
-            width: 33%;
         }
 
-        .meta { text-align: right; }
+        h2 {
+            flex-basis: 7rem;
+
+            @media @screen-small-above {
+                flex-basis: 9rem;
+            }
+        }
+        .top-votes { flex-basis: 15rem; }
+        table {
+            font-size: 0.85rem;
+            margin: 0;
+
+            td { padding: 0; }
+        }
+        .meta {
+            text-align: right;
+            flex-basis: 7rem;
+            @media @screen-small-above {
+                flex-basis: 9rem;
+            }
+            white-space: nowrap;
+        }
     }
     .expanded {
         display: none;
+
+        h2 { margin-bottom: 0.5rem; }
     }
 
     .state-result {
         background: @republicanFade;
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
+        padding: 0.8rem 1rem;
+        margin-bottom: 0.5rem;
 
         &.open {
             .condensed { display: none; }
@@ -115,5 +142,33 @@
     @media @screen-small {
         .desktop { display: none; }
         .mobile { display: inline; }
+    }
+}
+
+.poll-info {
+    margin: 0 0 1.5rem 0;
+    color: #ccc;
+    .clearfix();
+
+    dt {
+        .knockout();
+        color: #fff;
+        font-size: 1rem;
+        padding-top: 1.5rem;
+        padding-bottom: 3px;
+        border-bottom: 3px solid #444;
+        margin-bottom: 0.25rem;
+        clear: both;
+    }
+
+    dd {
+        margin: 0.3rem 0;
+        font-size: 0.9rem;
+        float: left;
+        width: 50%;
+
+        @media @screen-small-above {
+            width: 20%;
+        }
     }
 }
