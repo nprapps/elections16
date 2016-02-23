@@ -164,6 +164,8 @@ var setupFlickity = function() {
     } else {
         $flickityNav.on('click', onFlickityNavClick);
     }
+    $flickityDots.on('click', onFlickityDotsClick);
+
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -333,6 +335,18 @@ var onFlickityNavClick = function(e) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'nav-click-next';
     }
+    logCardExit(exitedCardID, cardExitEvent);
+}
+
+var onFlickityDotsClick = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if (currentCard === newCardIndex) {
+        return;
+    }
+    var cardExitEvent = 'page-dot-nav';
+    var exitedCardID = $cards.eq(currentCard).attr('id');
     logCardExit(exitedCardID, cardExitEvent);
 }
 
