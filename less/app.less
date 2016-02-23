@@ -404,8 +404,8 @@ body {
     bottom: 0;
     padding: 15px 0 15px 0;
     z-index: 100;
-    //background: rgba(34, 34, 34, 1);
-    background: #2c2c2c;
+    background: rgba(44, 44, 44, .9);
+    //background: #2c2c2c;
     border-top: 1px solid #333;
 
 
@@ -413,18 +413,12 @@ body {
         background: transparent;
         opacity: 1;
         border: 1px solid #777;
-        width: 4px;
-        height: 4px;
-        margin: 0 4px;
+        width: 8px;
+        height: 8px;
+        margin: 0 8px;
 
         &.is-selected {
             background: #aaa;
-        }
-
-        @media @screen-small-above {
-            width: 8px;
-            height: 8px;
-            margin: 0 8px;
         }
     }
 }
@@ -433,15 +427,13 @@ body {
     background-color: transparent;
     width: 40px;
     height: 40px;
-    top: auto;
-    bottom: -26px;
-    z-index: 101;
 
-    @media @screen-small-above {
+    .no-touch & {
         width: 52px;
         height: 52px;
         top: auto;
         bottom: -26px;
+        z-index: 101;
     }
 
     &.previous {
@@ -449,8 +441,8 @@ body {
         svg {
             left: 0;
         }
-        @media @screen-medium-above {
-            left: 18px;
+        .no-touch & {
+            left: 30px;
         }
     }
     &.next {
@@ -461,10 +453,8 @@ body {
             right: 0;
         }
 
-        @media @screen-medium-above {
-            right: 18px;
-
-
+        .no-touch & {
+            right: 30px;
         }
     }
     &:hover {
@@ -478,7 +468,7 @@ body {
     svg {
         width: 35%;
         height: 35%;
-        @media @screen-small-above {
+        .no-touch & {
             top: 14px;
             width: 25px;
             height: 25px;
@@ -504,6 +494,10 @@ body {
 
     .card-inner {
         padding-top: 5rem;
+
+        .no-touch & {
+            padding-bottom: 100px;
+        }
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -609,7 +603,7 @@ body {
         .knockout();
         font-size: .8rem;
         letter-spacing: 0;
-        opacity: .6;
+        opacity: .9;
     }
 
     .featured-links {

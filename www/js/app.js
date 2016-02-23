@@ -132,7 +132,7 @@ var setupFlickity = function() {
         draggable: isTouch,
         dragThreshold: 20,
         imagesLoaded: true,
-        //pageDots: isTouch ? false : true,
+        pageDots: isTouch ? false : true,
         setGallerySize: false,
         friction: isTouch ? 0.28 : 1,
         selectedAttraction: isTouch ? 0.025 : 1
