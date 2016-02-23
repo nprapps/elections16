@@ -17,6 +17,7 @@ var $newsletterForm = null;
 var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
+var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
 var $linkRoundupLinks = null;
@@ -131,7 +132,7 @@ var setupFlickity = function() {
         draggable: isTouch,
         dragThreshold: 20,
         imagesLoaded: true,
-        pageDots: false,
+        pageDots: isTouch ? false : true,
         setGallerySize: false,
         friction: isTouch ? 0.28 : 1,
         selectedAttraction: isTouch ? 0.025 : 1
@@ -148,6 +149,7 @@ var setupFlickity = function() {
     }
 
     $flickityNav = $('.flickity-prev-next-button');
+    $flickityDots = $('.flickity-page-dots');
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
@@ -162,6 +164,8 @@ var setupFlickity = function() {
     } else {
         $flickityNav.on('click', onFlickityNavClick);
     }
+    $flickityDots.on('click', onFlickityDotsClick);
+
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -195,17 +199,19 @@ var onCardChange = function(e) {
         $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
+        $flickityDots.show();
     } else {
         $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
         $flickityNav.hide();
+        $flickityDots.hide();
     }
 
-    if ($thisCard.is('#podcast') && !playedAudio) {
-        // PODCAST_URL is defined in the podcast template
-        AUDIO.setMedia(PODCAST_URL);
-        playedAudio = true;
-    }
+    // if ($thisCard.is('#podcast') && !playedAudio) {
+    //     // PODCAST_URL is defined in the podcast template
+    //     AUDIO.setMedia(PODCAST_URL);
+    //     playedAudio = true;
+    // }
 
     if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
@@ -329,6 +335,18 @@ var onFlickityNavClick = function(e) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'nav-click-next';
     }
+    logCardExit(exitedCardID, cardExitEvent);
+}
+
+var onFlickityDotsClick = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if (currentCard === newCardIndex) {
+        return;
+    }
+    var cardExitEvent = 'page-dot-nav';
+    var exitedCardID = $cards.eq(currentCard).attr('id');
     logCardExit(exitedCardID, cardExitEvent);
 }
 
@@ -494,6 +512,7 @@ var setLiveAlert = function() {
     $alert.removeClass().addClass('alert signal-during');
     $alertAction.off('click');
     $alertAction.on('click', function() {
+        ANALYTICS.trackEvent('alert-click', 'live-event');
         location.reload(true);
     });
 }

@@ -38,11 +38,13 @@
                 <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
             </tr>
             {% endfor %}
+            {% if not hide_other %}
             <tr>
                 <td>Other</td>
                 <td class="votes">{{ other_votecount|comma }}</td>
                 <td class="pct">{{ other_votepct|normalize_percent|percent }}</td>
             </tr>
+            {% endif %}
         </tbody>
         <tfoot>
             <tr class="total">
