@@ -81,6 +81,11 @@ var AUDIO = (function() {
     };
 
     var toggleAudio = function() {
+        if (!$audioPlayer.data('jPlayer')['status']['src']) {
+            setMedia(PODCAST_URL);
+            return;
+        }
+
         if ($audioPlayer.data('jPlayer')['status']['paused']) {
             if (LIVE) {
                 setMedia(LIVE_AUDIO_URL);
@@ -141,4 +146,3 @@ var AUDIO = (function() {
         'stopLivestream': stopLivestream
     }
 })();
-
