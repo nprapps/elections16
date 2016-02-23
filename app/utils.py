@@ -69,12 +69,8 @@ USPS_TO_AP_STATE = {
 }
 
 GOP_CANDIDATES = [
-    'Jeb Bush',
     'Ben Carson',
-    'Chris Christie',
     'Ted Cruz',
-    'Carly Fiorina',
-    'Jim Gilmore',
     'John Kasich',
     'Marco Rubio',
     'Donald Trump'
