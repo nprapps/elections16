@@ -214,14 +214,21 @@ def collate_other_candidates(results, party):
     other_votecount = 0
     other_votepct = 0
 
+    results_length = len(results)
     for result in reversed(results):
         candidate_name = '%s %s' % (result.first, result.last)
         if candidate_name not in whitelisted_candidates:
             other_votecount += result.votecount
             other_votepct += result.votepct
             results.remove(result)
+    filtered_results_length = len(results)
 
-    return results, other_votecount, other_votepct
+    if results_length == filtered_results_length:
+        hide_other = True
+    else:
+        hide_other = False
+
+    return results, other_votecount, other_votepct, hide_other
 
 
 def set_delegates_updated_time():
@@ -279,13 +286,7 @@ def get_results(party, electiondate):
         models.Result.party == ap_party,
         models.Result.level == 'state'
     )
-    results_length = len(list(party_results))
-    filtered, other_votecount, other_votepct = collate_other_candidates(list(party_results), ap_party)
-
-    if results_length == len(filtered):
-        hide_other = True
-    else:
-        hide_other = False
+    filtered, other_votecount, other_votepct, hide_other = collate_other_candidates(list(party_results), ap_party)
 
     secondary_sort = sorted(filtered, key=candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
