@@ -84,10 +84,14 @@
 #results-multi {
     .condensed {
         opacity: 0.5;
+        display: -webkit-flex;
         display: flex;
         width: 100%;
+        -webkit-align-items: center;
         align-items: center;
+        -webkit-align-content: stretch;
         align-content: stretch;
+        -webkit-justify-content: space-between;
         justify-content: space-between;
 
         &:hover {
@@ -103,6 +107,7 @@
         }
 
         h2 {
+            -webkit-flex-basis: 7rem;
             flex-basis: 7rem;
 
             @media @screen-small-above {
@@ -110,6 +115,7 @@
             }
         }
         .top-votes {
+            -webkit-flex-basis: 13rem;
             flex-basis: 13rem;
         }
         table {
@@ -120,13 +126,16 @@
         }
         .meta {
             text-align: right;
+            -webkit-flex-basis: 7rem;
             flex-basis: 7rem;
             @media @screen-small-above {
+                -webkit-flex-basis: 9rem;
                 flex-basis: 9rem;
             }
             white-space: nowrap;
         }
         .arrow {
+            -webkit-flex-basis: 2rem;
             flex-basis: 2rem;
             text-align: right;
         }
