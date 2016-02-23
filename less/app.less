@@ -492,8 +492,36 @@ body {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner {
+    // full width container within a section or slide
+    .full-block {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+
+        .full-block-cell {
+            display: table-cell;
+            position: relative;
+            vertical-align: top;
+            padding-top: 5rem;
+            @media @screen-small-above {
+                vertical-align: middle;
+            }
+            width: 100%;
+        }
+    }
+
+    //content well padding
+    .content-well() {
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
         padding-top: 5rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
 
         .no-touch & {
             padding-bottom: 100px;
@@ -603,7 +631,7 @@ body {
         .knockout();
         font-size: .8rem;
         letter-spacing: 0;
-        opacity: .9;
+        color: #fff;
     }
 
     .featured-links {

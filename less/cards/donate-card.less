@@ -1,59 +1,52 @@
 //donate card
 
-#donate {
+.content-well() {
+    max-width: @max-width-content;
+    margin: 0 3rem 2rem 3rem;
 
     @media @screen-small-above {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        //content: '';
-        display: -webkit-flex;
-        display: flex;
-        -webkit-align-items: center;
-        align-items: center;
+        margin: 0 auto;
     }
 
+    .no-touch & {
+        padding-bottom: 100px;
+    }
+}
+
+#donate {
 
     .card-inner {
-        max-width: 37rem;
-        margin: 5rem 1rem 0 1rem;
-        padding: 0 3rem;
+        .content-well();
+    }
 
-        @media @screen-small-above {
-            margin: 0 auto;
-        }
+    h2 {
+        text-transform: none;
+        font-size: 2.5rem;
+        line-height: 1;
+    }
 
-        h2 {
-            text-transform: none;
-            font-size: 2.5rem;
-            line-height: 1;
-        }
+    p {
+        font-size: 1.3rem;
+    }
 
-        p {
-            font-size: 1.3rem;
-        }
+    .donate-link {
+        margin: 2rem 0;
+        white-space: nowrap;
+        font-size: 1rem;
 
-        .donate-link {
-            margin: 2rem 0;
-            white-space: nowrap;
-            font-size: 1rem;
+        a {
+            padding: 1rem;
+            background: @accent1;
+            border: none;
 
-            a {
-                padding: 1rem;
-                background: @accent1;
-                border: none;
-
-                .no-touch & {
-                    &:hover,
-                    &:active {
-                        color: #fff;
-                        background: #CD3F3D;
-                    }
+            .no-touch & {
+                &:hover,
+                &:active {
+                    color: #fff;
+                    background: #CD3F3D;
                 }
             }
         }
-
     }
+
 }
