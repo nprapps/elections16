@@ -50,7 +50,7 @@ def main(run_once=False):
             logger.info('load results')
             execute('data.load_results')
             logger.info('deploy results')
-            execute('deploy_results_cards')
+            execute('deploy_results_cardss')
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - card_start) > app_config.CARD_DEPLOY_INTERVAL:
             card_start = now
