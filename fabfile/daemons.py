@@ -49,27 +49,23 @@ def main(run_once=False):
             results_start = now
             logger.info('load results')
             execute('data.load_results')
-            logger.info('deploy results')
-            execute('deploy_results_cards')
+
+        if app_config.DELEGATES_DEPLOY_INTERVAL and (now - delegates_start) > app_config.DELEGATES_DEPLOY_INTERVAL:
+            sleep(5)
+            delegates_start = now
+            logger.info('load delegates')
+            execute('data.load_delegates')
+            sleep(5)
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - card_start) > app_config.CARD_DEPLOY_INTERVAL:
             card_start = now
             logger.info('deploy content cards')
-            execute('deploy_all_cards')
+            execute('deploy_cards')
 
         if env.settings == 'production' and app_config.SITE_ARCHIVE_INTERVAL and (now - archive_start) > app_config.SITE_ARCHIVE_INTERVAL:
             archive_start = now
             logger.info('archiving site')
             execute('archive_site')
-
-        if app_config.DELEGATES_DEPLOY_INTERVAL and (now - delegates_start) > app_config.DELEGATES_DEPLOY_INTERVAL:
-            sleep(15)
-            delegates_start = now
-            logger.info('load delegates')
-            execute('data.load_delegates')
-            logger.info('deploy delegates')
-            execute('deploy_delegates_cards')
-            sleep(15)
 
         if run_once:
             logger.info('run once specified, exiting')

@@ -284,7 +284,7 @@ def deploy_delegates_cards():
 
 
 @task
-def deploy_all_cards():
+def deploy_cards():
     """
     Deploy content cards.
     """
@@ -301,10 +301,7 @@ def deploy_all_cards():
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'results' or row['function'] == 'delegates':
-            # the daemon will do results separately
-            continue
-        elif row['function'] == 'card':
+        if row['function'] == 'card':
             render.render_card_route(row['params'])
         else:
             render.render_simple_route(row['function'])
