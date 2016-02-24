@@ -2,10 +2,19 @@
 
 #delegates-dem,
 #delegates-gop {
-    header {
-        max-width: @max-width-content;
-        margin: 0 auto;
 
+    .card-inner {
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    header {
+        margin-bottom: 2rem;
+        
         h2 {
             text-transform: uppercase;
             font-size: 1.3rem;
