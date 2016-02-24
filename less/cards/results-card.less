@@ -160,10 +160,16 @@
     }
 
     .state-result {
-        background: @republicanFade;
         padding: 0.8rem 1rem;
         margin-bottom: 0.5rem;
         opacity: 0.7;
+
+        #results-dem& {
+            background: @democratFade;
+        }
+        #results-gop& {
+            background: @republicanFade;
+        }
 
         &.open {
             opacity: 0.9;
