@@ -4,35 +4,26 @@
 
 <article>
 
-    <h1>Bookmark This&nbsp;App!</h1>
+    <h1>{{ COPY.feedback.headline }}</h1>
 
-    <p>And add us to your home screen. We’ll be back with live results and political analysis for every primary, caucus, and&nbsp;convention.</p>
-
-    <p>We'd love to hear what you think. Help us give you what you need to keep up with the 2016 elections. Email&nbsp;<a href="mailto:elections@npr.org">Elections@npr.org</a>.</p>
+    {{ COPY.feedback.text }}
 
     <div class="upcoming-events">
-        <h3>Upcoming Events</h3>
+        <h3>{{ COPY.feedback.hed_calendar }}</h3>
 
         <dl>
-            <dt>Tuesday, Feb. 23</dt>
-            <dd>Nevada Republican caucuses</dd>
-
-            <dt>Saturday, Feb. 27</dt>
-            <dd>South Carolina Democratic primary</dd>
-
-            <dt>Tuesday, March 1</dt>
-            <dd>Super Tuesday (Alabama, Alaska (R), Arkansas, Colorado, Georgia, Massachusetts, Minnesota, Oklahoma, Tennessee, Texas, Vermont, Virginia, Wyoming (R), American Samoa (D), Democrats Abroad)</dd>
+            {% for event in COPY.calendar %}
+            <dt>{{ event.date }}</dt>
+            <dd>{{ event.states }}</dd>
+            {% endfor %}
         </dl>
 
-        <p><a href="http://www.npr.org/2016/02/17/464430411/election-2016-calendar-primaries-and-caucuses">View the full calendar</a></p>
+        <p>{{ COPY.feedback.link_calendar }}</p>
     </div>
 
     <div class="project-credits">
-        <h4>Project Credits</h4>
-
-        <p><b>Produced and Edited by:</b> Julia Redpath Buckley, Beth Donovan, Amita Kelly, Meg Kelly, Domenico Montanaro and Lori&nbsp;Todd.</p>
-
-        <p><b>Designed and Developed by:</b> Brian Boyer, David Eads, Tyler Fisher, Alyson Hurt, Livia Labate, Becky Lettenberger and Wes&nbsp;Lindamood.</p>
+        <h4>{{ COPY.feedback.hed_credits }}</h4>
+        {{ COPY.feedback.credits }}
     </div>
 
 </article>
