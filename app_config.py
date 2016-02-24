@@ -169,7 +169,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-20'
+NEXT_ELECTION_DATE = '2016-03-01'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -323,7 +323,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
         RESULTS_DEPLOY_INTERVAL = 15

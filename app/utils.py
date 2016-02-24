@@ -69,12 +69,8 @@ USPS_TO_AP_STATE = {
 }
 
 GOP_CANDIDATES = [
-    'Jeb Bush',
     'Ben Carson',
-    'Chris Christie',
     'Ted Cruz',
-    'Carly Fiorina',
-    'Jim Gilmore',
     'John Kasich',
     'Marco Rubio',
     'Donald Trump'
@@ -270,17 +266,32 @@ def close_db(response):
 
 
 def get_results(party, electiondate):
+    ap_party = PARTY_MAPPING[party]['AP']
+    race_ids = models.Result.select(fn.Distinct(models.Result.raceid), models.Result.statename).where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state',
+        models.Result.officename == 'President',
+        models.Result.precinctsreporting > 0
+    ).order_by(models.Result.statename)
+
+    output = []
+    for race in race_ids:
+        output.append(get_race_results(race.raceid, ap_party))
+
+    return output
+
+
+def get_race_results(raceid, party):
     """
     Results getter
     """
-    ap_party = PARTY_MAPPING[party]['AP']
-    party_results = models.Result.select().where(
-        models.Result.electiondate == electiondate,
-        models.Result.party == ap_party,
+    race_results = models.Result.select().where(
+        models.Result.raceid == raceid,
         models.Result.level == 'state'
     )
 
-    filtered, other_votecount, other_votepct = collate_other_candidates(list(party_results), ap_party)
+    filtered, other_votecount, other_votepct = collate_other_candidates(list(race_results), party)
 
     secondary_sort = sorted(filtered, key=candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
@@ -289,6 +300,22 @@ def get_results(party, electiondate):
     for result in sorted_results:
         serialized_results.append(model_to_dict(result, backrefs=True))
 
+    output = {
+        'results': serialized_results,
+        'other_votecount': other_votecount,
+        'other_votepct': other_votepct,
+        'statename': serialized_results[0]['statename'],
+        'statepostal': serialized_results[0]['statepostal'],
+        'precinctsreportingpct': serialized_results[0]['precinctsreportingpct'],
+        'precinctsreporting': serialized_results[0]['precinctsreporting'],
+        'precinctstotal': serialized_results[0]['precinctstotal'],
+        'total': tally_results(raceid)
+    }
+
+    return output
+
+
+def get_last_updated(party):
     latest_result = models.Result.select(
         fn.Max(models.Result.lastupdated).alias('lastupdated')
     ).where(
@@ -296,17 +323,16 @@ def get_results(party, electiondate):
         models.Result.level == 'state'
     ).get()
 
-    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
+    return latest_result.lastupdated
 
 
-def tally_results(party, electiondate):
+def tally_results(raceid):
     """
     Add results for a given party on a given date.
     """
-    ap_party = PARTY_MAPPING[party]['AP']
     tally = models.Result.select(fn.SUM(models.Result.votecount)).where(
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
+        models.Result.level == 'state',
+        models.Result.raceid == raceid
     ).scalar()
     return tally
 
