@@ -46,6 +46,7 @@ if (!LIVE) {
 var testLogged = false;
 var donateLanguageTest = null;
 var donateButtonTest = null;
+var resultsMultiOpen = [];
 
 
 var focusWorkaround = false;
@@ -107,6 +108,8 @@ var onDocumentLoad = function(e) {
 
     resultsCountdown($('#results-dem'));
     resultsCountdown($('#results-gop'));
+
+    resultsMultiToggle();
 
     setPolls();
     AUDIO.setupAudio();
@@ -458,6 +461,10 @@ var getCard = function(url, $card, i) {
                 if ($card.is('.results')) {
                     resultsCountdown($card);
                 }
+
+                if ($card.is('.results-multi') || $card.is('#results-multi')) {
+                    resultsMultiToggle();
+                }
             }
         });
     }, i * 1000);
@@ -552,14 +559,32 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+// on multi-state result cards, toggle open state
 var resultsMultiToggle = function() {
     $stateResults = $('.state-result');
     $stateResults.on('click', function(evt) {
+        var s = $(this).data('state');
+
+        // toggle it open or closed
         $(this).toggleClass('open');
+
+        // update the list of open states
+        if($(this).hasClass('open')) {
+            resultsMultiOpen.push(s);
+        } else {
+            resultsMultiOpen = resultsMultiOpen.filter(function(d) {
+                return d != s;
+            });
+        }
+    });
+
+    // on data refresh, make sure the ones that were open stay open
+    resultsMultiOpen.forEach(function(d,i) {
+        $('.state-result[data-state="' + d + '"]').addClass('open');
     });
 }
-resultsMultiToggle();
 
+// countdown spinner to the next results card data refresh
 var resultsCountdown = function($card) {
     if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
         return;
