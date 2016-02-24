@@ -16,6 +16,9 @@ class DocParserTestCase(unittest.TestCase):
         self.parser = DocParser(html_string)
         self.contents = self.parser.soup.body.contents
 
+    def test_num_lines(self):
+        self.assertEqual(len(self.contents), 15)
+
     def test_h1(self):
         self._is_tag(self.contents[0], 'h1')
 

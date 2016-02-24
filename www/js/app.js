@@ -458,7 +458,7 @@ var getCard = function(url, $card, i) {
             ifModified: true,
             success: function(data, status) {
                 if (status === 'success') {
-                    var $cardInner = $(data).find('.card-inner');
+                    var $cardInner = $(data).find('.full-block');
                     var $cardBackground = $(data).find('.card-background');
 
                     var htmlString = $cardInner.prop('outerHTML');
