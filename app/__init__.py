@@ -126,21 +126,23 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    last_updated = utils.get_last_updated(party)
 
-    context['results'] = results
-    context['other_votecount'] = other_votecount
-    context['other_votepct'] = other_votepct
-    context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
+    context['races'] = races
+    # context['other_votecount'] = other_votecount
+    # context['other_votepct'] = other_votepct
+    # context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
     context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
-    context['template'] = 'results'
+    context['template'] = 'results-multi'
     context['route'] = '/results/%s/' % party
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
 
-    return render_template('cards/results.html', **context)
+    return render_template('cards/results-multi.html', **context)
 
 
 @app.route('/delegates/<party>/')
