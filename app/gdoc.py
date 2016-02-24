@@ -81,6 +81,7 @@ class DocParser:
 
         for tag in self.soup.body.findAll():
             self.remove_empty(tag)
+            self.remove_inline_comment(tag)
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
             self.find_token(tag, 'SUBHED', 'subhed')
@@ -179,6 +180,11 @@ class DocParser:
                     tag.extract()
         except TypeError:
             pass
+
+    def remove_inline_comment(self, tag):
+        text = tag.text
+        if text.startswith('##'):
+            tag.extract()
 
     def _parse_href(self, href):
         """
