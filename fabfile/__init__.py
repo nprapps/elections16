@@ -301,13 +301,10 @@ def deploy_cards():
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'card':
-            render.render_card_route(row['params'])
-        else:
-            render.render_simple_route(row['function'])
+        render.render_card_route(row['function'], row['params'])
 
-    render.render_current_state()
-    render.render_index()
+    #render.render_current_state()
+    #render.render_index()
 
     flat.deploy_folder(
         app_config.S3_BUCKET,

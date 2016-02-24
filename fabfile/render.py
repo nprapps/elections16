@@ -87,17 +87,17 @@ def copytext_js():
 
 
 @task
-def render_simple_route(view_name):
+def render_card_route(view_name, params=None):
     from flask import url_for
 
-    with app.app.test_request_context():
-        path = url_for(view_name)
+    path = view_name
+    if params:
+        path = '{0}/{1}/'.format(view_name, params)
 
-    with app.app.test_request_context(path=path):
-        view = app.__dict__[view_name]
-        content = view()
+    with app.app.test_client() as client:
+        resp = client.get(path)
 
-    _write_file(path, content)
+    _write_file(path, resp.data)
 
 
 @task
@@ -178,7 +178,7 @@ def render_delegates_json():
 
 
 @task
-def render_card_route(slug):
+def render_route(slug):
     from flask import url_for
 
     view_name = 'card'
@@ -192,6 +192,7 @@ def render_card_route(slug):
         content = view(slug)
 
     _write_file(simplified_path, content)
+
 
 @task()
 def render_index():

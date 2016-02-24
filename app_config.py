@@ -287,8 +287,8 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        NEXT_ELECTION_DATE = '2016-03-01'
-        ELEX_FLAGS = '-t'
+        NEXT_ELECTION_DATE = '2016-02-23'
+        ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 30
         RESULTS_DEPLOY_INTERVAL = 0
