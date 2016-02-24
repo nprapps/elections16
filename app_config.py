@@ -322,7 +322,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456338758.json'
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
         RESULTS_DEPLOY_INTERVAL = 15
