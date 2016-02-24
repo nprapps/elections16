@@ -14,6 +14,7 @@ var $duration = null;
 var $begin = null;
 var $newsletterContainer = null;
 var $newsletterForm = null;
+var $newsletterButton = null;
 var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
