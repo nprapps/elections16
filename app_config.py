@@ -290,13 +290,13 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1455306554.json'
-        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        COPY_DEPLOY_INTERVAL = 30
-        RESULTS_DEPLOY_INTERVAL = 60
-        CARD_DEPLOY_INTERVAL = 60
+        ELEX_FLAGS = '-t' # -d tests/data/ap_elections_loader_recording-1455306554.json'
+        ELEX_DELEGATE_FLAGS = '' # --delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_DEPLOY_INTERVAL = 15
+        RESULTS_DEPLOY_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
-        DELEGATES_DEPLOY_INTERVAL = 0
+        DELEGATES_DEPLOY_INTERVAL = 3600
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
