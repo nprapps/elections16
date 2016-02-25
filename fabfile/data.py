@@ -180,14 +180,16 @@ def create_race_meta():
         poll_closing = convert_serial_date(row.get('full_poll_closing_time'))
 
         results = models.Result.select().where(
+                models.Result.level == 'state',
                 models.Result.statename == row['state_name'],
                 models.Result.officename == 'President'
         )
 
         for result in results:
+            race_type = row[result.party.lower()]
             models.RaceMeta.create(
                     result_id=result.id,
-                    race_type=row['type'],
+                    race_type=race_type,
                     poll_closing=poll_closing
             )
 
