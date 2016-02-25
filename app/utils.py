@@ -10,6 +10,7 @@ from time import time
 import app_config
 import copytext
 import simplejson as json
+import xlrd
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -361,9 +362,13 @@ def tally_results(raceid):
     return tally
 
 
-def convert_serial_date(value, tz='US/Eastern'):
-    seconds = (float(value) - 25569) * 86400.0
-    return datetime.utcfromtimestamp(seconds)
+def convert_serial_date(value):
+    parsed = datetime(*(xlrd.xldate_as_tuple(float(value), 0)))
+    eastern = timezone('US/Eastern')
+    parsed_eastern = eastern.localize(parsed)
+    parsed_utc = parsed_eastern.astimezone(timezone('GMT'))
+    parsed_naive = parsed_utc.replace(tzinfo=None)
+    return parsed_naive
 
 
 class APDatetimeEncoder(json.JSONEncoder):
