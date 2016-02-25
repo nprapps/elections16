@@ -242,7 +242,7 @@ def deploy_results_cards():
     )
 
     local('rm -rf .cards_html/data')
-    render.render_results_json()
+    #render.render_results_json()
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html/data',
@@ -272,7 +272,7 @@ def deploy_delegates_cards():
     )
 
     local('rm -rf .cards_html/data')
-    render.render_delegates_json()
+    #render.render_delegates_json()
     flat.deploy_folder(
         app_config.S3_BUCKET,
         '.cards_html/data',
