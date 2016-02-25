@@ -80,22 +80,12 @@
     </div>
     {% endfor %}
     <dl class="poll-info">
-        <dt>Polls close at 7 p.m. EDT</dt>
-            <dd>Georgia</dd>
-            <dd>Vermont</dd>
-            <dd>Virginia</dd>
-        <dt>Polls close at 8 p.m. EDT</dt>
-            <dd>Alabama</dd>
-            <dd>Massachusetts</dd>
-            <dd>Oklahoma</dd>
-            <dd>Tennessee</dd>
-            <dd>Texas</dd>
-        <dt>Polls close at 8:30 p.m. EDT</dt>
-            <dd>Arkansas</dd>
-        <dt>Polls close at 9 p.m. EDT</dt>
-            <dd>Minnesota</dd>
-        <dt>Polls close at 12 a.m. EDT</dt>
-            <dd>Alaska</dd>
+        {% for closing, states in poll_closings.iteritems() %}
+        <dt>Polls close at {{ closing }} EDT</dt>
+            {% for state in states %}
+            <dd>{{ state }}</dd>
+            {% endfor %}
+        {% endfor %}
     </dl>
 
     <ul class="meta">

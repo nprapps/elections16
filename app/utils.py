@@ -7,6 +7,7 @@ from pytz import timezone
 from time import time
 
 import app_config
+import copytext
 import simplejson as json
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -314,6 +315,22 @@ def get_race_results(raceid, party):
 
     return output
 
+def get_poll_closings(races, party, electiondate):
+    calendar = copytext.Copy(app_config.CALENDAR_PATH)
+    calendar_sheet = calendar['data']
+    election_datetime = datetime.strptime(electiondate, '%Y-%m-%d')
+    election_datestr = election_datetime.strftime('%-m/%-d/%Y')
+
+    poll_closings = {}
+
+    for row in calendar_sheet:
+        if election_datestr == row['date'] and row[party] and row['poll_closing']:
+            if row['poll_closing'] not in poll_closings:
+                poll_closings[row['poll_closing']] = []
+
+            poll_closings[row['poll_closing']].append(row['state_name'])
+
+    return poll_closings
 
 def get_last_updated(party):
     latest_result = models.Result.select(

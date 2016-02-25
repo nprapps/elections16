@@ -5,7 +5,6 @@ Commands related to syncing copytext from Google Docs.
 """
 
 import app_config
-import os
 
 from fabric.api import task
 from oauth.blueprint import get_document, get_credentials

@@ -155,9 +155,11 @@ def results(party):
     context = make_context()
 
     races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    poll_closings = utils.get_poll_closings(races, party, app_config.NEXT_ELECTION_DATE)
     last_updated = utils.get_last_updated(party)
 
     context['races'] = races
+    context['poll_closings'] = poll_closings
     context['last_updated'] = last_updated
     context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
