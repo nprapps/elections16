@@ -402,13 +402,40 @@ body {
 // Global Card Styles
 // -------------------------
 
+.flickity-page-dots {
+    bottom: 0;
+    padding: 15px 0 15px 0;
+    z-index: 100;
+    background: rgba(44, 44, 44, 1);
+    //background: #2c2c2c;
+    border-top: 1px solid #333;
+
+
+    .dot {
+        background: transparent;
+        opacity: 1;
+        border: 1px solid #777;
+        width: 8px;
+        height: 8px;
+        margin: 0 8px;
+
+        &.is-selected {
+            background: #aaa;
+        }
+    }
+}
+
 .flickity-prev-next-button {
     background-color: transparent;
     width: 40px;
     height: 40px;
-    @media @screen-small-above {
-        width: 4rem;
-        height: 4rem;
+
+    .no-touch & {
+        width: 52px;
+        height: 52px;
+        top: auto;
+        bottom: -26px;
+        z-index: 101;
     }
 
     &.previous {
@@ -416,8 +443,8 @@ body {
         svg {
             left: 0;
         }
-        @media @screen-medium-above {
-            left: 18px;
+        .no-touch & {
+            left: 30px;
         }
     }
     &.next {
@@ -428,10 +455,8 @@ body {
             right: 0;
         }
 
-        @media @screen-medium-above {
+        .no-touch & {
             right: 30px;
-
-
         }
     }
     &:hover {
@@ -445,9 +470,10 @@ body {
     svg {
         width: 35%;
         height: 35%;
-        @media @screen-small-above {
-            width: 2.5rem;
-            height: 2.5rem;
+        .no-touch & {
+            top: 14px;
+            width: 25px;
+            height: 25px;
         }
     }
 
@@ -468,9 +494,32 @@ body {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner {
-        padding-top: 5rem;
+    // full width container within a section or slide
+    .full-block {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+
+        .full-block-cell {
+            width: 100%;
+            display: table-cell;
+            position: relative;
+            vertical-align: top;
+            padding-top: 5rem;
+            @media @screen-small-above {
+                padding-top: 6rem;
+                vertical-align: middle;
+            }
+
+            .no-touch & {
+                padding-bottom: 100px;
+            }
+        }
     }
+
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -481,18 +530,18 @@ body {
     }
 
     h1 {
-        font-size: 2.7rem;
+        font-size: 2.2rem;
+
+        @media @screen-small-above {
+            font-size: 2.7rem;
+        }
+
     }
+
+
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
     h4 { margin-top: 3rem; }
-
-    header { padding: 2rem; }
-    article {
-        padding: 0 2rem 2rem 2rem;
-        max-width: @max-width-content;
-        margin: 0 auto;
-    }
 
     a:link,
     a:visited {
@@ -570,12 +619,12 @@ body {
     .photo-credit {
         margin: 0;
         position: absolute;
-        bottom: 15px;
+        bottom: 5px;
         right: 15px;
         .knockout();
         font-size: .8rem;
         letter-spacing: 0;
-        opacity: .6;
+        color: #fff;
     }
 
     .featured-links {

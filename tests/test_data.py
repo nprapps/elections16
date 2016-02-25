@@ -42,7 +42,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.party == 'Dem'),
             (models.Result.level == 'state')
         )
-        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
+        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
         filtered_length = len(filtered)
         whitelist_length = len(utils.DEM_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
@@ -53,10 +53,20 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.level == 'state')
         )
 
-        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'GOP')
+        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'GOP')
         filtered_length = len(filtered)
         whitelist_length = len(utils.GOP_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
+
+    def test_hiding_other(self):
+        results = models.Result.select().where(
+            (models.Result.party == 'Dem'),
+            (models.Result.level == 'state'),
+            (models.Result.last == 'Sanders') | (models.Result.last == 'Clinton' )
+        )
+        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
+
+        self.assertEqual(hide_other, True)
 
     def test_vote_tally(self):
         tally = utils.tally_results('gop', app_config.NEXT_ELECTION_DATE)
@@ -105,7 +115,7 @@ class DelegatesLoadingTestCase(unittest.TestCase):
             models.CandidateDelegates.last == 'Clinton'
         ).get()
         pledged_delegate_percent = record.pledged_delegates_pct()
-        self.assertEqual(pledged_delegate_percent, 8.942065491183879)
+        self.assertEqual(pledged_delegate_percent, 8.938313050776332)
 
     def test_super_delegates_percent(self):
         record = models.CandidateDelegates.select().where(
@@ -113,7 +123,7 @@ class DelegatesLoadingTestCase(unittest.TestCase):
             models.CandidateDelegates.last == 'Clinton'
         ).get()
         super_delegate_percent = record.superdelegates_pct()
-        self.assertEqual(super_delegate_percent, 15.071368597816962)
+        self.assertEqual(super_delegate_percent, 15.065044062106589)
 
     def test_delegates_deletion(self):
         data.delete_delegates()
