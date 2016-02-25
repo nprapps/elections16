@@ -354,6 +354,11 @@ def tally_results(raceid):
     return tally
 
 
+def convert_serial_date(value, tz='US/Eastern'):
+    seconds = (float(value) - 25569) * 86400.0
+    return datetime.utcfromtimestamp(seconds)
+
+
 class APDatetimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
