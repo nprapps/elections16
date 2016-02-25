@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import date, datetime
 from decimal import Decimal
 from models import models
@@ -157,7 +158,7 @@ def ap_date_filter(value):
 
 def ap_time_filter(value):
     """
-    Converts a time string in hh:mm format into AP style.
+    Converts a datetime or string in hh:mm format into AP style.
     """
     if isinstance(value, basestring):
         value = datetime.strptime(value, '%I:%M')
@@ -272,8 +273,7 @@ def get_results(party, electiondate):
         models.Result.electiondate == electiondate,
         models.Result.party == ap_party,
         models.Result.level == 'state',
-        models.Result.officename == 'President',
-        models.Result.precinctsreporting > 0
+        models.Result.officename == 'President'
     ).order_by(models.Result.statename)
 
     output = []
@@ -310,27 +310,34 @@ def get_race_results(raceid, party):
         'precinctsreportingpct': serialized_results[0]['precinctsreportingpct'],
         'precinctsreporting': serialized_results[0]['precinctsreporting'],
         'precinctstotal': serialized_results[0]['precinctstotal'],
+        'poll_closing': serialized_results[0]['meta'][0]['poll_closing'],
+        'race_type': serialized_results[0]['meta'][0]['race_type'],
         'total': tally_results(raceid)
     }
 
     return output
 
-def get_poll_closings(races, party, electiondate):
-    calendar = copytext.Copy(app_config.CALENDAR_PATH)
-    calendar_sheet = calendar['data']
-    election_datetime = datetime.strptime(electiondate, '%Y-%m-%d')
-    election_datestr = election_datetime.strftime('%-m/%-d/%Y')
 
-    poll_closings = {}
+def group_poll_closings(races):
+    poll_closing_times = []
+    for race in races:
+        if race['poll_closing'] not in poll_closing_times:
+            poll_closing_times.append(race['poll_closing'])
 
-    for row in calendar_sheet:
-        if election_datestr == row['date'] and row[party] and row['poll_closing']:
-            if row['poll_closing'] not in poll_closings:
-                poll_closings[row['poll_closing']] = []
+    poll_closing_times.sort()
 
-            poll_closings[row['poll_closing']].append(row['state_name'])
+    grouped = OrderedDict()
+    for poll_closing in poll_closing_times:
+        poll_closing_time = ap_time_filter(poll_closing)
+        grouped[poll_closing_time] = []
 
-    return poll_closings
+    for race in races:
+        poll_closing_time = ap_time_filter(race['poll_closing'])
+        if race['precinctsreporting'] == 0:
+            grouped[poll_closing_time].append(race['statename'])
+
+    return grouped
+
 
 def get_last_updated(party):
     latest_result = models.Result.select(
