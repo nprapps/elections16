@@ -97,6 +97,9 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1kFDuz82cQRmdleJEyrLLdK8vPeU6ByBmCH6r7-FuwJQ'
 COPY_PATH = 'data/copy.xlsx'
 
+CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
+CALENDAR_PATH = 'data/calendar.xlsx'
+
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
     'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',

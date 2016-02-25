@@ -27,3 +27,4 @@ def update():
         return
 
     get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
+    get_document(app_config.CALENDAR_GOOGLE_DOC_KEY, app_config.CALENDAR_PATH)
