@@ -477,7 +477,7 @@ var getCard = function(url, $card, i) {
                     }
                 }
 
-                if ($card.is('.results')) {
+                if ($card.is('.results') || $card.is('.results-multi')) {
                     resultsCountdown($card);
                 }
 
