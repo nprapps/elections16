@@ -145,6 +145,25 @@ def podcast():
 
     return render_template('cards/podcast.html', **context)
 
+@app.route('/results-single/<party>/')
+@oauth_required
+def results_single(party):
+    context = make_context()
+
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    last_updated = utils.get_last_updated(party)
+
+    context['races'] = races
+    context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
+    context['slug'] = 'results-%s' % party
+    context['template'] = 'results'
+    context['route'] = '/results-single/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 20
+
+    return render_template('cards/results.html', **context)
 
 @app.route('/results/<party>/')
 @oauth_required
