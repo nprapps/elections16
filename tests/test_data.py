@@ -42,7 +42,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.party == 'Dem'),
             (models.Result.level == 'state')
         )
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
+        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
         filtered_length = len(filtered)
         whitelist_length = len(utils.DEM_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
@@ -53,7 +53,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.level == 'state')
         )
 
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'GOP')
+        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'GOP')
         filtered_length = len(filtered)
         whitelist_length = len(utils.GOP_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
