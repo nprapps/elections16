@@ -95,11 +95,11 @@
     <ul class="meta">
         {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
         <li class="footnote">
-            {{ COPY.meta.results_gop_footnote }}
+            {{ COPY.meta.results_gop_footnote|smarty }}
         </li>
         {% elif party == 'Democratic' and COPY.meta.results_dem_footnote %}
         <li class="footnote">
-            {{ COPY.meta.results_dem_footnote }}
+            {{ COPY.meta.results_dem_footnote|smarty }}
         </li>
         {% endif %}
         <li>Source: AP</li>
