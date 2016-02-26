@@ -93,11 +93,15 @@
     </dl>
 
     <ul class="meta">
+        {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
         <li class="footnote">
-            Colorado and Wyoming's Republican parties also hold caucuses today,
-            but neither will have a presidential preference vote and no
-            delegates will be awarded. AP is not reporting live results.
+            {{ COPY.meta.results_gop_footnote }}
         </li>
+        {% elif party == 'Democratic' and COPY.meta.results_dem_footnote %}
+        <li class="footnote">
+            {{ COPY.meta.results_dem_footnote }}
+        </li>
+        {% endif %}
         <li>Source: AP</li>
     </ul>
 </article>
