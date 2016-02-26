@@ -58,16 +58,6 @@ class ResultsLoadingTestCase(unittest.TestCase):
         whitelist_length = len(utils.GOP_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
 
-    def test_hiding_other(self):
-        results = models.Result.select().where(
-            (models.Result.party == 'Dem'),
-            (models.Result.level == 'state'),
-            (models.Result.last == 'Sanders') | (models.Result.last == 'Clinton' )
-        )
-        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
-
-        self.assertEqual(hide_other, True)
-
     def test_vote_tally(self):
         tally = utils.tally_results('16672')
         self.assertEqual(tally, 1406)
