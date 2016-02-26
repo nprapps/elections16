@@ -64,13 +64,13 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.level == 'state'),
             (models.Result.last == 'Sanders') | (models.Result.last == 'Clinton' )
         )
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
+        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
 
         self.assertEqual(hide_other, True)
 
     def test_vote_tally(self):
-        tally = utils.tally_results('gop', app_config.NEXT_ELECTION_DATE)
-        self.assertEqual(tally, 186874)
+        tally = utils.tally_results('16672')
+        self.assertEqual(tally, 1406)
 
 
 class DelegatesLoadingTestCase(unittest.TestCase):
