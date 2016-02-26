@@ -581,7 +581,6 @@ var makeListOfCandidates = function(candidates) {
 }
 
 var onStateResultsClick = function() {
-    console.log($(this));
     var s = $(this).data('state');
 
     // toggle it open or closed
