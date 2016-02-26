@@ -21,7 +21,7 @@
 
     {% for race in races %}
     {% if race.precinctsreporting > 0 %}
-    <div class="state-result" data-state="{{ race.statename }}">
+    <div class="state-result" data-state="{{ party|lower }}-{{ race.statename|lower }}">
         <div class="condensed">
             <!-- full name on desktop / ap abbr on mobile -->
             <h2><span class="desktop">{{ race.statename }}</span><span class="mobile">{{ race.statepostal|ap_state }}</span></h2>

@@ -88,11 +88,13 @@ var onDocumentLoad = function(e) {
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
     $donateLink = $('.donate-link');
+    $stateResults = $('.state-result')
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
+    $body.on('click', '.results-multi .state-result', onStateResultsClick);
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
@@ -475,14 +477,13 @@ var getCard = function(url, $card, i) {
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
                     }
+                    if ($card.is('.results-multi')) {
+                        resultsMultiToggle();
+                    }
                 }
 
                 if ($card.is('.results') || $card.is('.results-multi')) {
                     resultsCountdown($card);
-                }
-
-                if ($card.is('.results-multi') || $card.is('#results-multi')) {
-                    resultsMultiToggle();
                 }
             }
         });
@@ -579,26 +580,25 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+var onStateResultsClick = function() {
+    console.log($(this));
+    var s = $(this).data('state');
+
+    // toggle it open or closed
+    $(this).toggleClass('open');
+
+    // update the list of open states
+    if($(this).hasClass('open')) {
+        resultsMultiOpen.push(s);
+    } else {
+        resultsMultiOpen = resultsMultiOpen.filter(function(d) {
+            return d != s;
+        });
+    }
+}
+
 // on multi-state result cards, toggle open state
 var resultsMultiToggle = function() {
-    $stateResults = $('.state-result');
-    $stateResults.on('click', function(evt) {
-        var s = $(this).data('state');
-
-        // toggle it open or closed
-        $(this).toggleClass('open');
-
-        // update the list of open states
-        if($(this).hasClass('open')) {
-            resultsMultiOpen.push(s);
-        } else {
-            resultsMultiOpen = resultsMultiOpen.filter(function(d) {
-                return d != s;
-            });
-        }
-    });
-
-    // on data refresh, make sure the ones that were open stay open
     resultsMultiOpen.forEach(function(d,i) {
         $('.state-result[data-state="' + d + '"]').addClass('open');
     });
