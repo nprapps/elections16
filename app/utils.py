@@ -275,7 +275,7 @@ def get_results(party, electiondate):
         models.Result.party == ap_party,
         models.Result.level == 'state',
         models.Result.officename == 'President'
-    ).order_by(models.Result.statename)
+    ).order_by(models.Result.statename, models.Result.raceid)
 
     output = []
     for race in race_ids:

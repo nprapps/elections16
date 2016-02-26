@@ -6,8 +6,9 @@ import simplejson as json
 
 from . import utils
 from collections import OrderedDict
-from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
+from gdoc import get_google_doc_html
+from itertools import groupby
 from models import models
 from mutagen.mp3 import MP3
 from oauth.blueprint import oauth, oauth_required
@@ -247,14 +248,9 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated, hide_other = utils.get_results(party, electiondate)
-        data[party] = {
-            'results': results,
-            'other_votecount': other_votecount,
-            'other_votepct': other_votepct,
-            'lastupdated': lastupdated,
-            'total_votecount': utils.tally_results(party, electiondate),
-        }
+        results = utils.get_results(party, electiondate)
+        grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
+        data[party] = OrderedDict(grouped_results)
 
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
