@@ -499,3 +499,12 @@ The Google Analytics events tracked in this application are:
 |elections16|summary-copied||
 |elections16|featured-tweet-action|`action`|
 |elections16|featured-facebook-action|`action`|
+
+### Syncing up with npr.org localstorage variables
+
+NPR.org uses localStorage to handle user settings like local station. These,
+in turn, need to be sent along when registering the pageview on npr.org. This is
+accomplished with a [fork of Zendesk's cross-storage library](https://github.com/nprapps/cross-storage)
+and a [special file](etc/cross-storage-iframe.html) that must be placed on NPR.org.
+
+The file must be uploaded via SMB to the static www fileserver in `politics/election2016`.
