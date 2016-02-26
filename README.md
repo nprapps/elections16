@@ -186,6 +186,10 @@ Once all results are in or the AP stops tabulating data, you can turn off the re
 When the after cards are ready, follow the steps for changing the card stack.
 
 
+### Handling single-party/single-race live events
+
+At the moment, the decision about which results cards to render is hard coded. This will be fixed eventually. For now, the [parties](fabfile/render.py#L108) in the `render_results_html` function must be set to whatever parties will be represented in the results data.
+
 Generating custom font
 ----------------------
 
