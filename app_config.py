@@ -271,7 +271,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
-        RESULTS_DEPLOY_INTERVAL = 0
+        RESULTS_DEPLOY_INTERVAL = 15
         CARD_DEPLOY_INTERVAL = 60
         SITE_ARCHIVE_INTERVAL = 3600
         DELEGATES_DEPLOY_INTERVAL = 3600
@@ -287,8 +287,8 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1455306554.json'
-        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        ELEX_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         COPY_DEPLOY_INTERVAL = 30
         RESULTS_DEPLOY_INTERVAL = 60
         CARD_DEPLOY_INTERVAL = 60
@@ -322,7 +322,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456338758.json'
+        ELEX_FLAGS = '' # -d tests/data/ap_elections_loader_recording-1456338758.json'
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
         RESULTS_DEPLOY_INTERVAL = 15
