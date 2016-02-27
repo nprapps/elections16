@@ -57,11 +57,11 @@ class CallRacesTestCase(unittest.TestCase):
             '/%s/calls/call-npr' % app_config.PROJECT_SLUG,
             data={
                 'race_id': '16957',
-                'result_id': '16957-polid-1239-1'
+                'result_id': '16957-polid-1239-state-1'
             }
         )
 
-        result = models.Result.get(models.Result.id == '16957-polid-1239-1')
+        result = models.Result.get(models.Result.id == '16957-polid-1239-state-1')
 
         race_results = models.Result.select().where(
             models.Result.level == 'state',
