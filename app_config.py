@@ -274,7 +274,7 @@ def configure_targets(deployment_target):
         RESULTS_DEPLOY_INTERVAL = 15
         CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 3600
-        DELEGATES_DEPLOY_INTERVAL = 3600
+        DELEGATES_DEPLOY_INTERVAL = 600
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
