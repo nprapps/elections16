@@ -42,7 +42,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.party == 'Dem'),
             (models.Result.level == 'state')
         )
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
+        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
         filtered_length = len(filtered)
         whitelist_length = len(utils.DEM_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
@@ -53,24 +53,14 @@ class ResultsLoadingTestCase(unittest.TestCase):
             (models.Result.level == 'state')
         )
 
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'GOP')
+        filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'GOP')
         filtered_length = len(filtered)
         whitelist_length = len(utils.GOP_CANDIDATES)
         self.assertEqual(filtered_length, whitelist_length)
 
-    def test_hiding_other(self):
-        results = models.Result.select().where(
-            (models.Result.party == 'Dem'),
-            (models.Result.level == 'state'),
-            (models.Result.last == 'Sanders') | (models.Result.last == 'Clinton' )
-        )
-        filtered, other_votecount, other_votepct, hide_other = utils.collate_other_candidates(list(results), 'Dem')
-
-        self.assertEqual(hide_other, True)
-
     def test_vote_tally(self):
-        tally = utils.tally_results('gop', app_config.NEXT_ELECTION_DATE)
-        self.assertEqual(tally, 186874)
+        tally = utils.tally_results('16672')
+        self.assertEqual(tally, 1406)
 
 
 class DelegatesLoadingTestCase(unittest.TestCase):
