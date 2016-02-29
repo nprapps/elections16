@@ -1,5 +1,6 @@
+from collections import OrderedDict
 from datetime import date, datetime
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from models import models
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
@@ -7,7 +8,9 @@ from pytz import timezone
 from time import time
 
 import app_config
+import copytext
 import simplejson as json
+import xlrd
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 AP_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
@@ -108,8 +111,14 @@ def percent_filter(value):
     """
     Format percentage
     """
-    one_decimal = '{:.1f}%'.format(value)
-    return one_decimal
+    if value == 0:
+        return '0%'
+    elif value == 100:
+        return '100%'
+    elif value > 0 and value < 1:
+        return '<1%'
+    else:
+        return '{:.1f}%'.format(Decimal(value).quantize(Decimal('.1'), rounding=ROUND_DOWN))
 
 
 def normalize_percent_filter(value):
@@ -156,7 +165,7 @@ def ap_date_filter(value):
 
 def ap_time_filter(value):
     """
-    Converts a time string in hh:mm format into AP style.
+    Converts a datetime or string in hh:mm format into AP style.
     """
     if isinstance(value, basestring):
         value = datetime.strptime(value, '%I:%M')
@@ -210,21 +219,14 @@ def collate_other_candidates(results, party):
     other_votecount = 0
     other_votepct = 0
 
-    results_length = len(results)
     for result in reversed(results):
         candidate_name = '%s %s' % (result.first, result.last)
         if candidate_name not in whitelisted_candidates:
             other_votecount += result.votecount
             other_votepct += result.votepct
             results.remove(result)
-    filtered_results_length = len(results)
 
-    if results_length == filtered_results_length:
-        hide_other = True
-    else:
-        hide_other = False
-
-    return results, other_votecount, other_votepct, hide_other
+    return results, other_votecount, other_votepct
 
 
 def set_delegates_updated_time():
@@ -273,16 +275,31 @@ def close_db(response):
 
 
 def get_results(party, electiondate):
+    ap_party = PARTY_MAPPING[party]['AP']
+    race_ids = models.Result.select(fn.Distinct(models.Result.raceid), models.Result.statename).where(
+        models.Result.electiondate == electiondate,
+        models.Result.party == ap_party,
+        models.Result.level == 'state',
+        models.Result.officename == 'President'
+    ).order_by(models.Result.statename, models.Result.raceid)
+
+    output = []
+    for race in race_ids:
+        output.append(get_race_results(race.raceid, ap_party))
+
+    return output
+
+
+def get_race_results(raceid, party):
     """
     Results getter
     """
-    ap_party = PARTY_MAPPING[party]['AP']
-    party_results = models.Result.select().where(
-        models.Result.electiondate == electiondate,
-        models.Result.party == ap_party,
+    race_results = models.Result.select().where(
+        models.Result.raceid == raceid,
         models.Result.level == 'state'
     )
-    filtered, other_votecount, other_votepct, hide_other = collate_other_candidates(list(party_results), ap_party)
+
+    filtered, other_votecount, other_votepct = collate_other_candidates(list(race_results), party)
 
     secondary_sort = sorted(filtered, key=candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
@@ -291,6 +308,45 @@ def get_results(party, electiondate):
     for result in sorted_results:
         serialized_results.append(model_to_dict(result, backrefs=True))
 
+    output = {
+        'results': serialized_results,
+        'other_votecount': other_votecount,
+        'other_votepct': other_votepct,
+        'statename': serialized_results[0]['statename'],
+        'statepostal': serialized_results[0]['statepostal'],
+        'precinctsreportingpct': serialized_results[0]['precinctsreportingpct'],
+        'precinctsreporting': serialized_results[0]['precinctsreporting'],
+        'precinctstotal': serialized_results[0]['precinctstotal'],
+        'poll_closing': serialized_results[0]['meta'][0]['poll_closing'],
+        'race_type': serialized_results[0]['meta'][0]['race_type'],
+        'total': tally_results(raceid)
+    }
+
+    return output
+
+
+def group_poll_closings(races):
+    poll_closing_times = []
+    for race in races:
+        if race['poll_closing'] not in poll_closing_times:
+            poll_closing_times.append(race['poll_closing'])
+
+    poll_closing_times.sort()
+
+    grouped = OrderedDict()
+    for poll_closing in poll_closing_times:
+        poll_closing_time = ap_time_filter(poll_closing)
+        grouped[poll_closing_time] = []
+
+    for race in races:
+        poll_closing_time = ap_time_filter(race['poll_closing'])
+        if race['precinctsreporting'] == 0:
+            grouped[poll_closing_time].append(race['statename'])
+
+    return grouped
+
+
+def get_last_updated(party):
     latest_result = models.Result.select(
         fn.Max(models.Result.lastupdated).alias('lastupdated')
     ).where(
@@ -298,19 +354,27 @@ def get_results(party, electiondate):
         models.Result.level == 'state'
     ).get()
 
-    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated, hide_other
+    return latest_result.lastupdated
 
 
-def tally_results(party, electiondate):
+def tally_results(raceid):
     """
     Add results for a given party on a given date.
     """
-    ap_party = PARTY_MAPPING[party]['AP']
     tally = models.Result.select(fn.SUM(models.Result.votecount)).where(
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
+        models.Result.level == 'state',
+        models.Result.raceid == raceid
     ).scalar()
     return tally
+
+
+def convert_serial_date(value):
+    parsed = datetime(*(xlrd.xldate_as_tuple(float(value), 0)))
+    eastern = timezone('US/Eastern')
+    parsed_eastern = eastern.localize(parsed)
+    parsed_utc = parsed_eastern.astimezone(timezone('GMT'))
+    parsed_naive = parsed_utc.replace(tzinfo=None)
+    return parsed_naive
 
 
 class APDatetimeEncoder(json.JSONEncoder):

@@ -31,7 +31,7 @@ var $donateLink = null;
 
 // Global references
 var candidates = {}
-var isTouch = Modernizr.touch;
+var isTouch = Modernizr.touchevents;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
@@ -48,6 +48,7 @@ if (!LIVE) {
 var testLogged = false;
 var donateLanguageTest = null;
 var donateButtonTest = null;
+var resultsMultiOpen = [];
 
 
 var focusWorkaround = false;
@@ -87,11 +88,13 @@ var onDocumentLoad = function(e) {
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
     $donateLink = $('.donate-link');
+    $stateResults = $('.state-result')
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
+    $body.on('click', '.results-multi .state-result', onStateResultsClick);
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
@@ -109,6 +112,8 @@ var onDocumentLoad = function(e) {
 
     resultsCountdown($('#results-dem'));
     resultsCountdown($('#results-gop'));
+
+    resultsMultiToggle();
 
     setPolls();
     AUDIO.setupAudio();
@@ -472,9 +477,12 @@ var getCard = function(url, $card, i) {
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
                     }
+                    if ($card.is('.results-multi')) {
+                        resultsMultiToggle();
+                    }
                 }
 
-                if ($card.is('.results')) {
+                if ($card.is('.results') || $card.is('.results-multi')) {
                     resultsCountdown($card);
                 }
             }
@@ -572,6 +580,30 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+var onStateResultsClick = function() {
+    var s = $(this).data('state');
+
+    // toggle it open or closed
+    $(this).toggleClass('open');
+
+    // update the list of open states
+    if($(this).hasClass('open')) {
+        resultsMultiOpen.push(s);
+    } else {
+        resultsMultiOpen = resultsMultiOpen.filter(function(d) {
+            return d != s;
+        });
+    }
+}
+
+// on multi-state result cards, toggle open state
+var resultsMultiToggle = function() {
+    resultsMultiOpen.forEach(function(d,i) {
+        $('.state-result[data-state="' + d + '"]').addClass('open');
+    });
+}
+
+// countdown spinner to the next results card data refresh
 var resultsCountdown = function($card) {
     if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
         return;

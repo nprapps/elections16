@@ -81,7 +81,7 @@ var AUDIO = (function() {
     };
 
     var toggleAudio = function() {
-        if (!$audioPlayer.data('jPlayer')['status']['src']) {
+        if (!$audioPlayer.data('jPlayer')['status']['src'] && !LIVE) {
             setMedia(PODCAST_URL);
             return;
         }

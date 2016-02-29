@@ -2,6 +2,15 @@
 
 #podcast {
 
+    .no-touchevents & {
+        .card-background {
+            .photo-credit {
+                bottom: 55px;
+            }
+        }
+    }
+
+
     .card-inner {
         max-width: @max-width-content;
         margin: 0 3rem 2rem 3rem;
@@ -26,6 +35,11 @@
 
 
     .segment-audio-content {
+
+        .podcast-description {
+            max-width: 24rem;
+            margin: 0 auto;
+        }
 
         ul {
             margin: 0;
@@ -163,7 +177,7 @@
                 padding: 0 0 .5rem 0;
                 font-size: 1.2rem;
 
-                .no-touch & {
+                .no-touchevents & {
                     &:hover,
                     &:active {
                         color: #fff;
