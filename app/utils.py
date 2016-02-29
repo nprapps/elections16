@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import date, datetime
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from models import models
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
@@ -111,8 +111,14 @@ def percent_filter(value):
     """
     Format percentage
     """
-    one_decimal = '{:.1f}%'.format(value)
-    return one_decimal
+    if value == 0:
+        return '0%'
+    elif value == 100:
+        return '100%'
+    elif value > 0 and value < 1:
+        return '<1%'
+    else:
+        return '{:.1f}%'.format(Decimal(value).quantize(Decimal('.1'), rounding=ROUND_DOWN))
 
 
 def normalize_percent_filter(value):
