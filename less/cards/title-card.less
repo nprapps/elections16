@@ -1,13 +1,21 @@
 //title card
 
-.title {
+.card.title {
 
-    .card-inner {
-        max-width: @max-width-content;
-        margin: 0 3rem 2rem 3rem;
+    .full-block {
+        .full-block-cell {
+            .card-inner {
+                max-width: @max-width-content;
+                margin: 0 3rem 2rem 3rem;
 
-        @media @screen-small-above {
-            margin: 0 auto;
+                @media @screen-small-above {
+                    margin: 0 auto;
+                }
+
+                .no-touchevents & {
+                    padding-bottom: 0;
+                }
+            }
         }
     }
 

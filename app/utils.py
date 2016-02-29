@@ -374,9 +374,9 @@ def convert_serial_date(value):
 class APDatetimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
-            thedate = ap_date_filter(obj.strftime('%m/%d/%Y'))
-            thetime = ap_time_filter(obj.strftime('%I:%M'))
-            theperiod = ap_time_period_filter(obj.strftime('%p'))
+            thedate = ap_date_filter(obj)
+            thetime = ap_time_filter(obj)
+            theperiod = ap_time_period_filter(obj)
             return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
         elif isinstance(obj, date):
             return obj.isoformat()

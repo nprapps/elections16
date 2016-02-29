@@ -298,12 +298,12 @@ body {
         -webkit-animation-delay: 1s;
 
     &.show-nav  {
-        .touch & {
+        .touchevents & {
             -webkit-animation-name: fadeIn;
             animation-name: fadeIn;
         }
 
-        .no-touch & {
+        .no-touchevents & {
             opacity: 1;
         }
     }
@@ -432,7 +432,7 @@ body {
     width: 40px;
     height: 40px;
 
-    .no-touch & {
+    .no-touchevents & {
         width: 52px;
         height: 52px;
         top: auto;
@@ -445,7 +445,7 @@ body {
         svg {
             left: 0;
         }
-        .no-touch & {
+        .no-touchevents & {
             left: 30px;
         }
     }
@@ -457,7 +457,7 @@ body {
             right: 0;
         }
 
-        .no-touch & {
+        .no-touchevents & {
             right: 30px;
         }
     }
@@ -472,7 +472,7 @@ body {
     svg {
         width: 35%;
         height: 35%;
-        .no-touch & {
+        .no-touchevents & {
             top: 14px;
             width: 25px;
             height: 25px;
@@ -488,7 +488,7 @@ body {
     .gotham();
     color: #ccc;
 
-    .touch & {
+    .touchevents & {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
     }
@@ -515,9 +515,11 @@ body {
                 padding-top: 6rem;
                 vertical-align: middle;
             }
+        }
 
-            .no-touch & {
-                padding-bottom: 100px;
+        .card-inner {
+            .no-touchevents & {
+                //padding-bottom: 100px;
             }
         }
     }
@@ -553,7 +555,7 @@ body {
         padding-bottom: 2px;
         border-bottom: 2px solid @accent2;
     }
-    .no-touch & {
+    .no-touchevents & {
         a:hover,
         a:active {
             color: @accent2;
@@ -645,7 +647,7 @@ body {
             font-weight: 700;
             text-decoration: none;
         }
-        .no-touch & {
+        .no-touchevents & {
             a:hover,
             a:active {
                 color: #fff;

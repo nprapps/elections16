@@ -1,7 +1,5 @@
 import app_config
 import m3u8
-import os
-import requests
 import simplejson as json
 
 from . import utils
@@ -10,7 +8,6 @@ from flask import Flask, jsonify, make_response, render_template
 from gdoc import get_google_doc_html
 from itertools import groupby
 from models import models
-from mutagen.mp3 import MP3
 from oauth.blueprint import oauth, oauth_required
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
@@ -116,30 +113,6 @@ def podcast():
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
 
-    try:
-        os.mkdir('.mp3-cache')
-    except OSError:
-        pass
-
-    path_parts = context['audio_url'].split('/')
-    filename = '-'.join(path_parts[2:])
-    filename = filename.split('?')[0]
-    filepath = os.path.join('.mp3-cache', filename)
-
-    if not os.path.isfile(filepath):
-        resp = requests.get(context['audio_url'], headers={'user-agent': USER_AGENT})
-
-        with open(filepath, 'wb') as f:
-            for block in resp.iter_content(1024):
-                f.write(block)
-
-    audio_file = MP3(filepath)
-    audio_length = audio_file.info.length
-    minutes, seconds = divmod(audio_length, 60)
-    duration = '%02d:%02d' % (minutes, seconds)
-    print minutes, seconds, duration
-
-    context['duration'] = duration
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
 

@@ -31,7 +31,7 @@ var $donateLink = null;
 
 // Global references
 var candidates = {}
-var isTouch = Modernizr.touch;
+var isTouch = Modernizr.touchevents;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
