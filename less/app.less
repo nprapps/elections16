@@ -401,6 +401,7 @@ body {
 // -------------------------
 
 .flickity-page-dots {
+    left: 0;
     bottom: 0;
     padding: 15px 0 15px 0;
     z-index: 100;
@@ -429,11 +430,16 @@ body {
     height: 40px;
 
     .no-touchevents & {
+        top: auto;
+        bottom: 0;
+        z-index: 101;
         width: 52px;
         height: 52px;
-        top: auto;
-        bottom: -26px;
-        z-index: 101;
+        .transform(none);
+
+        svg {
+            top: 14px;
+        }
     }
 
     &.previous {
@@ -515,7 +521,7 @@ body {
 
         .card-inner {
             .no-touchevents & {
-                //padding-bottom: 100px;
+                padding-bottom: 100px;
             }
         }
     }
