@@ -4,19 +4,18 @@
 
     .full-block {
         .full-block-cell {
+            .card-inner {
+                max-width: @max-width-content;
+                margin: 0 3rem 2rem 3rem;
 
-            .no-touch & {
-                padding-bottom: 0;
+                @media @screen-small-above {
+                    margin: 0 auto;
+                }
+
+                .no-touch & {
+                    padding-bottom: 0;
+                }
             }
-        }
-    }
-
-    .card-inner {
-        max-width: @max-width-content;
-        margin: 0 3rem 2rem 3rem;
-
-        @media @screen-small-above {
-            margin: 0 auto;
         }
     }
 
