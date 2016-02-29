@@ -6,12 +6,13 @@ Commands that update or process the application data.
 import app_config
 
 from app.gdoc import get_google_doc
-from app.utils import set_delegates_updated_time
+from app.utils import set_delegates_updated_time, convert_serial_date
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
 import codecs
+import copytext
 import servers
 
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
@@ -34,6 +35,7 @@ def bootstrap_db():
     create_tables()
     load_results()
     create_calls()
+    create_race_meta()
     load_delegates()
 
 
@@ -68,6 +70,7 @@ def create_tables():
     models.Candidate.create_table()
     models.BallotPosition.create_table()
     models.CandidateDelegates.create_table()
+    models.RaceMeta.create_table()
 
 
 @task
@@ -151,11 +154,44 @@ def create_calls():
     models.Call.delete().execute()
 
     results = models.Result.select().where(
-        models.Result.level == 'state'
+        models.Result.level == 'state',
+        models.Result.officename == 'President'
     )
 
     for result in results:
         models.Call.create(call_id=result.id)
+
+@task
+def create_race_meta():
+    models.RaceMeta.delete().execute()
+
+    results = models.Result.select().where(
+        models.Result.level == 'state',
+        models.Result.officename == 'President'
+    )
+
+    calendar = copytext.Copy(app_config.CALENDAR_PATH)
+    calendar_sheet = calendar['data']
+
+    for row in calendar_sheet._serialize():
+        if not row.get('full_poll_closing_time'):
+            continue
+
+        poll_closing = convert_serial_date(row.get('full_poll_closing_time'))
+
+        results = models.Result.select().where(
+                models.Result.level == 'state',
+                models.Result.statename == row['state_name'],
+                models.Result.officename == 'President'
+        )
+
+        for result in results:
+            race_type = row[result.party.lower()]
+            models.RaceMeta.create(
+                    result_id=result.id,
+                    race_type=race_type,
+                    poll_closing=poll_closing
+            )
 
 
 @task

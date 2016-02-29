@@ -69,6 +69,12 @@ class Call(BaseModel):
     override_winner = BooleanField(default=False)
 
 
+class RaceMeta(BaseModel):
+    result_id = ForeignKeyField(Result, related_name='meta')
+    poll_closing = DateTimeField(null=True)
+    race_type = CharField(null=True)
+
+
 class Race(BaseModel):
     id = CharField(null=True)
     raceid = CharField(null=True)

@@ -4,8 +4,9 @@ import simplejson as json
 
 from . import utils
 from collections import OrderedDict
-from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
+from gdoc import get_google_doc_html
+from itertools import groupby
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from peewee import fn
@@ -117,6 +118,25 @@ def podcast():
 
     return render_template('cards/podcast.html', **context)
 
+@app.route('/results-single/<party>/')
+@oauth_required
+def results_single(party):
+    context = make_context()
+
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    last_updated = utils.get_last_updated(party)
+
+    context['races'] = races
+    context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
+    context['slug'] = 'results-%s' % party
+    context['template'] = 'results'
+    context['route'] = '/results-single/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = 20
+
+    return render_template('cards/results.html', **context)
 
 @app.route('/results/<party>/')
 @oauth_required
@@ -127,22 +147,22 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated, hide_other = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    poll_closings = utils.group_poll_closings(races)
+    last_updated = utils.get_last_updated(party)
 
-    context['results'] = results
-    context['other_votecount'] = other_votecount
-    context['other_votepct'] = other_votepct
-    context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
+    context['races'] = races
+    context['poll_closings'] = poll_closings
     context['last_updated'] = last_updated
-    context['hide_other'] = hide_other
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
-    context['template'] = 'results'
+    context['template'] = 'results-multi'
     context['route'] = '/results/%s/' % party
 
     if context['state'] != 'inactive':
         context['refresh_rate'] = 20
 
-    return render_template('cards/results.html', **context)
+    return render_template('cards/results-multi.html', **context)
 
 
 @app.route('/delegates/<party>/')
@@ -220,14 +240,9 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated, hide_other = utils.get_results(party, electiondate)
-        data[party] = {
-            'results': results,
-            'other_votecount': other_votecount,
-            'other_votepct': other_votepct,
-            'lastupdated': lastupdated,
-            'total_votecount': utils.tally_results(party, electiondate),
-        }
+        results = utils.get_results(party, electiondate)
+        grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
+        data[party] = OrderedDict(grouped_results)
 
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 

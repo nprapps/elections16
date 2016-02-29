@@ -5,7 +5,6 @@ Commands related to syncing copytext from Google Docs.
 """
 
 import app_config
-import os
 
 from fabric.api import task
 from oauth.blueprint import get_document, get_credentials
@@ -27,3 +26,4 @@ def update():
         return
 
     get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
+    get_document(app_config.CALENDAR_GOOGLE_DOC_KEY, app_config.CALENDAR_PATH)
