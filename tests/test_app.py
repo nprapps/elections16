@@ -105,10 +105,10 @@ class AppDelegatesTestCase(unittest.TestCase):
 
     def test_expected_number_of_states(self):
         """
-        60 states expected; 50 states, national, plus 8 territories and weird
-        'US' catchall.
+        61 states expected; 50 states, national, 8 territories and weird
+        'US' catchall, plus last updated time.
         """
-        self.assertEqual(len(self.delegates_data.keys()), 60)
+        self.assertEqual(len(self.delegates_data.keys()), 61)
 
     def test_national_delegate_count(self):
         for candidate in self.delegates_data['nation']['dem']:
