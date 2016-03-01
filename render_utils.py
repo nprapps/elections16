@@ -202,9 +202,11 @@ def make_gdoc_context(gdoc):
         'image',
         'mobile_image',
         'credit',
+        'mobile_credit',
         'preview_image',
         'preview_mobile_image',
         'preview_credit',
+        'preview_mobile_credit',
         'audio_url',
     ]
 
@@ -248,4 +250,3 @@ def smarty_filter(s):
         return Markup(s)
     except:
         return Markup(s.decode('utf-8'))
-

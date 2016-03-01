@@ -112,6 +112,9 @@ class DocParserTestCase(unittest.TestCase):
     def test_credit_extraction(self):
         self.assertEqual(self.parser.credit, 'this is a photo credit')
 
+    def test_mobile_credit_extraction(self):
+        self.assertEqual(self.parser.mobile_credit, 'this is a mobile photo credit')
+
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 
