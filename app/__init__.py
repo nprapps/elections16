@@ -290,6 +290,7 @@ def delegates_json():
             for result in state_candidates:
                 data[state_obj.state][party].append(model_to_dict(result))
 
+    data['last_updated'] = utils.get_delegates_updated_time()
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 
