@@ -187,6 +187,14 @@ var detectMobileBg = function($card) {
         var bgURL = $cardBackground.data('default-bg');
         $cardBackground.css('background-image', 'url("' + bgURL + '")');
     }
+
+    if ($cardBackground.find('.photo-credit').data('mobile-credit') && $(window).width() <= 768) {
+        var photoCredit = $cardBackground.find('.photo-credit').data('mobile-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    } else {
+        var photoCredit = $cardBackground.find('.photo-credit').data('default-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    }
 }
 
 

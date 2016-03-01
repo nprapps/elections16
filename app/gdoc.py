@@ -57,9 +57,11 @@ class DocParser:
         self.image = None
         self.mobile_image = None
         self.credit = None
+        self.mobile_credit = None
         self.preview_image = None
         self.preview_mobile_image = None
         self.preview_credit = None
+        self.preview_mobile_credit = None
         self.audio_url = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
         self.tags_blacklist = []
@@ -87,7 +89,9 @@ class DocParser:
             self.find_token(tag, 'SUBHED', 'subhed')
             self.find_token(tag, 'BANNER', 'banner')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
+            self.find_token(tag, 'MOBILEPHOTOCREDIT', 'mobile_credit')
             self.find_token(tag, 'PREVIEWPHOTOCREDIT', 'preview_credit')
+            self.find_token(tag, 'PREVIEWMOBILEPHOTOCREDIT', 'preview_mobile_credit')
             self.find_token(tag, 'AUDIOURL', 'audio_url')
             self.find_token(tag, 'BACKGROUNDIMAGE', 'image')
             self.find_token(tag, 'MOBILEIMAGE', 'mobile_image')
