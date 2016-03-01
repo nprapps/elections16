@@ -179,7 +179,8 @@ def delegates(party):
     candidates = models.CandidateDelegates.select().where(
         models.CandidateDelegates.party == ap_party,
         models.CandidateDelegates.level == 'nation',
-        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party],
+        models.CandidateDelegates.delegates_count > 0
     ).order_by(
         -models.CandidateDelegates.delegates_count,
         models.CandidateDelegates.last
