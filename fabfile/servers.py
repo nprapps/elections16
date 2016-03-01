@@ -285,3 +285,16 @@ def fabcast(command):
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, branch, command))
 
+
+@task
+def runcmd(command):
+    """
+    Actually run specified commands on the server specified
+    by staging() or production().
+    """
+    require('settings', provided_by=['production', 'staging'])
+
+    if not app_config.DEPLOY_TO_SERVERS:
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before running a command.'
+
+    run('cd %s && bash run_on_server.sh %s' % (app_config.SERVER_REPOSITORY_PATH, command))
