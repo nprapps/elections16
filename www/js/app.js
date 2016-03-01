@@ -46,8 +46,7 @@ if (!LIVE) {
     var LIVE = false;
 }
 var testLogged = false;
-var donateLanguageTest = null;
-var donateButtonTest = null;
+var donateButtonText = null;
 var resultsMultiOpen = [];
 
 
@@ -188,6 +187,14 @@ var detectMobileBg = function($card) {
         var bgURL = $cardBackground.data('default-bg');
         $cardBackground.css('background-image', 'url("' + bgURL + '")');
     }
+
+    if ($cardBackground.find('.photo-credit').data('mobile-credit') && $(window).width() <= 768) {
+        var photoCredit = $cardBackground.find('.photo-credit').data('mobile-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    } else {
+        var photoCredit = $cardBackground.find('.photo-credit').data('default-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    }
 }
 
 
@@ -239,26 +246,10 @@ var checkOverflow = function(cardHeight, $slide) {
 }
 
 var startTest = function() {
-    var possibleDonateLanguage = ['a', 'b', 'c']
-    var possibleButtonLanguage = ['tailored', 'generic'];
-
-    donateLanguageTest = possibleDonateLanguage[getRandomInt(0, possibleDonateLanguage.length)];
-    donateButtonTest = possibleButtonLanguage[getRandomInt(0, possibleButtonLanguage.length)];
-
-    for (var i = 0; i < COPY.donate.length; i++) {
-        if (COPY.donate[i].test === donateLanguageTest) {
-            var row = COPY.donate[i];
-            $donateHeadline.html(row.headline);
-            $donateText.html(row.text);
-            if (donateButtonTest === 'tailored') {
-                $donateLink.find('a').text(row.button);
-            } else {
-                $donateLink.find('a').text('Donate');
-            }
-        }
-    }
-
-    ANALYTICS.trackEvent('tests-run', donateLanguageTest + '-' + donateButtonTest);
+    var rand = getRandomInt(0, COPY.donate_buttons.length);
+    donateButtonText = COPY.donate_buttons[rand].text;
+    $donateLink.find('a').text(donateButtonText);
+    ANALYTICS.trackEvent('button-test', donateButtonText);
 }
 
 var getRandomInt = function(min, max) {
@@ -543,11 +534,10 @@ var onResize = function() {
     }
 }
 
-
 var onDonateLinkClick = function(e) {
     var timesToClick = calculateTimeBucket(globalStartTime);
-    var testSlug = donateLanguageTest + '-' + donateButtonTest;
-    ANALYTICS.trackEvent('donate-link-click', testSlug, timesToClick[0], timesToClick[1]);
+    var value = 'Cable donate card - ' + donateButtonText;
+    ANALYTICS.trackEvent('donate-link-click', value, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
