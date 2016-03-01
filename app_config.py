@@ -274,7 +274,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 10
-        RESULTS_DEPLOY_INTERVAL = 0
+        RESULTS_DEPLOY_INTERVAL = 10
         CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 3600
         DELEGATES_DEPLOY_INTERVAL = 600
