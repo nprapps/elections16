@@ -38,6 +38,7 @@ DELEGATE_WHITELIST = {
         'Cruz',
         'Fiorina',
         'Gilmore',
+        'Huckabee',
         'Kasich',
         'Paul',
         'Rubio',
