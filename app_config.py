@@ -181,7 +181,7 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
-DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239']
+DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239', '1187']
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
@@ -293,7 +293,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         COPY_DEPLOY_INTERVAL = 30
-        RESULTS_DEPLOY_INTERVAL = 10
+        RESULTS_DEPLOY_INTERVAL = 600
         CARD_DEPLOY_INTERVAL = 60
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 0
