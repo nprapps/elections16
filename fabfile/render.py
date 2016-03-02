@@ -221,17 +221,15 @@ def render_current_state(folder='.cards_html'):
             f.write(content)
 
 def _write_file(path, content):
-    path = '.cards_html/%s' % path
-
-    # Ensure path exists
-    head = os.path.split(path)[0]
+    path = os.path.join('.cards_html', path)
 
     try:
-        os.makedirs(head)
+        os.makedirs(path)
     except OSError:
         pass
 
-    with codecs.open('%sindex.html' % path, 'w', 'utf-8') as f:
+    filepath = os.path.join(path, 'index.html')
+    with codecs.open(filepath, 'w') as f:
         f.write(content)
 
 @task(default=True)
