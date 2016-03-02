@@ -101,24 +101,6 @@ def render_card_route(view_name, params=None):
 
 
 @task
-def render_results_html():
-    from flask import url_for
-
-    view_name = 'results'
-    parties = ['gop', 'dem']
-
-    for party in parties:
-        with app.app.test_request_context():
-            path = url_for(view_name, party=party)
-
-        with app.app.test_request_context(path=path):
-            view = app.__dict__[view_name]
-            content = view(party)
-
-        _write_file(path, content)
-
-
-@task
 def render_results_json():
     from flask import url_for
 
@@ -137,24 +119,6 @@ def render_results_json():
 
     with codecs.open('.cards_html/{0}'.format(path), 'w', 'utf-8') as f:
         f.write(content)
-
-
-@task
-def render_delegates_html():
-    from flask import url_for
-
-    view_name = 'delegates'
-    parties = ['gop', 'dem']
-
-    for party in parties:
-        with app.app.test_request_context():
-            path = url_for(view_name, party=party)
-
-        with app.app.test_request_context(path=path):
-            view = app.__dict__[view_name]
-            content = view(party)
-
-        _write_file(path, content)
 
 
 @task
