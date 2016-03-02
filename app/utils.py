@@ -194,7 +194,9 @@ def ap_time_period_filter(value):
 
 
 def candidate_sort_lastname(item):
-    if item.last == 'Other' or item.last == 'Uncommitted' or item.last == 'Write-ins':
+    if item.winner:
+        return -1
+    elif item.last == 'Other' or item.last == 'Uncommitted' or item.last == 'Write-ins':
         return 'zzz'
     else:
         return item.last
