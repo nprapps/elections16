@@ -308,7 +308,7 @@ def get_race_results(raceid, party):
 
     serialized_results = []
     for result in sorted_results:
-        if result.winner and (result.call[0].accept_ap or (result.call[0].override_winner and not result.call[0].accept_ap)):
+        if result.winner and (result.call[0].accept_ap or (result.call[0].override_winner)):
             called = True
         serialized_results.append(model_to_dict(result, backrefs=True))
 
@@ -345,7 +345,7 @@ def group_poll_closings(races):
 
     for race in races:
         poll_closing_time = ap_time_filter(race['poll_closing'])
-        if race['precinctsreporting'] == 0 or not race['called']:
+        if race['precinctsreporting'] == 0 and not race['called']:
             grouped[poll_closing_time].append(race['statename'])
 
     return grouped
