@@ -89,6 +89,21 @@
         &.live-banner {
             background-color: rgba(214, 87, 81, 1);
 
+            p {
+                padding: 1rem 7.4rem 1rem 3rem;
+
+                @media @screen-small-above {
+                    padding: .5rem 7.4rem .5rem 2.4rem;
+                }
+
+            }
+
+            .get-alerts {
+                background-color: @live;
+            }
+        }
+
+        &.live-audio {
             &:before {
                 display: block;
                 content: ' ';
@@ -107,21 +122,10 @@
             h6 {
                 padding-left: 45px;
             }
-
-            p {
-                padding: 1rem 7.4rem 1rem 3rem;
-
-                @media @screen-small-above {
-                    padding: .5rem 7.4rem .5rem 2.4rem;
-                }
-
-            }
-
-            .get-alerts {
-                background-color: @live;
-            }
         }
     }
+
+
 
     .title-description {
 
