@@ -280,8 +280,8 @@ def deploy_cards():
     for row in script:
         render.render_card_route(row['function'], row['params'])
 
-    #render.render_current_state()
-    #render.render_index()
+    render.render_current_state()
+    render.render_index()
 
     flat.deploy_folder(
         app_config.S3_BUCKET,
