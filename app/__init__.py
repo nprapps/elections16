@@ -1,15 +1,13 @@
 import app_config
 import m3u8
-import os
-import requests
 import simplejson as json
 
 from . import utils
 from collections import OrderedDict
-from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
+from gdoc import get_google_doc_html
+from itertools import groupby
 from models import models
-from mutagen.mp3 import MP3
 from oauth.blueprint import oauth, oauth_required
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
@@ -40,6 +38,7 @@ DELEGATE_WHITELIST = {
         'Cruz',
         'Fiorina',
         'Gilmore',
+        'Huckabee',
         'Kasich',
         'Paul',
         'Rubio',
@@ -115,35 +114,30 @@ def podcast():
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
 
-    try:
-        os.mkdir('.mp3-cache')
-    except OSError:
-        pass
-
-    path_parts = context['audio_url'].split('/')
-    filename = '-'.join(path_parts[2:])
-    filename = filename.split('?')[0]
-    filepath = os.path.join('.mp3-cache', filename)
-
-    if not os.path.isfile(filepath):
-        resp = requests.get(context['audio_url'], headers={'user-agent': USER_AGENT})
-
-        with open(filepath, 'wb') as f:
-            for block in resp.iter_content(1024):
-                f.write(block)
-
-    audio_file = MP3(filepath)
-    audio_length = audio_file.info.length
-    minutes, seconds = divmod(audio_length, 60)
-    duration = '%02d:%02d' % (minutes, seconds)
-    print minutes, seconds, duration
-
-    context['duration'] = duration
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
 
     return render_template('cards/podcast.html', **context)
 
+@app.route('/results-single/<party>/')
+@oauth_required
+def results_single(party):
+    context = make_context()
+
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    last_updated = utils.get_last_updated(party)
+
+    context['races'] = races
+    context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
+    context['slug'] = 'results-%s' % party
+    context['template'] = 'results'
+    context['route'] = '/results-single/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
+
+    return render_template('cards/results.html', **context)
 
 @app.route('/results/<party>/')
 @oauth_required
@@ -154,22 +148,22 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated, hide_other = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    poll_closings = utils.group_poll_closings(races)
+    last_updated = utils.get_last_updated(party)
 
-    context['results'] = results
-    context['other_votecount'] = other_votecount
-    context['other_votepct'] = other_votepct
-    context['total_votecount'] = utils.tally_results(party, app_config.NEXT_ELECTION_DATE)
+    context['races'] = races
+    context['poll_closings'] = poll_closings
     context['last_updated'] = last_updated
-    context['hide_other'] = hide_other
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
-    context['template'] = 'results'
+    context['template'] = 'results-multi'
     context['route'] = '/results/%s/' % party
 
     if context['state'] != 'inactive':
-        context['refresh_rate'] = 20
+        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
 
-    return render_template('cards/results.html', **context)
+    return render_template('cards/results-multi.html', **context)
 
 
 @app.route('/delegates/<party>/')
@@ -186,7 +180,8 @@ def delegates(party):
     candidates = models.CandidateDelegates.select().where(
         models.CandidateDelegates.party == ap_party,
         models.CandidateDelegates.level == 'nation',
-        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party],
+        models.CandidateDelegates.delegates_count > 0
     ).order_by(
         -models.CandidateDelegates.delegates_count,
         models.CandidateDelegates.last
@@ -247,14 +242,9 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated, hide_other = utils.get_results(party, electiondate)
-        data[party] = {
-            'results': results,
-            'other_votecount': other_votecount,
-            'other_votepct': other_votepct,
-            'lastupdated': lastupdated,
-            'total_votecount': utils.tally_results(party, electiondate),
-        }
+        results = utils.get_results(party, electiondate)
+        grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
+        data[party] = OrderedDict(grouped_results)
 
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
@@ -301,6 +291,7 @@ def delegates_json():
             for result in state_candidates:
                 data[state_obj.state][party].append(model_to_dict(result))
 
+    data['last_updated'] = utils.get_delegates_updated_time()
     return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 

@@ -1,10 +1,19 @@
 //results card
 
-.results {
-    header {
+.results,
+.results-multi,
+#results-multi {
+    .card-inner {
         max-width: @max-width-content;
-        margin: 0 auto;
-        padding: 2rem;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    header {
+        margin-bottom: 2rem;
 
         h2 {
             text-transform: uppercase;
@@ -73,6 +82,169 @@
         .votes,
         .pct {
             text-align: right;
+            width: 20%;
+        }
+    }
+}
+
+.results-multi,
+#results-multi {
+    .condensed {
+        display: -webkit-flex;
+        display: flex;
+        width: 100%;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-align-content: stretch;
+        align-content: stretch;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        h2,
+        .top-votes,
+        .meta,
+        .arrow {
+            margin: 0;
+        }
+
+        h2 {
+            -webkit-flex-basis: 7rem;
+            flex-basis: 7rem;
+            font-size: 1.3rem;
+
+            @media @screen-small-above {
+                flex-basis: 9rem;
+                font-size: 1.5rem;
+            }
+        }
+        .top-votes {
+            -webkit-flex-basis: 13rem;
+            flex-basis: 13rem;
+        }
+        table {
+            font-size: 0.85rem;
+            margin: 0;
+
+            td { padding: 0; }
+        }
+        .meta {
+            text-align: right;
+            -webkit-flex-basis: 7rem;
+            flex-basis: 7rem;
+            @media @screen-small-above {
+                -webkit-flex-basis: 9rem;
+                flex-basis: 9rem;
+            }
+            white-space: nowrap;
+
+            li {
+                font-size: .8rem;
+            }
+        }
+        .arrow {
+            -webkit-flex-basis: 2rem;
+            flex-basis: 2rem;
+            @media @screen-small-above {
+                -webkit-flex-basis: 1rem;
+                flex-basis: 1rem;
+            }
+            text-align: right;
+        }
+    }
+    .expanded {
+        display: none;
+
+        h2 {margin-top: .2rem;}
+
+        .icon-down-open {
+            font-size: .9rem;
+            float: right;
+            display: inline-block;
+        }
+    }
+
+    .icon-down-open,
+    .icon-right-open {
+        color: #bababa;
+    }
+
+    .state-result {
+        padding: 0.8rem 0.5rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.7;
+
+        @media @screen-small-above {
+            padding: 0.8rem 1rem;
+        }
+
+        h2 {margin-bottom: .5rem;}
+
+        #results-dem& {
+            background: @democratFade;
+        }
+        #results-gop& {
+            background: @republicanFade3;
+        }
+
+        &.open {
+            opacity: 0.9;
+
+            .condensed { display: none; }
+            .expanded { display: block; }
+
+        }
+        .no-touchevents & {
+            &:hover {
+                opacity: 1;
+                transition: opacity 0.3s ease;
+                cursor: pointer;
+
+                .icon-down-open,
+                .icon-right-open {
+                    color: @brightwhite;
+                    transition: color 0.1s ease;
+                }
+            }
+        }
+    }
+
+    @media @screen-small-above {
+        .desktop { display: inline; }
+        .mobile { display: none; }
+    }
+    @media @screen-small {
+        .desktop { display: none; }
+        .mobile { display: inline; }
+    }
+}
+
+.poll-info {
+    margin: 0 0 1.5rem 0;
+    color: #ccc;
+    .clearfix();
+
+    dt {
+        .knockout();
+        color: #fff;
+        font-size: 1rem;
+        padding-top: 1.5rem;
+        padding-bottom: 3px;
+        border-bottom: 3px solid #444;
+        margin-bottom: 0.25rem;
+        clear: both;
+    }
+
+    dd {
+        margin: 0.3rem 0;
+        font-size: 0.9rem;
+        float: left;
+        width: 50%;
+
+        @media @screen-small-above {
             width: 20%;
         }
     }

@@ -97,6 +97,9 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1kFDuz82cQRmdleJEyrLLdK8vPeU6ByBmCH6r7-FuwJQ'
 COPY_PATH = 'data/copy.xlsx'
 
+CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
+CALENDAR_PATH = 'data/calendar.xlsx'
+
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
     'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
@@ -169,7 +172,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-02-23'
+NEXT_ELECTION_DATE = '2016-03-01'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -178,7 +181,7 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
-DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239']
+DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239', '1187']
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
@@ -270,11 +273,11 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.WARNING
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        COPY_DEPLOY_INTERVAL = 15
-        RESULTS_DEPLOY_INTERVAL = 15
-        CARD_DEPLOY_INTERVAL = 60
+        COPY_DEPLOY_INTERVAL = 30
+        RESULTS_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 3600
-        DELEGATES_DEPLOY_INTERVAL = 3600
+        DELEGATES_DEPLOY_INTERVAL = 600
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -287,12 +290,11 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        NEXT_ELECTION_DATE = '2016-02-23'
         ELEX_FLAGS = ''
-        ELEX_DELEGATE_FLAGS = ''
+        ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         COPY_DEPLOY_INTERVAL = 30
-        RESULTS_DEPLOY_INTERVAL = 0
-        CARD_DEPLOY_INTERVAL = 30
+        RESULTS_DEPLOY_INTERVAL = 600
+        CARD_DEPLOY_INTERVAL = 60
         SITE_ARCHIVE_INTERVAL = 0
         DELEGATES_DEPLOY_INTERVAL = 0
     elif deployment_target == 'test':
@@ -323,7 +325,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456438501.json'
         ELEX_DELEGATE_FLAGS = ''
         COPY_DEPLOY_INTERVAL = 15
         RESULTS_DEPLOY_INTERVAL = 15

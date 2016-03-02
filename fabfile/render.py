@@ -105,7 +105,7 @@ def render_results_html():
     from flask import url_for
 
     view_name = 'results'
-    parties = ['gop']
+    parties = ['gop', 'dem']
 
     for party in parties:
         with app.app.test_request_context():

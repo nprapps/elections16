@@ -62,6 +62,25 @@ class AppConfigTestCase(unittest.TestCase):
         output = utils.ap_time_period_filter(test_date)
         self.assertEqual(output, 'p.m.')
 
+    def test_zero_percent_filter(self):
+        formatted = utils.percent_filter(0)
+        self.assertEqual(formatted, '0%')
+
+    def test_small_percent_filter(self):
+        # 7927 is the number of precincts in Texas
+        value = (1.0 / 7927.0) * 100
+        formatted = utils.percent_filter(value)
+        self.assertEqual(formatted, '<1%')
+
+    def test_large_percent_filter(self):
+        value = (7926.0 / 7927.0) * 100
+        formatted = utils.percent_filter(value)
+        self.assertEqual(formatted, '99.9%')
+
+    def test_one_hundred_percent_filter(self):
+        formatted = utils.percent_filter(100)
+        self.assertEqual(formatted, '100%')
+
     def test_make_gdoc_context(self):
         with open('tests/data/testdoc.html') as f:
             html_string = f.read()
@@ -86,10 +105,10 @@ class AppDelegatesTestCase(unittest.TestCase):
 
     def test_expected_number_of_states(self):
         """
-        60 states expected; 50 states, national, plus 8 territories and weird
-        'US' catchall.
+        61 states expected; 50 states, national, 8 territories and weird
+        'US' catchall, plus last updated time.
         """
-        self.assertEqual(len(self.delegates_data.keys()), 60)
+        self.assertEqual(len(self.delegates_data.keys()), 61)
 
     def test_national_delegate_count(self):
         for candidate in self.delegates_data['nation']['dem']:

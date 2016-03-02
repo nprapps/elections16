@@ -2,9 +2,18 @@
 
 #delegates-dem,
 #delegates-gop {
-    header {
+
+    .card-inner {
         max-width: @max-width-content;
-        margin: 0 auto;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    header {
+        margin-bottom: 2rem;
 
         h2 {
             text-transform: uppercase;
@@ -58,7 +67,7 @@
         }
 
         &.democrat > li {
-            .bar-wrapper { background-color: @democratFade; }
+            .bar-wrapper { background-color: @democratFade3; }
             .bar { background-color: @democrat; }
             &.inactive .bar { background-color: #666; }
         }

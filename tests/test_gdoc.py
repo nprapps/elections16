@@ -16,6 +16,9 @@ class DocParserTestCase(unittest.TestCase):
         self.parser = DocParser(html_string)
         self.contents = self.parser.soup.body.contents
 
+    def test_num_lines(self):
+        self.assertEqual(len(self.contents), 15)
+
     def test_h1(self):
         self._is_tag(self.contents[0], 'h1')
 
@@ -108,6 +111,9 @@ class DocParserTestCase(unittest.TestCase):
 
     def test_credit_extraction(self):
         self.assertEqual(self.parser.credit, 'this is a photo credit')
+
+    def test_mobile_credit_extraction(self):
+        self.assertEqual(self.parser.mobile_credit, 'this is a mobile photo credit')
 
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)

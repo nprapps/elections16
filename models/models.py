@@ -30,6 +30,7 @@ class Result(BaseModel):
     ballotorder = IntegerField(null=True)
     candidateid = CharField(null=True)
     description = CharField(null=True)
+    delegatecount = IntegerField(null=True)
     electiondate = DateField(null=True)
     fipscode = CharField(max_length=5, null=True)
     first = CharField(null=True)
@@ -66,6 +67,12 @@ class Call(BaseModel):
     call_id = ForeignKeyField(Result, related_name='call')
     accept_ap = BooleanField(default=False)
     override_winner = BooleanField(default=False)
+
+
+class RaceMeta(BaseModel):
+    result_id = ForeignKeyField(Result, related_name='meta')
+    poll_closing = DateTimeField(null=True)
+    race_type = CharField(null=True)
 
 
 class Race(BaseModel):

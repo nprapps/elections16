@@ -1,21 +1,9 @@
 //newsletter card
 
 #newsletter {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    //content: '';
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-
-
     .card-inner {
-        max-width: 37rem;
-        margin: 5rem 1rem 1rem 1rem;
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
 
         @media @screen-small-above {
             margin: 0 auto;
@@ -23,10 +11,12 @@
     }
 
     header {
-        max-width: @max-width-content;
-        margin: 0 auto;
-        padding-bottom: 22px;
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
     }
+
     p {
         margin: 0;
         &.footnote {
@@ -62,7 +52,7 @@
         background-color: @accent2;
         color: @white;
 
-        .no-touch & {
+        .no-touchevents & {
             &:hover,
             &:active {
                 opacity: 0.7;

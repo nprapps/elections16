@@ -44,8 +44,12 @@
 // colors
 @republican     : #e61e1d;
 @republicanFade : #342224;
+@republicanFade2: mix(#121212, #342224, 40%);
+@republicanFade3: #4a2224;
 @democrat       : #4167b0;
 @democratFade   : #1d2c40;
+@democratFade2  : #21334e;
+@democratFade3  : #1C2531;
 @live           : #f05b4e; // red in comps
 @accent1        : #f05b4e; // red in comps
 @accent1a       : #EC3C2D; // brand red dark
@@ -294,12 +298,12 @@ body {
         -webkit-animation-delay: 1s;
 
     &.show-nav  {
-        .touch & {
+        .touchevents & {
             -webkit-animation-name: fadeIn;
             animation-name: fadeIn;
         }
 
-        .no-touch & {
+        .no-touchevents & {
             opacity: 1;
         }
     }
@@ -401,6 +405,7 @@ body {
 // -------------------------
 
 .flickity-page-dots {
+    left: 0;
     bottom: 0;
     padding: 15px 0 15px 0;
     z-index: 100;
@@ -428,12 +433,17 @@ body {
     width: 40px;
     height: 40px;
 
-    .no-touch & {
+    .no-touchevents & {
+        top: auto;
+        bottom: 0;
+        z-index: 101;
         width: 52px;
         height: 52px;
-        top: auto;
-        bottom: -26px;
-        z-index: 101;
+        .transform(none);
+
+        svg {
+            top: 14px;
+        }
     }
 
     &.previous {
@@ -441,7 +451,7 @@ body {
         svg {
             left: 0;
         }
-        .no-touch & {
+        .no-touchevents & {
             left: 30px;
         }
     }
@@ -453,7 +463,7 @@ body {
             right: 0;
         }
 
-        .no-touch & {
+        .no-touchevents & {
             right: 30px;
         }
     }
@@ -468,7 +478,7 @@ body {
     svg {
         width: 35%;
         height: 35%;
-        .no-touch & {
+        .no-touchevents & {
             top: 14px;
             width: 25px;
             height: 25px;
@@ -484,7 +494,7 @@ body {
     .gotham();
     color: #ccc;
 
-    .touch & {
+    .touchevents & {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
     }
@@ -492,13 +502,34 @@ body {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 
-    .card-inner {
-        padding-top: 5rem;
+    // full width container within a section or slide
+    .full-block {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
 
-        .no-touch & {
-            padding-bottom: 100px;
+        .full-block-cell {
+            width: 100%;
+            display: table-cell;
+            position: relative;
+            vertical-align: top;
+            padding-top: 5rem;
+            @media @screen-small-above {
+                padding-top: 6rem;
+                vertical-align: middle;
+            }
+        }
+
+        .card-inner {
+            .no-touchevents & {
+                padding-bottom: 100px;
+            }
         }
     }
+
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -509,18 +540,18 @@ body {
     }
 
     h1 {
-        font-size: 2.7rem;
+        font-size: 2.2rem;
+
+        @media @screen-small-above {
+            font-size: 2.7rem;
+        }
+
     }
+
+
     h2 { font-size: 1.5rem; }
     h3 { font-size: 14px; }
     h4 { margin-top: 3rem; }
-
-    header { padding: 2rem; }
-    article {
-        padding: 0 2rem 2rem 2rem;
-        max-width: @max-width-content;
-        margin: 0 auto;
-    }
 
     a:link,
     a:visited {
@@ -530,7 +561,7 @@ body {
         padding-bottom: 2px;
         border-bottom: 2px solid @accent2;
     }
-    .no-touch & {
+    .no-touchevents & {
         a:hover,
         a:active {
             color: @accent2;
@@ -598,12 +629,12 @@ body {
     .photo-credit {
         margin: 0;
         position: absolute;
-        bottom: 15px;
+        bottom: 5px;
         right: 15px;
         .knockout();
         font-size: .8rem;
         letter-spacing: 0;
-        opacity: .9;
+        color: #fff;
     }
 
     .featured-links {
@@ -622,7 +653,7 @@ body {
             font-weight: 700;
             text-decoration: none;
         }
-        .no-touch & {
+        .no-touchevents & {
             a:hover,
             a:active {
                 color: #fff;

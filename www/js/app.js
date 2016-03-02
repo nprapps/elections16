@@ -14,6 +14,7 @@ var $duration = null;
 var $begin = null;
 var $newsletterContainer = null;
 var $newsletterForm = null;
+var $newsletterButton = null;
 var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
@@ -30,7 +31,7 @@ var $donateLink = null;
 
 // Global references
 var candidates = {}
-var isTouch = Modernizr.touch;
+var isTouch = Modernizr.touchevents;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
@@ -45,8 +46,8 @@ if (!LIVE) {
     var LIVE = false;
 }
 var testLogged = false;
-var donateLanguageTest = null;
-var donateButtonTest = null;
+var donateButtonText = null;
+var resultsMultiOpen = [];
 
 
 var focusWorkaround = false;
@@ -86,11 +87,13 @@ var onDocumentLoad = function(e) {
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
     $donateLink = $('.donate-link');
+    $stateResults = $('.state-result')
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
+    $body.on('click', '.results-multi .state-result', onStateResultsClick);
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
@@ -108,6 +111,8 @@ var onDocumentLoad = function(e) {
 
     resultsCountdown($('#results-dem'));
     resultsCountdown($('#results-gop'));
+
+    resultsMultiToggle();
 
     setPolls();
     AUDIO.setupAudio();
@@ -182,6 +187,14 @@ var detectMobileBg = function($card) {
         var bgURL = $cardBackground.data('default-bg');
         $cardBackground.css('background-image', 'url("' + bgURL + '")');
     }
+
+    if ($cardBackground.find('.photo-credit').data('mobile-credit') && $(window).width() <= 768) {
+        var photoCredit = $cardBackground.find('.photo-credit').data('mobile-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    } else {
+        var photoCredit = $cardBackground.find('.photo-credit').data('default-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    }
 }
 
 
@@ -233,26 +246,10 @@ var checkOverflow = function(cardHeight, $slide) {
 }
 
 var startTest = function() {
-    var possibleDonateLanguage = ['a', 'b', 'c']
-    var possibleButtonLanguage = ['tailored', 'generic'];
-
-    donateLanguageTest = possibleDonateLanguage[getRandomInt(0, possibleDonateLanguage.length)];
-    donateButtonTest = possibleButtonLanguage[getRandomInt(0, possibleButtonLanguage.length)];
-
-    for (var i = 0; i < COPY.donate.length; i++) {
-        if (COPY.donate[i].test === donateLanguageTest) {
-            var row = COPY.donate[i];
-            $donateHeadline.html(row.headline);
-            $donateText.html(row.text);
-            if (donateButtonTest === 'tailored') {
-                $donateLink.find('a').text(row.button);
-            } else {
-                $donateLink.find('a').text('Donate');
-            }
-        }
-    }
-
-    ANALYTICS.trackEvent('tests-run', donateLanguageTest + '-' + donateButtonTest);
+    var rand = getRandomInt(0, COPY.donate_buttons.length);
+    donateButtonText = COPY.donate_buttons[rand].text;
+    $donateLink.find('a').text(donateButtonText);
+    ANALYTICS.trackEvent('button-test', donateButtonText);
 }
 
 var getRandomInt = function(min, max) {
@@ -457,7 +454,7 @@ var getCard = function(url, $card, i) {
             ifModified: true,
             success: function(data, status) {
                 if (status === 'success') {
-                    var $cardInner = $(data).find('.card-inner');
+                    var $cardInner = $(data).find('.full-block');
                     var $cardBackground = $(data).find('.card-background');
 
                     var htmlString = $cardInner.prop('outerHTML');
@@ -471,9 +468,12 @@ var getCard = function(url, $card, i) {
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
                     }
+                    if ($card.is('.results-multi')) {
+                        resultsMultiToggle();
+                    }
                 }
 
-                if ($card.is('.results')) {
+                if ($card.is('.results') || $card.is('.results-multi')) {
                     resultsCountdown($card);
                 }
             }
@@ -534,11 +534,10 @@ var onResize = function() {
     }
 }
 
-
 var onDonateLinkClick = function(e) {
     var timesToClick = calculateTimeBucket(globalStartTime);
-    var testSlug = donateLanguageTest + '-' + donateButtonTest;
-    ANALYTICS.trackEvent('donate-link-click', testSlug, timesToClick[0], timesToClick[1]);
+    var value = 'Cable donate card - ' + donateButtonText;
+    ANALYTICS.trackEvent('donate-link-click', value, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
@@ -571,6 +570,30 @@ var makeListOfCandidates = function(candidates) {
     return candidateList;
 }
 
+var onStateResultsClick = function() {
+    var s = $(this).data('state');
+
+    // toggle it open or closed
+    $(this).toggleClass('open');
+
+    // update the list of open states
+    if($(this).hasClass('open')) {
+        resultsMultiOpen.push(s);
+    } else {
+        resultsMultiOpen = resultsMultiOpen.filter(function(d) {
+            return d != s;
+        });
+    }
+}
+
+// on multi-state result cards, toggle open state
+var resultsMultiToggle = function() {
+    resultsMultiOpen.forEach(function(d,i) {
+        $('.state-result[data-state="' + d + '"]').addClass('open');
+    });
+}
+
+// countdown spinner to the next results card data refresh
 var resultsCountdown = function($card) {
     if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
         return;
