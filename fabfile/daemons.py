@@ -49,12 +49,14 @@ def main(run_once=False):
             results_start = now
             logger.info('load results')
             execute('data.load_results')
+            execute('deploy_results_data')
 
         if app_config.DELEGATES_DEPLOY_INTERVAL and (now - delegates_start) > app_config.DELEGATES_DEPLOY_INTERVAL:
             sleep(5)
             delegates_start = now
             logger.info('load delegates')
             execute('data.load_delegates')
+            execute('deploy_delegates_data')
             sleep(5)
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - card_start) > app_config.CARD_DEPLOY_INTERVAL:

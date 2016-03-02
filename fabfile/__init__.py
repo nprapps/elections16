@@ -225,22 +225,10 @@ def deploy_client(reload=False):
 
 
 @task
-def deploy_results_cards():
+def deploy_results_data():
     """
     Deploy results cards.
     """
-    require('settings', provided_by=[production, staging])
-    local('rm -rf .cards_html/results')
-    render.render_results_html()
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        '.cards_html/results',
-        'results',
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
-        }
-    )
-
     local('rm -rf .cards_html/data')
     render.render_results_json()
     flat.deploy_folder(
@@ -254,22 +242,11 @@ def deploy_results_cards():
 
 
 @task
-def deploy_delegates_cards():
+def deploy_delegates_data():
     """
     Deploy results cards.
     """
     require('settings', provided_by=[production, staging])
-
-    local('rm -rf .cards_html/delegates')
-    render.render_delegates_html()
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        '.cards_html/delegates',
-        'delegates',
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
-        }
-    )
 
     local('rm -rf .cards_html/data')
     render.render_delegates_json()
