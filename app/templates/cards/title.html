@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="countdown-banner {% if state == 'during' %} live-banner begin {% endif %}">
+        <div class="countdown-banner {% if state == 'during' %} live-banner begin {% endif %} {% if COPY.meta.live_audio == 'live' %} live-audio {% endif %}">
             <h6>{{ banner }}</h6>
         </div>
 
