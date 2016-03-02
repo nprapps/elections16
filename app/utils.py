@@ -345,7 +345,7 @@ def group_poll_closings(races):
 
     for race in races:
         poll_closing_time = ap_time_filter(race['poll_closing'])
-        if race['precinctsreporting'] == 0:
+        if race['precinctsreporting'] == 0 or not race['called']:
             grouped[poll_closing_time].append(race['statename'])
 
     return grouped
