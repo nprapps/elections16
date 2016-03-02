@@ -171,7 +171,7 @@ def render_index():
         g.no_compress = True
         view = _view_from_name('index')
         content = view().data
-        _write_file('', content.decode('utf-8'))
+        _write_file('', content)
 
 @task()
 def render_current_state(folder='.cards_html'):
@@ -193,7 +193,7 @@ def _write_file(path, content):
         pass
 
     filepath = os.path.join(path, 'index.html')
-    with codecs.open(filepath, 'w') as f:
+    with open(filepath, 'w') as f:
         f.write(content)
 
 @task(default=True)
