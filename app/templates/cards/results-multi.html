@@ -20,7 +20,7 @@
     </ul>
 
     {% for race in races %}
-    {% if race.precinctsreporting > 0 %}
+    {% if race.precinctsreporting > 0 or race.called %}
     <div class="state-result" data-state="{{ party|lower }}-{{ race.statename|lower }}">
         <div class="condensed">
             <!-- full name on desktop / ap abbr on mobile -->

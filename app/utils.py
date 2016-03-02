@@ -304,8 +304,12 @@ def get_race_results(raceid, party):
     secondary_sort = sorted(filtered, key=candidate_sort_lastname)
     sorted_results = sorted(secondary_sort, key=candidate_sort_votecount, reverse=True)
 
+    called = False
+
     serialized_results = []
     for result in sorted_results:
+        if result.winner and (result.call[0].accept_ap or (result.call[0].override_winner)):
+            called = True
         serialized_results.append(model_to_dict(result, backrefs=True))
 
     output = {
@@ -319,7 +323,8 @@ def get_race_results(raceid, party):
         'precinctstotal': serialized_results[0]['precinctstotal'],
         'poll_closing': serialized_results[0]['meta'][0]['poll_closing'],
         'race_type': serialized_results[0]['meta'][0]['race_type'],
-        'total': tally_results(raceid)
+        'total': tally_results(raceid),
+        'called': called,
     }
 
     return output
@@ -340,7 +345,7 @@ def group_poll_closings(races):
 
     for race in races:
         poll_closing_time = ap_time_filter(race['poll_closing'])
-        if race['precinctsreporting'] == 0:
+        if race['precinctsreporting'] == 0 and not race['called']:
             grouped[poll_closing_time].append(race['statename'])
 
     return grouped
