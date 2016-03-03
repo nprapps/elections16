@@ -2,9 +2,7 @@
 var $window = null;
 var $body = null;
 var $cardsWrapper = null;
-var $titlecard = null;
 var $audioPlayer = null;
-var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
 var $globalControls = null;
@@ -21,7 +19,6 @@ var $flickityNav = null;
 var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
-var $linkRoundupLinks = null;
 var $alert = null;
 var $alertAction = null;
 var $closeAlert = null;
@@ -63,11 +60,10 @@ var onDocumentLoad = function(e) {
     $body = $('body');
     $cardsWrapper = $('.cards');
     $cards = $('.card');
-    $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $mute = $('.mute-button');
     $globalNav = $('.global-nav');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
@@ -77,17 +73,14 @@ var onDocumentLoad = function(e) {
     $newsletterContainer = $('#newsletter');
     $newsletterForm = $newsletterContainer.find('form');
     $newsletterInput = $newsletterContainer.find('input');
-    $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
-    $linkRoundupLinks = $('.link-roundup a');
     $alert = $('.alert');
     $alertAction = $('.alert-action');
     $closeAlert = $('.close-alert');
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
     $donateLink = $('.donate-link');
-    $stateResults = $('.state-result')
 
     rem = getEmPixels();
 
@@ -111,7 +104,6 @@ var onDocumentLoad = function(e) {
 
     resultsCountdown($('#results-dem'));
     resultsCountdown($('#results-gop'));
-
     resultsMultiToggle();
 
     setPolls();
@@ -343,7 +335,7 @@ var onFlickityDotsClick = function(e) {
     if (currentCard === newCardIndex) {
         return;
     }
-    
+
     var cardExitEvent = 'page-dot-nav';
     var exitedCardID = $cards.eq(currentCard).attr('id');
     ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
@@ -510,29 +502,6 @@ var onLinkRoundupLinkClick = function() {
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
 
-/*
-* STUB TEST COMMANDS
-*/
-
-var getCandidates = function() {
-    $.getJSON('assets/candidates.json', function(data) {
-        return data;
-    });
-}
-
-var makeListOfCandidates = function(candidates) {
-    var candidateList = [];
-    for (var i = 0; i < candidates.length; i++) {
-        var firstName = candidates[i]['first'];
-        var lastName = candidates[i]['last'];
-
-        var candidateName = firstName + ' ' + lastName;
-
-        candidateList.push(candidateName);
-    }
-
-    return candidateList;
-}
 
 var onStateResultsClick = function() {
     var s = $(this).data('state');
@@ -664,5 +633,29 @@ var onNewsletterSubmit = function(e) {
             ANALYTICS.trackEvent('newsletter-signup-error', currentState);
         }
     });
+}
+
+/*
+* STUB TEST COMMANDS
+*/
+
+var getCandidates = function() {
+    $.getJSON('assets/candidates.json', function(data) {
+        return data;
+    });
+}
+
+var makeListOfCandidates = function(candidates) {
+    var candidateList = [];
+    for (var i = 0; i < candidates.length; i++) {
+        var firstName = candidates[i]['first'];
+        var lastName = candidates[i]['last'];
+
+        var candidateName = firstName + ' ' + lastName;
+
+        candidateList.push(candidateName);
+    }
+
+    return candidateList;
 }
 $(onDocumentLoad);
