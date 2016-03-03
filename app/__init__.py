@@ -190,7 +190,7 @@ def delegates(party):
     context['last_updated'] = utils.get_delegates_updated_time()
 
     context['candidates'] = candidates
-    context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
+    context['needed'] = list(candidates)[0].party_need
     context['party'] = ap_party
 
     context['party_class'] = utils.PARTY_MAPPING[party]['class']
