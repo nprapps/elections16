@@ -170,13 +170,10 @@ class CandidateDelegates(BaseModel):
         return self.candidateid not in app_config.DROPPED_OUT
 
     def pledged_delegates_pct(self):
-        estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
-        return 100 * ((self.delegates_count - self.superdelegates_count) / float(estimated_total))
+        return 100 * ((self.delegates_count - self.superdelegates_count) / float(self.party_total))
 
     def superdelegates_pct(self):
-        estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
-        return 100 * (self.superdelegates_count / float(estimated_total))
+        return 100 * (self.superdelegates_count / float(self.party_total))
 
     def delegates_pct(self):
-        estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
-        return 100 * (self.delegates_count / float(estimated_total))
+        return 100 * (self.delegates_count / float(self.party_total))
