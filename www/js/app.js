@@ -2,9 +2,7 @@
 var $window = null;
 var $body = null;
 var $cardsWrapper = null;
-var $titlecard = null;
 var $audioPlayer = null;
-var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
 var $globalControls = null;
@@ -21,7 +19,6 @@ var $flickityNav = null;
 var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
-var $linkRoundupLinks = null;
 var $alert = null;
 var $alertAction = null;
 var $closeAlert = null;
@@ -63,11 +60,10 @@ var onDocumentLoad = function(e) {
     $body = $('body');
     $cardsWrapper = $('.cards');
     $cards = $('.card');
-    $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $mute = $('.mute-button');
     $globalNav = $('.global-nav');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
@@ -77,17 +73,14 @@ var onDocumentLoad = function(e) {
     $newsletterContainer = $('#newsletter');
     $newsletterForm = $newsletterContainer.find('form');
     $newsletterInput = $newsletterContainer.find('input');
-    $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
-    $linkRoundupLinks = $('.link-roundup a');
     $alert = $('.alert');
     $alertAction = $('.alert-action');
     $closeAlert = $('.close-alert');
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
     $donateLink = $('.donate-link');
-    $stateResults = $('.state-result')
 
     rem = getEmPixels();
 
@@ -111,7 +104,6 @@ var onDocumentLoad = function(e) {
 
     resultsCountdown($('#results-dem'));
     resultsCountdown($('#results-gop'));
-
     resultsMultiToggle();
 
     setPolls();
@@ -283,7 +275,7 @@ var onDragEnd = function(e, pointer) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'card-swipe-next';
     }
-    logCardExit(exitedCardID, cardExitEvent);
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onKeydown = function(e) {
@@ -314,7 +306,7 @@ var onKeydown = function(e) {
         }
     }
 
-    logCardExit(exitedCardID, cardExitEvent);
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onFlickityNavClick = function(e) {
@@ -332,7 +324,8 @@ var onFlickityNavClick = function(e) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'nav-click-next';
     }
-    logCardExit(exitedCardID, cardExitEvent);
+
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onFlickityDotsClick = function(e) {
@@ -342,9 +335,10 @@ var onFlickityDotsClick = function(e) {
     if (currentCard === newCardIndex) {
         return;
     }
+
     var cardExitEvent = 'page-dot-nav';
     var exitedCardID = $cards.eq(currentCard).attr('id');
-    logCardExit(exitedCardID, cardExitEvent);
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onCardSettle = function() {
@@ -369,57 +363,19 @@ var onCardSettle = function() {
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click', currentState);
-    logCardExit('title');
-}
-
-var logCardExit = function(id, exitEvent) {
-    var timeValue = calculateSlideExitTime(id);
-    ANALYTICS.trackEvent('card-exit', id, exitEvent, timeValue);
-}
-
-var calculateSlideExitTime = function(id) {
-    var currentTime = new Date();
-    var timeOnSlide = Math.abs(currentTime - slideStartTime);
-    timeOnSlides[id] += timeOnSlide;
-    slideStartTime = new Date();
-    return timeOnSlide;
-}
-
-var calculateTimeBucket = function(startTime) {
-    var currentTime = new Date();
-    var totalTime = Math.abs(currentTime - startTime);
-    var seconds = Math.floor(totalTime/1000);
-    var timeBucket = getTimeBucket(seconds);
-
-    return [timeBucket, totalTime];
-}
-
-var getTimeBucket = function(seconds) {
-    if (seconds < 60) {
-        var tensOfSeconds = Math.floor(seconds / 10) * 10;
-        var timeBucket = tensOfSeconds.toString() + 's';
-    } else if (seconds >=60 && seconds < 300) {
-        var minutes = Math.floor(seconds / 60);
-        var timeBucket = minutes.toString() + 'm';
-    } else {
-        var minutes = Math.floor(seconds / 60);
-        var fivesOfMinutes = Math.floor(minutes / 5) * 5;
-        var timeBucket = fivesOfMinutes.toString() + 'm';
-    }
-
-    return timeBucket
+    ANALYTICS.logCardExit('title');
 }
 
 var onUnload = function(e) {
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
-    calculateSlideExitTime(currentSlideId);
+    ANALYTICS.calculateSlideExitTime(currentSlideId);
 
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
             if (timeOnSlides[slide] > 0) {
-                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                var timeBucket = ANALYTICS.getTimeBucket(timeOnSlides[slide] / 1000);
                 ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
             }
         }
@@ -546,29 +502,6 @@ var onLinkRoundupLinkClick = function() {
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
 
-/*
-* STUB TEST COMMANDS
-*/
-
-var getCandidates = function() {
-    $.getJSON('assets/candidates.json', function(data) {
-        return data;
-    });
-}
-
-var makeListOfCandidates = function(candidates) {
-    var candidateList = [];
-    for (var i = 0; i < candidates.length; i++) {
-        var firstName = candidates[i]['first'];
-        var lastName = candidates[i]['last'];
-
-        var candidateName = firstName + ' ' + lastName;
-
-        candidateList.push(candidateName);
-    }
-
-    return candidateList;
-}
 
 var onStateResultsClick = function() {
     var s = $(this).data('state');
@@ -700,5 +633,29 @@ var onNewsletterSubmit = function(e) {
             ANALYTICS.trackEvent('newsletter-signup-error', currentState);
         }
     });
+}
+
+/*
+* STUB TEST COMMANDS
+*/
+
+var getCandidates = function() {
+    $.getJSON('assets/candidates.json', function(data) {
+        return data;
+    });
+}
+
+var makeListOfCandidates = function(candidates) {
+    var candidateList = [];
+    for (var i = 0; i < candidates.length; i++) {
+        var firstName = candidates[i]['first'];
+        var lastName = candidates[i]['last'];
+
+        var candidateName = firstName + ' ' + lastName;
+
+        candidateList.push(candidateName);
+    }
+
+    return candidateList;
 }
 $(onDocumentLoad);

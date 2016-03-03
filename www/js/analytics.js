@@ -226,93 +226,44 @@ var ANALYTICS = (function () {
         ga('send', eventData);
     }
 
-    // SHARING
-
-    var openShareDiscuss = function() {
-        trackEvent('open-share-discuss');
+    var logCardExit = function(id, exitEvent) {
+        var timeValue = calculateSlideExitTime(id);
+        ANALYTICS.trackEvent('card-exit', id, exitEvent, timeValue);
     }
 
-    var closeShareDiscuss = function() {
-        trackEvent('close-share-discuss');
+    var calculateSlideExitTime = function(id) {
+        var currentTime = new Date();
+        var timeOnSlide = Math.abs(currentTime - slideStartTime);
+        timeOnSlides[id] += timeOnSlide;
+        slideStartTime = new Date();
+        return timeOnSlide;
     }
 
-    var clickTweet = function(location) {
-        trackEvent('tweet', location);
+    var calculateTimeBucket = function(startTime) {
+        var currentTime = new Date();
+        var totalTime = Math.abs(currentTime - startTime);
+        var seconds = Math.floor(totalTime/1000);
+        var timeBucket = getTimeBucket(seconds);
+
+        return [timeBucket, totalTime];
     }
 
-    var clickFacebook = function(location) {
-        trackEvent('facebook', location);
-    }
-
-    var clickEmail = function(location) {
-        trackEvent('email', location);
-    }
-
-    var postComment = function() {
-        trackEvent('new-comment');
-    }
-
-    var actOnFeaturedTweet = function(action, tweet_url) {
-        trackEvent('featured-tweet-action', action, null);
-    }
-
-    var actOnFeaturedFacebook = function(action, post_url) {
-        trackEvent('featured-facebook-action', action, null);
-    }
-
-    var copySummary = function() {
-        trackEvent('summary-copied');
-    }
-
-    // NAVIGATION
-    var usedKeyboardNavigation = false;
-
-    var useKeyboardNavigation = function() {
-        if (!usedKeyboardNavigation) {
-            trackEvent('keyboard-nav');
-            usedKeyboardNavigation = true;
+    var getTimeBucket = function(seconds) {
+        if (seconds < 60) {
+            var tensOfSeconds = Math.floor(seconds / 10) * 10;
+            var timeBucket = tensOfSeconds.toString() + 's';
+        } else if (seconds >=60 && seconds < 300) {
+            var minutes = Math.floor(seconds / 60);
+            var timeBucket = minutes.toString() + 'm';
+        } else {
+            var minutes = Math.floor(seconds / 60);
+            var fivesOfMinutes = Math.floor(minutes / 5) * 5;
+            var timeBucket = fivesOfMinutes.toString() + 'm';
         }
+
+        return timeBucket
     }
 
-    var completeTwentyFivePercent =  function() {
-        trackEvent('completion', '0.25');
-    }
-
-    var completeFiftyPercent =  function() {
-        trackEvent('completion', '0.5');
-    }
-
-    var completeSeventyFivePercent =  function() {
-        trackEvent('completion', '0.75');
-    }
-
-    var completeOneHundredPercent =  function() {
-        trackEvent('completion', '1');
-    }
-
-    var startFullscreen = function() {
-        trackEvent('fullscreen-start');
-    }
-
-    var stopFullscreen = function() {
-        trackEvent('fullscreen-stop');
-    }
-
-    var begin = function(location) {
-        trackEvent('begin', location);
-    }
-
-    var readyChromecast = function() {
-        trackEvent('chromecast-ready');
-    }
-
-    var startChromecast = function() {
-        trackEvent('chromecast-start');
-    }
-
-    var stopChromecast = function() {
-        trackEvent('chromecast-stop');
-    }
 
     setupGoogle();
     setupComscore();
@@ -321,25 +272,9 @@ var ANALYTICS = (function () {
     return {
         'setupChartbeat': setupChartbeat,
         'trackEvent': trackEvent,
-        'openShareDiscuss': openShareDiscuss,
-        'closeShareDiscuss': closeShareDiscuss,
-        'clickTweet': clickTweet,
-        'clickFacebook': clickFacebook,
-        'clickEmail': clickEmail,
-        'postComment': postComment,
-        'actOnFeaturedTweet': actOnFeaturedTweet,
-        'actOnFeaturedFacebook': actOnFeaturedFacebook,
-        'copySummary': copySummary,
-        'useKeyboardNavigation': useKeyboardNavigation,
-        'completeTwentyFivePercent': completeTwentyFivePercent,
-        'completeFiftyPercent': completeFiftyPercent,
-        'completeSeventyFivePercent': completeSeventyFivePercent,
-        'completeOneHundredPercent': completeOneHundredPercent,
-        'startFullscreen': startFullscreen,
-        'stopFullscreen': stopFullscreen,
-        'begin': begin,
-        'readyChromecast': readyChromecast,
-        'startChromecast': startChromecast,
-        'stopChromecast': stopChromecast
+        'logCardExit': logCardExit,
+        'calculateSlideExitTime': calculateSlideExitTime,
+        'calculateTimeBucket': calculateTimeBucket,
+        'getTimeBucket': getTimeBucket
     };
 }());
