@@ -37,9 +37,13 @@
     .segment-audio-content {
 
         .podcast-description {
-            max-width: 40rem;
+            max-width: 24rem;
             margin: 0 auto;
             padding-bottom: 16px;
+
+            @media @screen-medium-above {
+                max-width: 40rem;
+            }
         }
 
         ul {
