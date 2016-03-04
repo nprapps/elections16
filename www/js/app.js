@@ -16,7 +16,6 @@ var $newsletterContainer = null;
 var $newsletterForm = null;
 var $newsletterButton = null;
 var $newsletterInput = null;
-var $mute = null;
 var $flickityNav = null;
 var $flickityDots = null;
 var $subscribeBtn = null
@@ -65,7 +64,6 @@ var onDocumentLoad = function(e) {
     $audioPlayer = $('.audio-player');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
-    $mute = $('.mute-button');
     $nowPlaying = $('.now-playing');
     $segmentType = $('.segment-type');
     $globalNav = $('.global-nav');
@@ -94,7 +92,6 @@ var onDocumentLoad = function(e) {
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
-    $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
@@ -452,7 +449,7 @@ var checkLivestreamStatus = function() {
         $('.toggle-btn').removeClass().addClass('toggle-btn play');
     }
 
-    if (!LIVE && $mute.is(':visible')) {
+    if (!LIVE) {
         AUDIO.stopLivestream();
     }
 }

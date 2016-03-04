@@ -124,20 +124,18 @@ var AUDIO = (function() {
             }
         }
 
-        $duration.text($.jPlayer.convertTime(remainingTime));
+        $cards.eq(audioPlayingIndex).find('.duration').text($.jPlayer.convertTime(remainingTime));
     }
 
     var onEnded = function(e) {
-        $mute.hide();
-        $('.toggle-btn').removeClass('pause').addClass('play');
-        $rewindBtn.addClass('darken');
-        $forwardBtn.addClass('darken');
+        $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass('pause').addClass('play');
+        $cards.eq(audioPlayingIndex).find('.rewind').addClass('darken');
+        $cards.eq(audioPlayingIndex).find('.forward').addClass('darken');
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
     var stopLivestream = function(e) {
         stopAudio();
-        $mute.hide();
     }
 
     return {
