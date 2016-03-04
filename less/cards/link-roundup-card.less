@@ -1,0 +1,119 @@
+//link roundup card
+
+.card.link-roundup {
+
+    .full-block {
+        .full-block-cell {
+            @media @screen-small-above {
+                vertical-align: top;
+            }
+        }
+    }
+
+    header {
+        .background-size(cover);
+        background-position: center center;
+        position: relative;
+        min-height: 8rem;
+        margin-bottom: 22px;
+        border-bottom: 5px solid @accent2;
+        border-top: 1px solid #222;
+
+        @media @screen-small-above {
+            border-top: 1px solid #444;
+            min-height: 13rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+
+            @media @screen-small-above {
+                text-align: left;
+                font-size: 3.1rem;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;;
+            font-size: 1.3rem;
+            @media @screen-small-above {
+                font-size: 1.7;
+            }
+        }
+
+        .header-screen {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            //content: '';
+            background: rgba(0, 0, 0, .5);
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+        .header-content {
+            width: 100%;
+            padding: 2rem;
+            max-width: @max-width-content;
+            margin: 0 auto;
+            @media @screen-small-above {
+                padding: 2rem 0;
+            }
+        }
+
+        .photo-credit {
+            bottom: 5px;
+            right: 5px;
+            opacity: .7;
+        }
+    }
+
+    article {
+        max-width: 44.4rem;
+        margin: 0 30px 2rem 30px;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+            max-width: 41.4rem;
+        }
+    }
+
+
+    // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
+    ol {
+        counter-reset: li;
+        margin-left: 3.5rem;
+
+        @media @screen-medium-above {
+            margin-left: 0;
+        }
+
+
+        > li {
+            position: relative;
+            margin-left: 2em;
+            list-style: none;
+            margin: 2.5rem 0 0 0;
+            line-height: 2;
+
+            &:before {
+                content:counter(li);
+                counter-increment:li;
+                -moz-box-sizing:border-box;
+                -webkit-box-sizing:border-box;
+                box-sizing:border-box;
+                position: absolute;
+                top: -0.07em;
+                left: -1.3em;
+                width: 1em;
+                text-align: center;
+                .knockout();
+                font-size: 3rem;
+                line-height: 1;
+            }
+        }
+    }
+}

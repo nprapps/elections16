@@ -4,6 +4,9 @@
 <head>
     <!-- CHARTBEAT -->
     <script type="text/javascript">
+        if (window.location.protocol === 'https:') {
+            window.location = 'http://elections.npr.org';
+        }
         var _sf_startpt=(new Date()).getTime();
     </script>
 
@@ -18,7 +21,7 @@
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
-    {{ CSS.render('css/app.min.css') }}
+    {{ CSS.render('css/rendered/app.min.css') }}
 
     {% include '_social_tags.html' %}
 
@@ -27,7 +30,10 @@
 </head>
 <body>
     <!-- ANALYTICS JAVASCRIPT -->
-    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/lib/cookie.js') }}
+    {{ JS.push('js/lib/es6-promise.js') }}
+    {{ JS.push('js/lib/cross-storage-client.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/analytics.js') }}
     {{ JS.render('js/app-header.min.js') }}
@@ -36,22 +42,16 @@
 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/flickity.pkgd.js') }}
-    {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/jquery.jplayer.js') }}
     {{ JS.push('js/lib/getEmPixels.js') }}
 
-    {# uncomment both files to use simpleStorage #}
-    {# {{ JS.push('js/lib/simpleStorage.js') }} #}
-    {# {{ JS.push('js/storage.js') }} #}
+    {{ JS.push('js/copy.js') }}
 
     {% if RELOAD_TRIGGER %}
     {{ JS.push('js/reload.js') }}
     {% endif %}
 
-    {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/share.js') }}
     {{ JS.push('js/audio.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}

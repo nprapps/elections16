@@ -23,8 +23,6 @@ var AUDIO = (function() {
         $('.toggle-btn').removeClass().addClass('toggle-btn loading fa-spin');
         $segmentType.text('Loading');
 
-        $mute.show();
-
         for (var i = 0; i < timedAnalytics.length; i++) {
             timedAnalytics[i]['measured'] = false;
         }
@@ -37,12 +35,17 @@ var AUDIO = (function() {
         $('.toggle-btn').removeClass().addClass('toggle-btn pause');
         $mute.show();
         $mute.removeClass('muted').addClass('playing');
+        $rewindBtn.removeClass('darken');
+        $forwardBtn.removeClass('darken');
     }
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
         $('.toggle-btn').removeClass().addClass('toggle-btn play');
         $mute.removeClass('playing').addClass('muted');
+        $rewindBtn.addClass('darken');
+        $forwardBtn.addClass('darken');
+
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
 
@@ -56,22 +59,31 @@ var AUDIO = (function() {
     }
 
     var rewindAudio = function() {
-        var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
-        var seekTime =  currentTime > 15 ? currentTime - 15 : 0;
-        $audioPlayer.jPlayer('play', seekTime);
+        if (!$audioPlayer.data('jPlayer').status.paused) {
+            var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
+            var seekTime =  currentTime > 15 ? currentTime - 15 : 0;
+            $audioPlayer.jPlayer('play', seekTime);
 
-        ANALYTICS.trackEvent('audio-rewind', $audioPlayer.data().jPlayer.status.src);
+            ANALYTICS.trackEvent('audio-rewind', $audioPlayer.data().jPlayer.status.src);
+        }
     }
 
     var forwardAudio = function() {
-        var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
-        var seekTime =  currentTime + 15;
-        $audioPlayer.jPlayer('play', seekTime);
+        if (!$audioPlayer.data('jPlayer').status.paused) {
+            var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
+            var seekTime =  currentTime + 15;
+            $audioPlayer.jPlayer('play', seekTime);
 
-        ANALYTICS.trackEvent('audio-forward', $audioPlayer.data().jPlayer.status.src);
+            ANALYTICS.trackEvent('audio-forward', $audioPlayer.data().jPlayer.status.src);
+        }
     };
 
     var toggleAudio = function() {
+        if (!$audioPlayer.data('jPlayer')['status']['src'] && !LIVE) {
+            setMedia(PODCAST_URL);
+            return;
+        }
+
         if ($audioPlayer.data('jPlayer')['status']['paused']) {
             if (LIVE) {
                 setMedia(LIVE_AUDIO_URL);
@@ -100,7 +112,7 @@ var AUDIO = (function() {
         }
 
         if (position > 10) {
-            var timeBucket = getTimeBucket(position);
+            var timeBucket = ANALYTICS.getTimeBucket(position);
             if (!timedAnalytics[timeBucket]) {
                 timedAnalytics[timeBucket] = true;
                 ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);
@@ -113,6 +125,8 @@ var AUDIO = (function() {
     var onEnded = function(e) {
         $mute.hide();
         $('.toggle-btn').removeClass('pause').addClass('play');
+        $rewindBtn.addClass('darken');
+        $forwardBtn.addClass('darken');
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
@@ -130,4 +144,3 @@ var AUDIO = (function() {
         'stopLivestream': stopLivestream
     }
 })();
-

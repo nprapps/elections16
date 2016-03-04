@@ -30,6 +30,7 @@ class Result(BaseModel):
     ballotorder = IntegerField(null=True)
     candidateid = CharField(null=True)
     description = CharField(null=True)
+    delegatecount = IntegerField(null=True)
     electiondate = DateField(null=True)
     fipscode = CharField(max_length=5, null=True)
     first = CharField(null=True)
@@ -66,6 +67,12 @@ class Call(BaseModel):
     call_id = ForeignKeyField(Result, related_name='call')
     accept_ap = BooleanField(default=False)
     override_winner = BooleanField(default=False)
+
+
+class RaceMeta(BaseModel):
+    result_id = ForeignKeyField(Result, related_name='meta')
+    poll_closing = DateTimeField(null=True)
+    race_type = CharField(null=True)
 
 
 class Race(BaseModel):
@@ -162,6 +169,13 @@ class CandidateDelegates(BaseModel):
     def status(self):
         return self.candidateid not in app_config.DROPPED_OUT
 
+    def pledged_delegates_pct(self):
+        return 100 * ((self.delegates_count - self.superdelegates_count) / float(self.party_need))
+
+    def superdelegates_pct(self):
+        print self.party_total
+        return 100 * (self.superdelegates_count / float(self.party_need))
+
     def delegates_pct(self):
-        estimated_total = app_config.DELEGATE_ESTIMATES[self.party]
-        return 100 * (self.delegates_count / float(estimated_total))
+        print self.party_total
+        return 100 * (self.delegates_count / float(self.party_need))

@@ -1,10 +1,14 @@
 {% block content %}
     <div class="card {{ template }}" id="{{ slug }}" data-refresh-route="{{ route }}" data-refresh-rate="{{ refresh_rate }}">
 
-        <div class="card-inner">
-            {% block card_content %}
-                <h1>Card slug: {{ slug }}</h1>
-            {% endblock card_content %}
+        <div class="full-block">
+            <div class="full-block-cell">
+                <div class="card-inner">
+                    {% block card_content %}
+                        <h1>Card slug: {{ slug }}</h1>
+                    {% endblock card_content %}
+                </div>
+            </div>
         </div>
 
         {% block card_background %}

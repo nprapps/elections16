@@ -2,18 +2,12 @@
 
 {% block card_content %}
 
-    <h2>Hey You!</h2>
+<h2 class="donate-headline">{{ COPY.meta.donate_hed }}</h2>
 
-    <p>The people who built this work at NPR. We make money a few ways, but it’s mostly from our local member stations, and <em>they</em> make money from donations. From <em>you</em>.</p>
+<div class="donate-text">{{ COPY.meta.donate_text }}</div>
 
-    <p>Anyway. You should donate.</p>
+<p class="donate-link">
+    <a href="http://www.npr.org/stations/donate/"></a>
+</p>
 
-    <p class="donate-link"><a href="http://www.npr.org/stations/donate/">Click if you care.</a></p>
-
-{% endblock %}
-
-{% block card_background %}
-<span class="card-background" data-default-bg="http://www.npr.org/about/aboutnpr/img/tz-intro-large.jpg">
-    <p class="photo-credit">Photo Credit</p>
-</span>
 {% endblock %}

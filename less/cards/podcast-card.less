@@ -1,0 +1,172 @@
+//podcast card
+
+#podcast, .audio-story {
+
+    .no-touchevents & {
+        .card-background {
+            .photo-credit {
+                bottom: 55px;
+            }
+        }
+    }
+
+
+    .card-inner {
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    .card-background {
+        background-repeat: no-repeat;
+        .background-size(cover);
+        background-position: center center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.4;
+    }
+
+
+    .segment-audio-content {
+
+        .podcast-description {
+            max-width: 24rem;
+            margin: 0 auto;
+            padding-bottom: 16px;
+
+            @media @screen-medium-above {
+                max-width: 32rem;
+            }
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        @media @screen-small-above {
+            width: 40rem;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+
+        .segment-audio-player {
+            position: relative;
+            margin: 2rem auto;
+            max-width: 18rem;
+
+            li {margin: 0;}
+
+            .segment-rewind {
+                position: absolute;
+                top:0.5rem;
+                left: 0;
+            }
+
+            .rewind {
+                background: transparent url('@{img-root}/rewind-15.svg') no-repeat;
+                .background-size(cover);
+                background-position: center center;
+                width: 3.6rem;
+                height: 4.1rem;
+                border: none;
+            }
+
+            .forward {
+                background: transparent url('@{img-root}/forward-15.svg') no-repeat;
+                .background-size(cover);
+                background-position: center center;
+                width: 3.6rem;
+                height: 4.1rem;
+                border: none;
+            }
+
+            .rewind, .forward {
+                &.darken {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            }
+
+
+            .segment-play {
+                margin: 0 2rem;
+
+                button {
+                    border: none;
+                    background-color: transparent;
+                    width: 7rem;
+                    text-align: center;
+                    // margin-bottom: 0.5rem;
+                    outline: none;
+                }
+
+                .play:before {
+                    content: "\e802";
+                    font-family: elections16;
+                    color: @brightwhite;
+                    font-size: 5rem;
+                }
+
+                .pause:before {
+                    content: "\e806";
+                    font-family: elections16;
+                    color: @brightwhite;
+                    font-size: 5rem;
+                }
+
+                .loading:before {
+                    content: "\e805";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 5rem;
+                    -webkit-animation: fa-spin 2s infinite linear;
+                    animation: fa-spin 2s infinite linear;
+                }
+
+                .duration {
+                    display: block;
+                }
+            }
+
+            .segment-forward {
+                position: absolute;
+                top:0.5rem;
+                right: 0;
+            }
+        }
+
+        .segment-source {
+            .knockout();
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            line-height: 1;
+            text-shadow: 2px 2px 2px #222;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1;
+            text-shadow: 2px 2px 2px #222;
+            font-weight: normal;
+        }
+
+        p {
+            .gotham();
+            font-size: 1rem;
+            line-height: 1.7;
+            color: @white;
+            // text-shadow: 2px 2px 2px #222;
+        }
+    }
+}

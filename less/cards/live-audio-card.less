@@ -1,0 +1,163 @@
+//live audio card
+
+#live-audio {
+
+    .no-touchevents & {
+        .card-background {
+            .photo-credit {
+                bottom: 55px;
+            }
+        }
+    }
+
+    .card-inner {
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+        }
+    }
+
+    .card-background {
+        background-repeat: no-repeat;
+        .background-size(cover);
+        background-position: center center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.4;
+    }
+
+
+    .segment-audio-content {
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        @media @screen-small-above {
+            max-width: 22rem;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+
+        .segment-audio-player {
+            position: relative;
+            margin: 2rem auto;
+            max-width: 8rem;
+
+            li {margin: 0;}
+
+            .segment-type {
+                .knockout();
+                font-size: 1.3rem;
+                text-transform: uppercase;
+                color: #fff;
+                padding: .4rem 0;
+                background-color: @live;
+                margin-bottom: 5px;
+            }
+
+            .segment-play {
+                margin: 0;
+                /*padding: 1.4rem 2rem 1rem 2rem;*/
+                background-color: rgba(255, 255, 255, .4);
+                cursor: pointer;
+
+                button {
+                    border: none;
+                    background-color: transparent;
+                }
+
+                /*.play, .pause, .loading {*/
+                    /*position: relative;*/
+                    /*width: 5rem;*/
+                    /*height: 5rem;*/
+                    /*margin-bottom: .5rem;*/
+                    /*outline: none;*/
+                /*}*/
+
+                .play:before {
+                    content: "\e802";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 5rem;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 13px;*/
+                }
+
+                .pause:before {
+                    content: "\e806";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 5rem;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 5px;*/
+                }
+
+                .loading:before {
+                    content: "\e805";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 5rem;
+                    /*position: absolute;*/
+                    /*top: 0;*/
+                    /*left: 7px;*/
+                    -webkit-animation: fa-spin 2s infinite linear;
+                    animation: fa-spin 2s infinite linear;
+                }
+
+
+            }
+
+        }
+
+        // .broadcast-description {
+        //     max-width: 20rem;
+        //     margin: 0 auto;
+        // }
+        .segment-source {
+            .knockout();
+            font-size: 1.5rem;
+            line-height: 1;
+            text-shadow: 2px 2px 2px #222;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: .5rem;
+
+            @media @screen-small-above {
+                font-size: 3.1rem;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;;
+            font-size: 1.3rem;
+            @media @screen-small-above {
+                font-size: 1.7;
+                text-align: center;
+                white-space: nowrap;
+            }
+        }
+
+        p {
+            .gotham();
+            font-size: 1rem;
+            line-height: 1.7;
+            color: @white;
+            text-shadow: 2px 2px 2px #222;
+        }
+    }
+}

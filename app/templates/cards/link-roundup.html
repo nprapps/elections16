@@ -1,7 +1,7 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<header style="background-image: url('{{ image }}');">
+<header style="background-image: url('{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}');">
     <div class="header-screen">
         <div class="header-content">
             <!-- before -->
@@ -9,7 +9,7 @@
             <h1>{{ subhed|smarty }}</h1>
         </div>
     </div>
-    <p class="photo-credit">{{ credit }}</p>
+    <p class="photo-credit">{% if DEPLOYMENT_TARGET != 'production' and preview_credit %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}</p>
 </header>
 
 <article>

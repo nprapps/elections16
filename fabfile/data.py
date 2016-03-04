@@ -6,13 +6,13 @@ Commands that update or process the application data.
 import app_config
 
 from app.gdoc import get_google_doc
-from elex.api import Elections
+from app.utils import set_delegates_updated_time, convert_serial_date
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
 import codecs
-import os
+import copytext
 import servers
 
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
@@ -31,6 +31,16 @@ def bootstrap_db():
     """
     Build the database.
     """
+    create_db()
+    create_tables()
+    load_results()
+    create_calls()
+    create_race_meta()
+    load_delegates()
+
+
+@task
+def create_db():
     with settings(warn_only=True):
         if env.get('settings'):
             servers.stop_service('uwsgi')
@@ -50,6 +60,9 @@ def bootstrap_db():
             servers.start_service('uwsgi')
             servers.start_service('deploy')
 
+
+@task
+def create_tables():
     models.Result.create_table()
     models.Call.create_table()
     models.Race.create_table()
@@ -57,12 +70,15 @@ def bootstrap_db():
     models.Candidate.create_table()
     models.BallotPosition.create_table()
     models.CandidateDelegates.create_table()
+    models.RaceMeta.create_table()
+
 
 @task
-def load_init_data(election_date=app_config.NEXT_ELECTION_DATE):
+def load_init_data():
     """
     Bootstrap races, candidates, reporting units, and ballot positions.
     """
+    election_date = app_config.NEXT_ELECTION_DATE
     with shell_env(**app_config.database):
         local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
         local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
@@ -89,12 +105,13 @@ def delete_delegates():
 
 
 @task
-def load_results(election_date=app_config.NEXT_ELECTION_DATE):
+def load_results():
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
+    election_date = app_config.NEXT_ELECTION_DATE
     local('mkdir -p .data')
-    cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
+    cmd = 'elex results {0} --results-level state {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**app_config.database):
         with settings(warn_only=True):
             cmd_output = local(cmd, capture=True)
@@ -123,6 +140,7 @@ def load_delegates():
             print("LOADING DELEGATES")
             delete_delegates()
             local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
+            set_delegates_updated_time()
         else:
             print("ERROR GETTING DELEGATES")
             print(cmd_output.stderr)
@@ -136,11 +154,44 @@ def create_calls():
     models.Call.delete().execute()
 
     results = models.Result.select().where(
-        models.Result.level == 'state'
+        models.Result.level == 'state',
+        models.Result.officename == 'President'
     )
 
     for result in results:
         models.Call.create(call_id=result.id)
+
+@task
+def create_race_meta():
+    models.RaceMeta.delete().execute()
+
+    results = models.Result.select().where(
+        models.Result.level == 'state',
+        models.Result.officename == 'President'
+    )
+
+    calendar = copytext.Copy(app_config.CALENDAR_PATH)
+    calendar_sheet = calendar['data']
+
+    for row in calendar_sheet._serialize():
+        if not row.get('full_poll_closing_time'):
+            continue
+
+        poll_closing = convert_serial_date(row.get('full_poll_closing_time'))
+
+        results = models.Result.select().where(
+                models.Result.level == 'state',
+                models.Result.statename == row['state_name'],
+                models.Result.officename == 'President'
+        )
+
+        for result in results:
+            race_type = row[result.party.lower()]
+            models.RaceMeta.create(
+                    result_id=result.id,
+                    race_type=race_type,
+                    poll_closing=poll_closing
+            )
 
 
 @task

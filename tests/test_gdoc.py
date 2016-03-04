@@ -16,6 +16,9 @@ class DocParserTestCase(unittest.TestCase):
         self.parser = DocParser(html_string)
         self.contents = self.parser.soup.body.contents
 
+    def test_num_lines(self):
+        self.assertEqual(len(self.contents), 15)
+
     def test_h1(self):
         self._is_tag(self.contents[0], 'h1')
 
@@ -49,7 +52,7 @@ class DocParserTestCase(unittest.TestCase):
 
     def test_a_count(self):
         tags = self.parser.soup.body.findAll('a')
-        self.assertEqual(len(tags), 1)
+        self.assertEqual(len(tags), 2)
 
     def test_ahref(self):
         href = self.contents[8].a.attrs['href'][0]
@@ -85,6 +88,9 @@ class DocParserTestCase(unittest.TestCase):
     def test_tabletr(self):
         self._contains_tag(self.contents[13], 'tr', 2)
 
+    def test_anchortag_combination(self):
+        self._contains_tag(self.contents[14], 'a')
+
     def test_headline_extraction(self):
         self.assertEqual(self.parser.headline, 'this is a headline')
 
@@ -95,7 +101,7 @@ class DocParserTestCase(unittest.TestCase):
         self.assertEqual(self.parser.banner, 'this is a banner')
 
     def test_image_extraction(self):
-        self.assertEqual(self.parser.image, 'https://secure.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg')
+        self.assertEqual(self.parser.image, 'http://media.npr.org/assets/img/2015/12/29/gettyimages-477258926_wide-s700-c85.jpg')
 
     def test_mobile_image_extraction(self):
         self.assertEqual(self.parser.mobile_image, 'https://media.giphy.com/media/3oEdv5FXteGY8iS8CY/giphy.gif')
@@ -109,13 +115,15 @@ class DocParserTestCase(unittest.TestCase):
     def test_credit_extraction(self):
         self.assertEqual(self.parser.credit, 'this is a photo credit')
 
+    def test_mobile_credit_extraction(self):
+        self.assertEqual(self.parser.mobile_credit, 'this is a mobile photo credit')
+
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
 
     def _contains_tag(self, tag, tag_name, count=1):
         child_length = len(tag.findAll(tag_name))
         self.assertEqual(child_length, count)
-
 
 if __name__ == '__main__':
     unittest.main()

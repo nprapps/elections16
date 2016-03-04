@@ -4,18 +4,26 @@
 
 <article>
 
-    <h1>Bookmark This App!</h1>
+    <h1>{{ COPY.feedback.headline }}</h1>
 
-    <p>And add us to your home screen. We’ll be back with live results and political analysis for New Hampshire and every primary, caucus, and&nbsp;convention.</p>
+    {{ COPY.feedback.text }}
 
-    <p>We'd love to hear what you think. Help us give you what you need to keep up with the 2016 elections. Email&nbsp;<a href="mailto:elections@npr.org">Elections@npr.org</a>.</p>
+    <div class="upcoming-events">
+        <h3>{{ COPY.feedback.hed_calendar }}</h3>
+
+        <dl>
+            {% for event in COPY.calendar %}
+            <dt>{{ event.date }}</dt>
+            <dd>{{ event.states }}</dd>
+            {% endfor %}
+        </dl>
+
+        <p>{{ COPY.feedback.link_calendar }}</p>
+    </div>
 
     <div class="project-credits">
-        <h4>Project Credits</h4>
-
-        <p><b>Produced and Edited by:</b> Julia Redpath Buckley, Beth Donovan, Amita Kelly, Meg Kelly, Domenico Montanaro and Lori&nbsp;Todd.</p>
-
-        <p><b>Designed and Developed by:</b> Brian Boyer, David Eads, Tyler Fisher, Alyson Hurt, Livia Labate, Becky Lettenberger and Wes&nbsp;Lindamood.</p>
+        <h4>{{ COPY.feedback.hed_credits }}</h4>
+        {{ COPY.feedback.credits }}
     </div>
 
 </article>

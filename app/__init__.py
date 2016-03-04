@@ -1,11 +1,12 @@
 import app_config
+import m3u8
 import simplejson as json
 
 from . import utils
 from collections import OrderedDict
-from datetime import date, datetime
-from gdoc import get_google_doc_html
 from flask import Flask, jsonify, make_response, render_template
+from gdoc import get_google_doc_html
+from itertools import groupby
 from models import models
 from oauth.blueprint import oauth, oauth_required
 from peewee import fn
@@ -29,23 +30,6 @@ app.add_template_filter(utils.ap_time_filter, name='ap_time')
 app.add_template_filter(utils.ap_state_filter, name='ap_state')
 app.add_template_filter(utils.ap_time_period_filter, name='ap_time_period')
 
-
-PARTY_MAPPING = {
-    'dem': {
-       'AP': 'Dem',
-       'long': 'Democrat',
-       'class': 'democrat',
-       'adverb': 'Democratic',
-    },
-    'gop': {
-        'AP': 'GOP',
-        'long': 'Republican',
-        'class': 'republican',
-        'adverb': 'Republican',
-    }
-}
-
-
 DELEGATE_WHITELIST = {
     'gop': [
         'Bush',
@@ -54,6 +38,7 @@ DELEGATE_WHITELIST = {
         'Cruz',
         'Fiorina',
         'Gilmore',
+        'Huckabee',
         'Kasich',
         'Paul',
         'Rubio',
@@ -65,19 +50,7 @@ DELEGATE_WHITELIST = {
     ],
 }
 
-
-class APDatetimeEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            thedate = utils.ap_date_filter(obj.strftime('%m/%d/%Y'))
-            thetime = utils.ap_time_filter(obj.strftime('%I:%M'))
-            theperiod = utils.ap_time_period_filter(obj.strftime('%p'))
-            return '{0}, {1} {2}'.format(thedate, thetime, theperiod)
-        elif isinstance(obj, date):
-            return obj.isoformat()
-        else:
-            return super(APDatetimeEncoder, self).default(obj)
-
+USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
 
 @app.route('/preview/<path:path>/')
 @oauth_required
@@ -162,6 +135,25 @@ def audio_story(key):
 
     return render_template('cards/audio-story.html', **context)
 
+@app.route('/results-single/<party>/')
+@oauth_required
+def results_single(party):
+    context = make_context()
+
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    last_updated = utils.get_last_updated(party)
+
+    context['races'] = races
+    context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
+    context['slug'] = 'results-%s' % party
+    context['template'] = 'results'
+    context['route'] = '/results-single/%s/' % party
+
+    if context['state'] != 'inactive':
+        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
+
+    return render_template('cards/results.html', **context)
 
 @app.route('/results/<party>/')
 @oauth_required
@@ -172,20 +164,22 @@ def results(party):
 
     context = make_context()
 
-    results, other_votecount, other_votepct, last_updated = get_results(party, app_config.NEXT_ELECTION_DATE)
+    races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
+    poll_closings = utils.group_poll_closings(races)
+    last_updated = utils.get_last_updated(party)
 
-    context['results'] = results
-    context['other_votecount'] = other_votecount
-    context['other_votepct'] = other_votepct
+    context['races'] = races
+    context['poll_closings'] = poll_closings
     context['last_updated'] = last_updated
+    context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
-    context['template'] = 'results'
+    context['template'] = 'results-multi'
     context['route'] = '/results/%s/' % party
 
     if context['state'] != 'inactive':
-        context['refresh_rate'] = 20
+        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
 
-    return render_template('cards/results.html', **context)
+    return render_template('cards/results-multi.html', **context)
 
 
 @app.route('/delegates/<party>/')
@@ -197,25 +191,26 @@ def delegates(party):
 
     context = make_context()
 
-    ap_party = PARTY_MAPPING[party]['AP']
+    ap_party = utils.PARTY_MAPPING[party]['AP']
 
     candidates = models.CandidateDelegates.select().where(
         models.CandidateDelegates.party == ap_party,
         models.CandidateDelegates.level == 'nation',
-        models.CandidateDelegates.last << DELEGATE_WHITELIST[party]
+        models.CandidateDelegates.last << DELEGATE_WHITELIST[party],
+        models.CandidateDelegates.delegates_count > 0
     ).order_by(
         -models.CandidateDelegates.delegates_count,
         models.CandidateDelegates.last
     )
 
-    context['last_updated'] = datetime.utcnow()
+    context['last_updated'] = utils.get_delegates_updated_time()
 
     context['candidates'] = candidates
-    context['needed'] = app_config.DELEGATE_ESTIMATES[ap_party]
+    context['needed'] = list(candidates)[0].party_need
     context['party'] = ap_party
 
-    context['party_class'] = PARTY_MAPPING[party]['class']
-    context['party_long'] = PARTY_MAPPING[party]['adverb']
+    context['party_class'] = utils.PARTY_MAPPING[party]['class']
+    context['party_long'] = utils.PARTY_MAPPING[party]['adverb']
 
     context['slug'] = 'delegates-%s' % party
     context['template'] = 'delegates'
@@ -244,6 +239,9 @@ def live_audio():
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
 
+    pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
+    context['live_audio_url'] = pointer.segments[0].uri
+
     context['slug'] = 'live-audio'
     context['template'] = 'live-audio'
     context['route'] = '/live-audio/'
@@ -260,15 +258,11 @@ def results_json(electiondate):
     }
 
     for party in data.keys():
-        results, other_votecount, other_votepct, lastupdated = get_results(party, electiondate)
-        data[party] = {
-            'results': results,
-            'other_votecount': other_votecount,
-            'other_votepct': other_votepct,
-            'lastupdated': lastupdated
-        }
+        results = utils.get_results(party, electiondate)
+        grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
+        data[party] = OrderedDict(grouped_results)
 
-    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 
 @app.route('/data/delegates.json')
@@ -279,7 +273,7 @@ def delegates_json():
     data['nation'] = OrderedDict((('dem', []), ('gop', [])))
     for party in ['dem', 'gop']:
         national_candidates = models.CandidateDelegates.select().where(
-            models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+            models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
             models.CandidateDelegates.level == 'nation',
             models.CandidateDelegates.last << whitelist
         ).order_by(
@@ -300,7 +294,7 @@ def delegates_json():
 
         for party in ['dem', 'gop']:
             state_candidates = models.CandidateDelegates.select().where(
-                models.CandidateDelegates.party == PARTY_MAPPING[party]['AP'],
+                models.CandidateDelegates.party == utils.PARTY_MAPPING[party]['AP'],
                 models.CandidateDelegates.state == state_obj.state,
                 models.CandidateDelegates.level == 'state',
                 models.CandidateDelegates.last << whitelist
@@ -313,7 +307,8 @@ def delegates_json():
             for result in state_candidates:
                 data[state_obj.state][party].append(model_to_dict(result))
 
-    return json.dumps(data, use_decimal=True, cls=APDatetimeEncoder)
+    data['last_updated'] = utils.get_delegates_updated_time()
+    return json.dumps(data, use_decimal=True, cls=utils.APDatetimeEncoder)
 
 
 @app.route('/get-caught-up/')
@@ -403,52 +398,15 @@ def current_state():
     return jsonify(**data)
 
 
-def get_results(party, electiondate):
-    """
-    Results getter
-    """
-    ap_party = PARTY_MAPPING[party]['AP']
-    party_results = models.Result.select().where(
-        models.Result.electiondate == electiondate,
-        models.Result.party == ap_party,
-        models.Result.level == 'state'
-    )
-
-    filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(party_results), ap_party)
-
-    secondary_sort = sorted(filtered, key=utils.candidate_sort_lastname)
-    sorted_results = sorted(secondary_sort, key=utils.candidate_sort_votecount, reverse=True)
-
-    serialized_results = []
-    for result in sorted_results:
-        serialized_results.append(model_to_dict(result, backrefs=True))
-
-    latest_result = models.Result.select(
-        fn.Max(models.Result.lastupdated).alias('lastupdated')
-    ).where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
-    ).get()
-
-    return serialized_results, other_votecount, other_votepct, latest_result.lastupdated
-
-
-def never_cache_preview(response):
-    """
-    Ensure preview is never cached
-    """
-    response.cache_control.max_age = 0
-    response.cache_control.no_cache = True
-    response.cache_control.must_revalidate = True
-    response.cache_control.no_store = True
-    return response
-
 app.register_blueprint(static)
 app.register_blueprint(oauth)
 
+app.before_request(utils.open_db)
+app.after_request(utils.close_db)
+
 # Enable Werkzeug debug pages
 if app_config.DEBUG:
-    app.after_request(never_cache_preview)
+    app.after_request(utils.never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
 else:
     wsgi_app = app

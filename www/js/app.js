@@ -2,35 +2,38 @@
 var $window = null;
 var $body = null;
 var $cardsWrapper = null;
-var $titlecard = null;
 var $audioPlayer = null;
-var $segmentType = null;
 var $globalHeader = null;
 var $globalNav = null;
 var $globalControls = null;
 var $rewindBtn = null;
 var $forwardBtn = null;
+var $nowPlaying = null;
+var $segmentType = null;
 var $duration = null;
 var $begin = null;
 var $newsletterContainer = null;
 var $newsletterForm = null;
+var $newsletterButton = null;
 var $newsletterInput = null;
 var $mute = null;
 var $flickityNav = null;
+var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
-var $linkRoundupLinks = null;
 var $alert = null;
 var $alertAction = null;
 var $closeAlert = null;
+var $donateHeadline = null;
+var $donateText = null;
+var $donateLink = null;
 
 // Global references
 var candidates = {}
-var isTouch = Modernizr.touch;
+var isTouch = Modernizr.touchevents;
 var currentState = null;
 var rem = null;
 var dragDirection = null;
-var LIVE_AUDIO_URL = 'http://nprdmp-live01-mp3.akacast.akamaistream.net/7/998/364916/v1/npr.akacast.akamaistream.net/nprdmp_live01_mp3'
 var playedAudio = false;
 var globalStartTime = null;
 var slideStartTime = null;
@@ -41,6 +44,10 @@ var cardExitEvent = null;
 if (!LIVE) {
     var LIVE = false;
 }
+var testLogged = false;
+var donateButtonText = null;
+var resultsMultiOpen = [];
+
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -55,11 +62,12 @@ var onDocumentLoad = function(e) {
     $body = $('body');
     $cardsWrapper = $('.cards');
     $cards = $('.card');
-    $titlecard = $('.card').eq(0);
     $audioPlayer = $('.audio-player');
-    $segmentType = $('.segment-type');
     $rewindBtn = $('.rewind');
     $forwardBtn = $('.forward');
+    $mute = $('.mute-button');
+    $nowPlaying = $('.now-playing');
+    $segmentType = $('.segment-type');
     $globalNav = $('.global-nav');
     $globalHeader = $('.global-header');
     $globalControls = $('.global-controls');
@@ -69,30 +77,39 @@ var onDocumentLoad = function(e) {
     $newsletterContainer = $('#newsletter');
     $newsletterForm = $newsletterContainer.find('form');
     $newsletterInput = $newsletterContainer.find('input');
-    $mute = $('.mute-button');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
-    $linkRoundupLinks = $('.link-roundup a');
     $alert = $('.alert');
     $alertAction = $('.alert-action');
     $closeAlert = $('.close-alert');
+    $donateHeadline = $('.donate-headline');
+    $donateText = $('.donate-text');
+    $donateLink = $('.donate-link');
 
     rem = getEmPixels();
 
     $body.on('click', '.begin', onBeginClick);
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
-    $body.on('click', '.toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '.results-multi .state-result', onStateResultsClick);
+    $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
+    $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
-    $supportBtn.on('click', onSupportBtnClick);
     $closeAlert.on('click', onCloseAlertClick);
+    $donateLink.on('click', onDonateLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
 
     setupFlickity();
+
+    resultsCountdown($('#results-dem'));
+    resultsCountdown($('#results-gop'));
+    resultsMultiToggle();
+
     setPolls();
     AUDIO.setupAudio();
 
@@ -104,6 +121,7 @@ var onDocumentLoad = function(e) {
     if (window.navigator.standalone) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
+
 }
 
 var setupFlickity = function() {
@@ -115,7 +133,7 @@ var setupFlickity = function() {
         draggable: isTouch,
         dragThreshold: 20,
         imagesLoaded: true,
-        pageDots: false,
+        pageDots: isTouch ? false : true,
         setGallerySize: false,
         friction: isTouch ? 0.28 : 1,
         selectedAttraction: isTouch ? 0.025 : 1
@@ -132,6 +150,7 @@ var setupFlickity = function() {
     }
 
     $flickityNav = $('.flickity-prev-next-button');
+    $flickityDots = $('.flickity-page-dots');
 
     // bind events that must be bound after flickity init
     $cardsWrapper.on('cellSelect', onCardChange);
@@ -146,6 +165,8 @@ var setupFlickity = function() {
     } else {
         $flickityNav.on('click', onFlickityNavClick);
     }
+    $flickityDots.on('click', onFlickityDotsClick);
+
     // set height on titlecard if necessary
     var $thisCard = $('.is-selected');
     var cardHeight = $thisCard.find('.card-inner').height() + (6 * rem);
@@ -161,6 +182,14 @@ var detectMobileBg = function($card) {
     } else {
         var bgURL = $cardBackground.data('default-bg');
         $cardBackground.css('background-image', 'url("' + bgURL + '")');
+    }
+
+    if ($cardBackground.find('.photo-credit').data('mobile-credit') && $(window).width() <= 768) {
+        var photoCredit = $cardBackground.find('.photo-credit').data('mobile-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
+    } else {
+        var photoCredit = $cardBackground.find('.photo-credit').data('default-credit');
+        $cardBackground.find('.photo-credit').text(photoCredit);
     }
 }
 
@@ -179,17 +208,19 @@ var onCardChange = function(e) {
         $globalNav.addClass("show-nav");
         $duringModeNotice.show();
         $flickityNav.show();
+        $flickityDots.show();
     } else {
         $globalNav.removeClass("show-nav");
         $duringModeNotice.hide();
         $flickityNav.hide();
+        $flickityDots.hide();
     }
 
-    if ($thisCard.is('#podcast') && !playedAudio) {
-        // PODCAST_URL is defined in the podcast template
-        AUDIO.setMedia(PODCAST_URL);
-        playedAudio = true;
-    }
+    // if ($thisCard.is('#podcast') && !playedAudio) {
+    //     // PODCAST_URL is defined in the podcast template
+    //     AUDIO.setMedia(PODCAST_URL);
+    //     playedAudio = true;
+    // }
 
     if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
@@ -200,6 +231,11 @@ var onCardChange = function(e) {
         AUDIO.setMedia(AUDIO_URL);
         playedAudio = true;
     }
+    
+    if ($thisCard.is('#donate') && !testLogged) {
+        startTest();
+        testLogged = true;
+    }
 }
 
 var checkOverflow = function(cardHeight, $slide) {
@@ -208,6 +244,17 @@ var checkOverflow = function(cardHeight, $slide) {
     } else {
         $slide.find('.card-background').height('100%');
     }
+}
+
+var startTest = function() {
+    var rand = getRandomInt(0, COPY.donate_buttons.length);
+    donateButtonText = COPY.donate_buttons[rand].text;
+    $donateLink.find('a').text(donateButtonText);
+    ANALYTICS.trackEvent('button-test', donateButtonText);
+}
+
+var getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 var onDragStart = function(e, pointer) {
@@ -237,7 +284,7 @@ var onDragEnd = function(e, pointer) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'card-swipe-next';
     }
-    logCardExit(exitedCardID, cardExitEvent);
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onKeydown = function(e) {
@@ -268,7 +315,7 @@ var onKeydown = function(e) {
         }
     }
 
-    logCardExit(exitedCardID, cardExitEvent);
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onFlickityNavClick = function(e) {
@@ -286,7 +333,21 @@ var onFlickityNavClick = function(e) {
         exitedCardID = $cards.eq(newCardIndex - 1).attr('id');
         cardExitEvent = 'nav-click-next';
     }
-    logCardExit(exitedCardID, cardExitEvent);
+
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
+}
+
+var onFlickityDotsClick = function(e) {
+    var flickity = $cardsWrapper.data('flickity');
+    var newCardIndex = flickity.selectedIndex;
+
+    if (currentCard === newCardIndex) {
+        return;
+    }
+
+    var cardExitEvent = 'page-dot-nav';
+    var exitedCardID = $cards.eq(currentCard).attr('id');
+    ANALYTICS.logCardExit(exitedCardID, cardExitEvent);
 }
 
 var onCardSettle = function() {
@@ -311,57 +372,19 @@ var onCardSettle = function() {
 var onBeginClick = function(e) {
     $cardsWrapper.flickity('next');
     ANALYTICS.trackEvent('begin-btn-click', currentState);
-    logCardExit('title');
-}
-
-var logCardExit = function(id, exitEvent) {
-    var timeValue = calculateSlideExitTime(id);
-    ANALYTICS.trackEvent('card-exit', id, exitEvent, timeValue);
-}
-
-var calculateSlideExitTime = function(id) {
-    var currentTime = new Date();
-    var timeOnSlide = Math.abs(currentTime - slideStartTime);
-    timeOnSlides[id] += timeOnSlide;
-    slideStartTime = new Date();
-    return timeOnSlide;
-}
-
-var calculateTimeBucket = function(startTime) {
-    var currentTime = new Date();
-    var totalTime = Math.abs(currentTime - startTime);
-    var seconds = Math.floor(totalTime/1000);
-    var timeBucket = getTimeBucket(seconds);
-
-    return [timeBucket, totalTime];
-}
-
-var getTimeBucket = function(seconds) {
-    if (seconds < 60) {
-        var tensOfSeconds = Math.floor(seconds / 10) * 10;
-        var timeBucket = tensOfSeconds.toString() + 's';
-    } else if (seconds >=60 && seconds < 300) {
-        var minutes = Math.floor(seconds / 60);
-        var timeBucket = minutes.toString() + 'm';
-    } else {
-        var minutes = Math.floor(seconds / 60);
-        var fivesOfMinutes = Math.floor(minutes / 5) * 5;
-        var timeBucket = fivesOfMinutes.toString() + 'm';
-    }
-
-    return timeBucket
+    ANALYTICS.logCardExit('title');
 }
 
 var onUnload = function(e) {
     // log final slide time
     var currentSlideId = $('.is-selected').attr('id');
-    calculateSlideExitTime(currentSlideId);
+    ANALYTICS.calculateSlideExitTime(currentSlideId);
 
     // log all slide total time buckets and time values
     for (slide in timeOnSlides) {
         if (timeOnSlides.hasOwnProperty(slide)) {
             if (timeOnSlides[slide] > 0) {
-                var timeBucket = getTimeBucket(timeOnSlides[slide] / 1000);
+                var timeBucket = ANALYTICS.getTimeBucket(timeOnSlides[slide] / 1000);
                 ANALYTICS.trackEvent('total-time-on-slide', slide, timeBucket, timeOnSlides[slide]);
             }
         }
@@ -380,7 +403,7 @@ var setPolls = function() {
             var fullRefreshRate = refreshRate * 1000;
 
             var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
-            setInterval(cardGetter, fullRefreshRate)
+            setInterval(cardGetter, fullRefreshRate);
         }
     }
 
@@ -396,7 +419,7 @@ var getCard = function(url, $card, i) {
             ifModified: true,
             success: function(data, status) {
                 if (status === 'success') {
-                    var $cardInner = $(data).find('.card-inner');
+                    var $cardInner = $(data).find('.full-block');
                     var $cardBackground = $(data).find('.card-background');
 
                     var htmlString = $cardInner.prop('outerHTML');
@@ -410,6 +433,13 @@ var getCard = function(url, $card, i) {
                     if ($card.is('#live-audio')) {
                         checkLivestreamStatus();
                     }
+                    if ($card.is('.results-multi')) {
+                        resultsMultiToggle();
+                    }
+                }
+
+                if ($card.is('.results') || $card.is('.results-multi')) {
+                    resultsCountdown($card);
                 }
             }
         });
@@ -447,6 +477,7 @@ var setLiveAlert = function() {
     $alert.removeClass().addClass('alert signal-during');
     $alertAction.off('click');
     $alertAction.on('click', function() {
+        ANALYTICS.trackEvent('alert-click', 'live-event');
         location.reload(true);
     });
 }
@@ -468,10 +499,10 @@ var onResize = function() {
     }
 }
 
-
-var onSupportBtnClick = function(e) {
+var onDonateLinkClick = function(e) {
     var timesToClick = calculateTimeBucket(globalStartTime);
-    ANALYTICS.trackEvent('support-btn-click', currentState, timesToClick[0], timesToClick[1]);
+    var value = 'Cable donate card - ' + donateButtonText;
+    ANALYTICS.trackEvent('donate-link-click', value, timesToClick[0], timesToClick[1]);
 }
 
 var onLinkRoundupLinkClick = function() {
@@ -480,28 +511,78 @@ var onLinkRoundupLinkClick = function() {
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
 
-/*
-* STUB TEST COMMANDS
-*/
 
-var getCandidates = function() {
-    $.getJSON('assets/candidates.json', function(data) {
-        return data;
+var onStateResultsClick = function() {
+    var s = $(this).data('state');
+
+    // toggle it open or closed
+    $(this).toggleClass('open');
+
+    // update the list of open states
+    if($(this).hasClass('open')) {
+        resultsMultiOpen.push(s);
+    } else {
+        resultsMultiOpen = resultsMultiOpen.filter(function(d) {
+            return d != s;
+        });
+    }
+}
+
+// on multi-state result cards, toggle open state
+var resultsMultiToggle = function() {
+    resultsMultiOpen.forEach(function(d,i) {
+        $('.state-result[data-state="' + d + '"]').addClass('open');
     });
 }
 
-var makeListOfCandidates = function(candidates) {
-    var candidateList = [];
-    for (var i = 0; i < candidates.length; i++) {
-        var firstName = candidates[i]['first'];
-        var lastName = candidates[i]['last'];
-
-        var candidateName = firstName + ' ' + lastName;
-
-        candidateList.push(candidateName);
+// countdown spinner to the next results card data refresh
+var resultsCountdown = function($card) {
+    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
+        return;
     }
 
-    return candidateList;
+    var counter = null;
+    var interval = null;
+
+    var $indicator = $card.find('.update-indicator');
+    $indicator
+        .empty()
+        .append('<b class="icon icon-spin3"></b> <span class="text"></span>');
+
+    var $indicatorSpinner = $indicator.find('.icon');
+    var $indicatorText = $indicator.find('.text');
+
+    var startIndicator = function() {
+        $indicatorSpinner.removeClass('animate-spin');
+        counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
+        updateText();
+        interval = setInterval(updateIndicator,1000);
+    }
+
+    var updateIndicator = function() {
+        counter--;
+        updateText();
+        if (counter == 0) {
+            stopIndicator();
+        }
+    }
+
+    var stopIndicator = function() {
+        clearInterval(interval);
+        $indicatorSpinner.addClass('animate-spin');
+        $indicatorText.text('Loading');
+    }
+
+    var updateText = function() {
+        if (counter > 9) {
+            $indicatorText.text('0:' + counter);
+        } else {
+            $indicatorText.text('0:0' + counter);
+        }
+    }
+
+    startIndicator();
+
 }
 
 var onNewsletterSubmit = function(e) {
@@ -527,7 +608,7 @@ var onNewsletterSubmit = function(e) {
     // wait state
     clearStatusMessage();
     var waitMsg = '<div class="message wait">'
-    waitMsg += '<p><i class="fa fa-spinner fa-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
+    waitMsg += '<p><i class="icon icon-spinner animate-spin"></i>&nbsp;' + COPY.newsletter.waiting_text + '</p>';
     waitMsg += '</div>'
     $el.append(waitMsg);
     $subscribeBtn.hide();
@@ -561,5 +642,29 @@ var onNewsletterSubmit = function(e) {
             ANALYTICS.trackEvent('newsletter-signup-error', currentState);
         }
     });
+}
+
+/*
+* STUB TEST COMMANDS
+*/
+
+var getCandidates = function() {
+    $.getJSON('assets/candidates.json', function(data) {
+        return data;
+    });
+}
+
+var makeListOfCandidates = function(candidates) {
+    var candidateList = [];
+    for (var i = 0; i < candidates.length; i++) {
+        var firstName = candidates[i]['first'];
+        var lastName = candidates[i]['last'];
+
+        var candidateName = firstName + ' ' + lastName;
+
+        candidateList.push(candidateName);
+    }
+
+    return candidateList;
 }
 $(onDocumentLoad);

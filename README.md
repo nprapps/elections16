@@ -11,6 +11,9 @@ Elections 2016
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Data commands](#data-commands)
+* [Controlling State](#controlling-state)
+* [Live Events](#live-events)
+* [Generating Custom Font](#generating-custom-font)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
@@ -139,6 +142,74 @@ You can control the app state separately for local development, staging, and pro
 Defining a state determines the card stack that the app renders. Those card stacks are defined in their respective sheets in the copy spreadsheet.
 
 Additionally, you can control the state of the live audio in the app. For live audio to function in the app, the `live_audio` card must be in the stack that matches the state of the app, and the `live_audio` variable in the `meta` sheet must be set to `live`. If the live audio card is in the current stack, but you want to turn the live audio off, set `live_audio` in the `meta` sheet to `inactive`.
+
+## Live events
+
+### Bootstrapping Database
+
+To get ready for a new live election event, ensure you do the following before results come in from the AP.
+
+1. Ensure `NEXT_ELECTION_DATE` in `app_config.py` is set to the current election date.
+2. Ensure `ELEX_FLAGS` under the `else` deployment target in `app_config.py` is empty.
+3. Rebootstrap your local database: `fab data.bootstrap_db`
+4. Check the results cards locally and make sure the data is zeroed out, showing the correct elections and candidates.
+5. Ensure `ELEX_FLAGS` under the `production` deployment target in `app_config.py` is empty.
+6. Ensure `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` is set to 15.
+7. If you made any changes to app_config, deploy the latest to Github and make sure it is merged into the stable branch.
+8. Ensure the server's code base is up-to-date: `fab production stable servers.checkout_latest`
+9. Bootstrap the database on the server: `fab production servers.fabcast:data.bootstrap_db`
+10. Deploy to the server and restart the deploy service: `fab production stable deploy_server`
+11. Go to [54.189.43.202/elections16/calls](54.189.43.202/elections16/calls)  and set all races to accept AP calls unless Domenico/Beth have noted an exception.
+
+### Changing the card stack
+
+1. Change `dev_state` in the `meta` sheet of the copy spreadsheet to the state you are moving to.
+2. If we are going to during mode with live audio, make sure `live_audio` in the `meta` sheet of the copy spreadsheet is set to `live`.
+3. Pull the spreadsheet locally with `fab text`.
+4. Ensure that all the cards are supposed to be in the stack. Check [this document](https://docs.google.com/drawings/d/1wzBoldr0cE5K6a0_eLAMm0lVjvcLqcVFaFvDZ_aPOx8/edit) to see what each stack should contain. Also make sure that audio is playing in the app if applicable.
+5. Ensure production server code base is up-to-date: `fab production stable servers.checkout_latest`
+6. Deploy the latest to the client: `fab production stable servers.fabcast:deploy_client`
+
+### Ending the live event
+
+It is likely that the live audio coverage will end before the data stops coming in and before the after mode cards are ready. To account for  this scenario, do the following:
+
+1. Change `live_audio` in the `meta` sheet of the copy spreadsheet to `inactive`.
+2. If you have the app open with live audio running, make sure that the audio stops itself within a few minutes.
+
+Once all results are in or the AP stops tabulating data, you can turn off the results loader by doing the following:
+
+1. Change `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` to 0.
+2. Commit your changes and merge into stable.
+3. Deploy the latest to stable: `fab production stable deploy_server`.
+
+When the after cards are ready, follow the steps for changing the card stack.
+
+
+### Handling single-party/single-race live events
+
+At the moment, the decision about which results cards to render is hard coded. This will be fixed eventually. For now, the [parties](fabfile/render.py#L108) in the `render_results_html` function must be set to whatever parties will be represented in the results data.
+
+Generating custom font
+----------------------
+
+This project uses a custom font build powered by [Fontello](http://fontello.com)
+If the font does not exist, it will be created when running `fab update`.
+To force generation of the custom font, run:
+
+```
+fab utils.install_font:true
+```
+
+Editing the font is a little tricky -- you have to use the Fontello web gui.
+To open the gui with your font configuration, run:
+
+```
+fab utils.open_font
+```
+
+Now edit the font, download the font pack, copy the new config.json into this
+project's `fontello` directory, and run `fab utils.install_font:true` again.
 
 Hide project secrets
 --------------------
@@ -313,7 +384,7 @@ Python unit tests are stored in the ``tests`` directory. Run them with ``fab tes
 Run Javascript tests
 --------------------
 
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
+Run JavaScript tests with `fab js_tests`
 
 Compile static assets
 ---------------------
@@ -428,3 +499,12 @@ The Google Analytics events tracked in this application are:
 |elections16|summary-copied||
 |elections16|featured-tweet-action|`action`|
 |elections16|featured-facebook-action|`action`|
+
+### Syncing up with npr.org localstorage variables
+
+NPR.org uses localStorage to handle user settings like local station. These,
+in turn, need to be sent along when registering the pageview on npr.org. This is
+accomplished with a [fork of Zendesk's cross-storage library](https://github.com/nprapps/cross-storage)
+and a [special file](etc/cross-storage-iframe.html) that must be placed on NPR.org.
+
+The file must be uploaded via SMB to the static www fileserver in `politics/election2016`.

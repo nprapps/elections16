@@ -1,7 +1,7 @@
 import app_config
 import urlparse
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from oauth.blueprint import get_credentials
 
 DOC_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
@@ -9,7 +9,6 @@ ATTR_WHITELIST = {
     'a': ['href'],
     'img': ['src', 'alt'],
 }
-
 
 def get_google_doc(key):
     """
@@ -58,9 +57,15 @@ class DocParser:
         self.image = None
         self.mobile_image = None
         self.credit = None
+        self.mobile_credit = None
+        self.preview_image = None
+        self.preview_mobile_image = None
+        self.preview_credit = None
+        self.preview_mobile_credit = None
         self.audio_url = None
         self.story_url = None
         self.soup = BeautifulSoup(html_string, 'html.parser')
+        self.tags_blacklist = []
         self.parse()
 
     def parse(self):
@@ -75,18 +80,27 @@ class DocParser:
 
         for tag in self.soup.findAll('a'):
             self.remove_comments(tag)
+            self.check_next(tag)
 
         for tag in self.soup.body.findAll():
             self.remove_empty(tag)
+            self.remove_inline_comment(tag)
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
             self.find_token(tag, 'SUBHED', 'subhed')
             self.find_token(tag, 'BANNER', 'banner')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
+            self.find_token(tag, 'MOBILEPHOTOCREDIT', 'mobile_credit')
+            self.find_token(tag, 'PREVIEWPHOTOCREDIT', 'preview_credit')
+            self.find_token(tag, 'PREVIEWMOBILEPHOTOCREDIT', 'preview_mobile_credit')
             self.find_token(tag, 'AUDIOURL', 'audio_url')
             self.find_token(tag, 'STORYURL', 'story_url')
-            self.find_image_token(tag, 'BACKGROUNDIMAGE', 'image')
-            self.find_image_token(tag, 'MOBILEIMAGE', 'mobile_image')
+            self.find_token(tag, 'BACKGROUNDIMAGE', 'image')
+            self.find_token(tag, 'MOBILEIMAGE', 'mobile_image')
+            self.find_token(tag, 'PREVIEWBACKGROUNDIMAGE', 'preview_image')
+            self.find_token(tag, 'PREVIEWMOBILEIMAGE', 'preview_mobile_image')
+
+            self.remove_blacklisted_tags(tag)
 
     def remove_comments(self, tag):
         """
@@ -94,6 +108,25 @@ class DocParser:
         """
         if tag.get('id', '').startswith('cmnt'):
             tag.parent.extract()
+
+    def check_next(self, tag):
+        """
+        If next tag is link with same href, combine them.
+        """
+        if type(tag.next_sibling) == element.Tag and tag.next_sibling.name == 'a':
+            next_tag = tag.next_sibling
+            if tag.get('href') and next_tag.get('href'):
+                href = self._parse_href(tag.get('href'))
+                next_href = self._parse_href(next_tag.get('href'))
+
+                if href == next_href:
+                    next_text = next_tag.get_text()
+                    tag.append(next_text)
+                    self.tags_blacklist.append(next_tag)
+
+    def remove_blacklisted_tags(self, tag):
+        if tag in self.tags_blacklist:
+            tag.decompose()
 
     def create_italic(self, tag):
         """
@@ -154,19 +187,10 @@ class DocParser:
         except TypeError:
             pass
 
-    def find_image_token(self, tag, token, attr):
-        try:
-            if not getattr(self, attr):
-                text = tag.text
-                if text.startswith(token):
-                    value = text.split(':', 1)[-1].strip()
-                    if value.startswith('http://media.npr.org'):
-                        value = value.replace('http://media.npr.org', 'https://secure.npr.org')
-                    setattr(self, attr, value)
-
-                    tag.extract()
-        except TypeError:
-            pass
+    def remove_inline_comment(self, tag):
+        text = tag.text
+        if text.startswith('##'):
+            tag.extract()
 
     def _parse_href(self, href):
         """

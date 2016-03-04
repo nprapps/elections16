@@ -2,8 +2,8 @@
 
 {% block card_content %}
 <div class="segment-audio-content">
-        <h1>{{ headline }}</h1>
-        <h2>{{ subhed }}</h2>
+        <h1 style="text-align: center;">{{ headline }}</h1>
+        <h2 style="text-align: center;">{{ subhed }}</h2>
 
         {% if live %}
         <ul class="segment-audio-player">
@@ -25,6 +25,7 @@
 {% if live %}
 <script type='text/javascript'>
     var LIVE = true;
+    var LIVE_AUDIO_URL = '{{ live_audio_url }}';
 </script>
 {% else %}
 <script type='text/javascript'>
@@ -35,7 +36,7 @@
 {% endblock %}
 
 {% block card_background %}
-<span class="card-background" data-mobile-bg="{{ mobile_image }}" data-default-bg="{{ image }}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
-    <p class="photo-credit">{{ credit }}</p>
+<span class="card-background" data-mobile-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_mobile_image %}{{ preview_mobile_image }}{% else %}{{ mobile_image }}{% endif %}" data-default-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
+    <p class="photo-credit" data-mobile-credit="{% if DEPLOYMENT_TARGET != 'production' and preview_mobile_credit %}{{ preview_mobile_credit }}{% else %}{{ mobile_credit }}{% endif %}" data-default-credit="{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}">{% if DEPLOYMENT_TARGET != 'production' and preview_credit %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}</p>
 </span>
 {% endblock %}
