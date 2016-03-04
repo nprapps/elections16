@@ -169,6 +169,9 @@ class CandidateDelegates(BaseModel):
     def status(self):
         return self.candidateid not in app_config.DROPPED_OUT
 
+    def pledged_delegates_count(self):
+        return (self.delegates_count - self.superdelegates_count)
+
     def pledged_delegates_pct(self):
         return 100 * ((self.delegates_count - self.superdelegates_count) / float(self.party_need))
 
