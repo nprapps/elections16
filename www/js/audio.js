@@ -23,8 +23,6 @@ var AUDIO = (function() {
         $('.toggle-btn').removeClass().addClass('toggle-btn loading fa-spin');
         $segmentType.text('Loading');
 
-        $mute.show();
-
         for (var i = 0; i < timedAnalytics.length; i++) {
             timedAnalytics[i]['measured'] = false;
         }
@@ -114,7 +112,7 @@ var AUDIO = (function() {
         }
 
         if (position > 10) {
-            var timeBucket = getTimeBucket(position);
+            var timeBucket = ANALYTICS.getTimeBucket(position);
             if (!timedAnalytics[timeBucket]) {
                 timedAnalytics[timeBucket] = true;
                 ANALYTICS.trackEvent('audio-time-listened', $audioPlayer.data().jPlayer.status.src, timeBucket);

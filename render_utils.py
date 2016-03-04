@@ -58,6 +58,9 @@ class Includer(object):
 
         return relative_path
 
+    def _get_datetime(self):
+        return int(time.time())
+
     def render(self, path):
         if getattr(g, 'compile_includes', False):
             if path not in g.compiled_includes:
@@ -70,12 +73,12 @@ class Includer(object):
                             f.write(self._compress())
 
             g.compiled_includes[path] = path
-            markup = Markup(self.tag_string % self._relativize_path(path))
+            markup = Markup(self.tag_string % (self._relativize_path(path), self._get_datetime()))
         else:
             response = ','.join(self.includes)
 
             response = '\n'.join([
-                self.tag_string % self._relativize_path(src) for src in self.includes
+                self.tag_string % (self._relativize_path(src), self._get_datetime()) for src in self.includes
             ])
 
             markup = Markup(response)
@@ -91,7 +94,7 @@ class JavascriptIncluder(Includer):
     def __init__(self, *args, **kwargs):
         Includer.__init__(self, *args, **kwargs)
 
-        self.tag_string = '<script type="text/javascript" src="%s"></script>'
+        self.tag_string = '<script type="text/javascript" src="%s?%s"></script>'
 
     def _compress(self):
         output = []
@@ -119,7 +122,7 @@ class CSSIncluder(Includer):
     def __init__(self, *args, **kwargs):
         Includer.__init__(self, *args, **kwargs)
 
-        self.tag_string = '<link rel="stylesheet" type="text/css" href="%s" />'
+        self.tag_string = '<link rel="stylesheet" type="text/css" href="%s?%s" />'
 
     def _compress(self):
         output = []

@@ -43,7 +43,7 @@
             .candidate {
                 -webkit-flex-basis: auto;
                 flex-basis: auto;
-                width: 8rem;
+                width: 6rem;
             }
             .bar-wrapper {
                 -webkit-flex-grow: 1;
@@ -63,6 +63,13 @@
                 float: left;
                 font-size: 0.8rem;
                 margin-left: 0.5rem;
+
+                .detail {
+                    font-size: 0.6rem;
+                    color: #999;
+                    @media @screen-tiny-above { display: inline; }
+                    @media @screen-tiny { display: none; }
+                }
             }
         }
 
@@ -78,7 +85,7 @@
         }
     }
     .key {
-        margin: 0 0 15px 8rem;
+        margin: 0 0 15px 6rem;
         padding: 0;
         list-style-type: none;
         color: #666;
