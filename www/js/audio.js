@@ -37,6 +37,9 @@ var AUDIO = (function() {
         $mute.removeClass('muted').addClass('playing');
         $rewindBtn.removeClass('darken');
         $forwardBtn.removeClass('darken');
+
+        $nowPlaying.show();
+        audioPlayingIndex = currentCard;
     }
 
     var pauseAudio = function() {
@@ -45,6 +48,7 @@ var AUDIO = (function() {
         $mute.removeClass('playing').addClass('muted');
         $rewindBtn.addClass('darken');
         $forwardBtn.addClass('darken');
+        $nowPlaying.hide();
 
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
@@ -55,6 +59,7 @@ var AUDIO = (function() {
             .jPlayer('clearMedia');
         $mute.removeClass('playing').addClass('muted');
         $('.toggle-btn').removeClass().addClass('toggle-btn play');
+        $nowPlaying.hide();
         ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
