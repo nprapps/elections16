@@ -647,16 +647,43 @@ body {
             margin: 22px 0 0 0;
         }
 
-        a:link,
-        a:visited {
-            color: #ccc;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .no-touchevents & {
-            a:hover,
-            a:active {
-                color: #fff;
+        a {
+            .knockout();
+            text-transform: uppercase;
+            color: @white;
+            text-shadow: 2px 2px 2px #222;
+            background-color: transparent;
+            border-top: 0;
+            border-right: 0;
+            border-bottom: 4px solid @accent1;
+            border-left: 0;
+            padding: 0 0 .5rem 0;
+            font-size: 1.2rem;
+
+            &:link,
+            &:visited {
+                color: #ccc;
+                font-weight: normal;
+                text-decoration: none;
+            }
+
+            .no-touchevents & {
+                &:hover,
+                &:active {
+                    color: #fff;
+                    border-color: @accent1a;
+                }
+            }
+
+            i {
+                font-size: 1.6rem;
+                padding-left: .5rem;
+            }
+
+            @media @screen-small-above {
+                font-size: 1.7rem;
+
+                i {font-size: 1.9rem;}
             }
         }
     }
