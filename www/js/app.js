@@ -47,7 +47,7 @@ if (!LIVE) {
 var testLogged = false;
 var donateButtonText = null;
 var resultsMultiOpen = [];
-
+var audioPlayingIndex = null;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -100,6 +100,7 @@ var onDocumentLoad = function(e) {
     $newsletterForm.on('submit', onNewsletterSubmit);
     $closeAlert.on('click', onCloseAlertClick);
     $donateLink.on('click', onDonateLinkClick);
+    $nowPlaying.on('click', onNowPlayingClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -637,6 +638,11 @@ var onNewsletterSubmit = function(e) {
             ANALYTICS.trackEvent('newsletter-signup-error', currentState);
         }
     });
+}
+
+var onNowPlayingClick = function() {
+
+    $cardsWrapper.flickity('select', audioPlayingIndex);
 }
 
 /*
