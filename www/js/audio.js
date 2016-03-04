@@ -84,18 +84,18 @@ var AUDIO = (function() {
     };
 
     var toggleAudio = function() {
-        if (!$audioPlayer.data('jPlayer')['status']['src'] && !LIVE) {
-            setMedia(PODCAST_URL);
+        var url = $(this).data('url');
+        var currentSrc = $audioPlayer.data('jPlayer')['status']['src'];
+        var currentState = $audioPlayer.data('jPlayer')['status']['paused']
+
+        if (currentSrc !== url) {
+            setMedia(url);
             return;
         }
 
-        if ($audioPlayer.data('jPlayer')['status']['paused']) {
-            if (LIVE) {
-                setMedia(LIVE_AUDIO_URL);
-            } else {
-                playAudio();
-            }
-        } else {
+        if (currentState === true && currentSrc === url ) {
+            playAudio();
+        } else if (currentState === false && currentSrc === url) {
             if (LIVE) {
                 stopAudio();
             } else {

@@ -4,17 +4,17 @@
 <div class="segment-audio-content">
     <ul class="segment-audio-player">
         <li class="segment-rewind">
-            <button class="rewind"></button>
+            <button class="rewind darken"></button>
         </li>
         <li class="segment-play">
-            <button class="toggle-btn pause">
+            <button class="toggle-btn play" data-url="{{ audio_url }}">
             </button>
             <span class="duration">
-                0:00
+                &nbsp;
             </span>
         </li>
         <li class="segment-forward">
-            <button class="forward"></button>
+            <button class="forward darken"></button>
         </li>
     </ul>
 
@@ -29,10 +29,6 @@
         </ul>
     </div>
 </div>
-
-<script type="text/javascript">
-    var AUDIO_URL = '{{ audio_url }}'
-</script>
 {% endblock %}
 
 {% block card_background %}

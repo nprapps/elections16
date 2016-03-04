@@ -6,17 +6,17 @@
 
         <ul class="segment-audio-player">
             <li class="segment-rewind">
-                <button class="rewind"></button>
+                <button class="rewind darken"></button>
             </li>
             <li class="segment-play">
-                <button class="toggle-btn play">
+                <button class="toggle-btn play" data-url="{{ audio_url }}">
                 </button>
                 <span class="duration">
                     &nbsp;
                 </span>
             </li>
             <li class="segment-forward">
-                <button class="forward"></button>
+                <button class="forward darken"></button>
             </li>
         </ul>
 
@@ -33,10 +33,6 @@
 
     </div>
 </div>
-
-<script type="text/javascript">
-    var PODCAST_URL = '{{ audio_url }}'
-</script>
 {% endblock %}
 
 {% block card_background %}
