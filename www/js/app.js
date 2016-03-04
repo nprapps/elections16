@@ -225,11 +225,11 @@ var onCardChange = function(e) {
         playedAudio = true;
     }
 
-    if ($thisCard.is('.audio-story') && !playedAudio) {
-        AUDIO.setMedia(AUDIO_URL);
-        playedAudio = true;
-    }
-    
+    // if ($thisCard.is('.audio-story') && !playedAudio) {
+    //     AUDIO.setMedia(AUDIO_URL);
+    //     playedAudio = true;
+    // }
+
     if ($thisCard.is('#donate') && !testLogged) {
         startTest();
         testLogged = true;

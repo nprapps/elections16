@@ -20,8 +20,8 @@ var AUDIO = (function() {
         });
         playAudio();
 
-        $('.toggle-btn').removeClass().addClass('toggle-btn loading fa-spin');
-        $segmentType.text('Loading');
+        $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn loading fa-spin');
+        $cards.eq(audioPlayingIndex).find('.segment-text').text('Loading');
 
         for (var i = 0; i < timedAnalytics.length; i++) {
             timedAnalytics[i]['measured'] = false;
@@ -32,22 +32,26 @@ var AUDIO = (function() {
 
     var playAudio = function() {
         $audioPlayer.jPlayer('play');
-        $('.toggle-btn').removeClass().addClass('toggle-btn pause');
-        $mute.show();
-        $mute.removeClass('muted').addClass('playing');
-        $rewindBtn.removeClass('darken');
-        $forwardBtn.removeClass('darken');
+
+        audioPlayingIndex = currentCard;
+
+        $('.toggle-btn').removeClass().addClass('toggle-btn play');
+        $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn pause');
+
+        $('.rewind').addClass('darken');
+        $('.forward').addClass('darken');
+        $cards.eq(audioPlayingIndex).find('.rewind').removeClass('darken');
+        $cards.eq(audioPlayingIndex).find('.forward').removeClass('darken');
 
         $nowPlaying.show();
-        audioPlayingIndex = currentCard;
     }
+
 
     var pauseAudio = function() {
         $audioPlayer.jPlayer('pause');
-        $('.toggle-btn').removeClass().addClass('toggle-btn play');
-        $mute.removeClass('playing').addClass('muted');
-        $rewindBtn.addClass('darken');
-        $forwardBtn.addClass('darken');
+        $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn play');
+        $cards.eq(audioPlayingIndex).find('.rewind').addClass('darken');
+        $cards.eq(audioPlayingIndex).find('.forward').addClass('darken');
         $nowPlaying.hide();
 
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
@@ -57,13 +61,16 @@ var AUDIO = (function() {
         $audioPlayer
             .jPlayer('stop')
             .jPlayer('clearMedia');
-        $mute.removeClass('playing').addClass('muted');
-        $('.toggle-btn').removeClass().addClass('toggle-btn play');
+        $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn play');
         $nowPlaying.hide();
         ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
     var rewindAudio = function() {
+        if ($(this).hasClass('darken')) {
+            return;
+        }
+
         if (!$audioPlayer.data('jPlayer').status.paused) {
             var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
             var seekTime =  currentTime > 15 ? currentTime - 15 : 0;
@@ -74,6 +81,10 @@ var AUDIO = (function() {
     }
 
     var forwardAudio = function() {
+        if ($(this).hasClass('darken')) {
+            return;
+        }
+        
         if (!$audioPlayer.data('jPlayer').status.paused) {
             var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
             var seekTime =  currentTime + 15;
@@ -109,10 +120,10 @@ var AUDIO = (function() {
         var position = e.jPlayer.status.currentTime;
         var remainingTime = totalTime - position;
 
-        if ($('.toggle-btn').hasClass('loading')) {
-            $('.toggle-btn').removeClass().addClass('toggle-btn pause');
+        if ($cards.eq(audioPlayingIndex).find('.toggle-btn').hasClass('loading')) {
+            $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn pause');
             if (LIVE) {
-                $segmentType.text('Live Audio');
+                $cards.eq(audioPlayingIndex).find('.segment-type').text('Live Audio');
             }
         }
 
