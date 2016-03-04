@@ -553,13 +553,13 @@ var resultsCountdown = function($card) {
         $indicatorSpinner.removeClass('animate-spin');
         counter = refreshRate;
         updateText();
-        interval = setInterval(updateIndicator,1000);
+        interval = setInterval(updateIndicator, 1000);
     }
 
     var updateIndicator = function() {
         counter--;
         updateText();
-        if (counter == 0) {
+        if (counter === 0) {
             stopIndicator();
         }
     }
