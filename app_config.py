@@ -172,7 +172,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-03-01'
+NEXT_ELECTION_DATE = '2016-03-05'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -292,9 +292,9 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 600
-        CARD_DEPLOY_INTERVAL = 60
+        LOAD_COPY_INTERVAL = 15
+        LOAD_RESULTS_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
     elif deployment_target == 'test':
