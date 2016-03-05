@@ -186,7 +186,7 @@ def create_race_meta():
         )
 
         for result in results:
-            race_type = row[result.party.lower()]
+            race_type = row['type'].lower()
             models.RaceMeta.create(
                     result_id=result.id,
                     race_type=race_type,
