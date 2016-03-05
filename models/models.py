@@ -176,9 +176,7 @@ class CandidateDelegates(BaseModel):
         return 100 * ((self.delegates_count - self.superdelegates_count) / float(self.party_need))
 
     def superdelegates_pct(self):
-        print self.party_total
         return 100 * (self.superdelegates_count / float(self.party_need))
 
     def delegates_pct(self):
-        print self.party_total
         return 100 * (self.delegates_count / float(self.party_need))
