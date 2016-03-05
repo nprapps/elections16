@@ -91,8 +91,13 @@ def render_card_route(view_name, params=None):
     from flask import url_for
 
     path = view_name
+
     if params:
         path = '{0}/{1}/'.format(view_name, params)
+    else:
+        path = '{0}/'.format(view_name)
+
+    path = path.replace('_', '-')
 
     with app.app.test_client() as client:
         resp = client.get(path)
