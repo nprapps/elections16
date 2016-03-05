@@ -353,6 +353,11 @@ def group_poll_closings(races):
     return grouped
 
 
+def get_unreported_races(races):
+    unreported = [race['statename'] for race in races if race['precinctsreporting'] == 0 and not race['called']]
+    return unreported
+
+
 def _format_poll_closing(poll_closing):
     formatted_time = ap_time_filter(poll_closing)
     formatted_period = ap_time_period_filter(poll_closing)

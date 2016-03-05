@@ -150,10 +150,12 @@ def results(party):
 
     races = utils.get_results(party, app_config.NEXT_ELECTION_DATE)
     poll_closings = utils.group_poll_closings(races)
+    unreported_races = utils.get_unreported_races(races)
     last_updated = utils.get_last_updated(party)
 
     context['races'] = races
     context['poll_closings'] = poll_closings
+    context['unreported_races'] = unreported_races
     context['last_updated'] = last_updated
     context['party'] = utils.PARTY_MAPPING[party]['adverb']
     context['slug'] = 'results-%s' % party
