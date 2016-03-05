@@ -293,7 +293,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
-        LOAD_RESULTS_INTERVAL = 30
+        LOAD_RESULTS_INTERVAL = 300
         CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
