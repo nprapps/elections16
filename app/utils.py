@@ -342,15 +342,21 @@ def group_poll_closings(races):
 
     grouped = OrderedDict()
     for poll_closing in poll_closing_times:
-        poll_closing_time = ap_time_filter(poll_closing)
+        poll_closing_time = _format_poll_closing(poll_closing)
         grouped[poll_closing_time] = []
 
     for race in races:
-        poll_closing_time = ap_time_filter(race['poll_closing'])
+        poll_closing_time = _format_poll_closing(race['poll_closing'])
         if race['precinctsreporting'] == 0 and not race['called']:
             grouped[poll_closing_time].append(race['statename'])
 
     return grouped
+
+
+def _format_poll_closing(poll_closing):
+    formatted_time = ap_time_filter(poll_closing)
+    formatted_period = ap_time_period_filter(poll_closing)
+    return '{0} {1}'.format(formatted_time, formatted_period)
 
 
 def get_last_updated(party):
