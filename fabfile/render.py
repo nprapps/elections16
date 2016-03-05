@@ -90,7 +90,7 @@ def copytext_js():
 def render_card_route(view_name, params=None):
     from flask import url_for
 
-    path = view_name.replace('_', '-')
+    path = view_name
     if params:
         path = '{0}/{1}/'.format(view_name, params)
 
