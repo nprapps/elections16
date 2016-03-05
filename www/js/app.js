@@ -532,7 +532,9 @@ var resultsMultiToggle = function() {
 
 // countdown spinner to the next results card data refresh
 var resultsCountdown = function($card) {
-    if (APP_CONFIG.RESULTS_DEPLOY_INTERVAL === 0 || $card.length === 0) {
+    var refreshRate = parseInt($card.data('refresh-rate'));
+
+    if (refreshRate === 0 || $card.length === 0) {
         return;
     }
 
@@ -549,15 +551,15 @@ var resultsCountdown = function($card) {
 
     var startIndicator = function() {
         $indicatorSpinner.removeClass('animate-spin');
-        counter = APP_CONFIG.RESULTS_DEPLOY_INTERVAL;
+        counter = refreshRate;
         updateText();
-        interval = setInterval(updateIndicator,1000);
+        interval = setInterval(updateIndicator, 1000);
     }
 
     var updateIndicator = function() {
         counter--;
         updateText();
-        if (counter == 0) {
+        if (counter === 0) {
             stopIndicator();
         }
     }

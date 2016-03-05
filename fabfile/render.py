@@ -87,35 +87,17 @@ def copytext_js():
 
 
 @task
-def render_simple_route(view_name):
+def render_card_route(view_name, params=None):
     from flask import url_for
 
-    with app.app.test_request_context():
-        path = url_for(view_name)
+    path = view_name
+    if params:
+        path = '{0}/{1}/'.format(view_name, params)
 
-    with app.app.test_request_context(path=path):
-        view = app.__dict__[view_name]
-        content = view()
+    with app.app.test_client() as client:
+        resp = client.get(path)
 
-    _write_file(path, content)
-
-
-@task
-def render_results_html():
-    from flask import url_for
-
-    view_name = 'results'
-    parties = ['gop', 'dem']
-
-    for party in parties:
-        with app.app.test_request_context():
-            path = url_for(view_name, party=party)
-
-        with app.app.test_request_context(path=path):
-            view = app.__dict__[view_name]
-            content = view(party)
-
-        _write_file(path, content)
+    _write_file(path, resp.data)
 
 
 @task
@@ -140,24 +122,6 @@ def render_results_json():
 
 
 @task
-def render_delegates_html():
-    from flask import url_for
-
-    view_name = 'delegates'
-    parties = ['gop', 'dem']
-
-    for party in parties:
-        with app.app.test_request_context():
-            path = url_for(view_name, party=party)
-
-        with app.app.test_request_context(path=path):
-            view = app.__dict__[view_name]
-            content = view(party)
-
-        _write_file(path, content)
-
-
-@task
 def render_delegates_json():
     from flask import url_for
 
@@ -178,7 +142,7 @@ def render_delegates_json():
 
 
 @task
-def render_card_route(slug):
+def render_route(slug):
     from flask import url_for
 
     view_name = 'card'
@@ -193,6 +157,7 @@ def render_card_route(slug):
 
     _write_file(simplified_path, content)
 
+
 @task()
 def render_index():
     """
@@ -206,7 +171,7 @@ def render_index():
         g.no_compress = True
         view = _view_from_name('index')
         content = view().data
-        _write_file('', content.decode('utf-8'))
+        _write_file('', content)
 
 @task()
 def render_current_state(folder='.cards_html'):
@@ -220,17 +185,15 @@ def render_current_state(folder='.cards_html'):
             f.write(content)
 
 def _write_file(path, content):
-    path = '.cards_html/%s' % path
-
-    # Ensure path exists
-    head = os.path.split(path)[0]
+    path = os.path.join('.cards_html', path)
 
     try:
-        os.makedirs(head)
+        os.makedirs(path)
     except OSError:
         pass
 
-    with codecs.open('%sindex.html' % path, 'w', 'utf-8') as f:
+    filepath = os.path.join(path, 'index.html')
+    with open(filepath, 'w') as f:
         f.write(content)
 
 @task(default=True)

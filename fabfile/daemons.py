@@ -40,36 +40,34 @@ def main(run_once=False):
     while True:
         now = time()
 
-        if app_config.COPY_DEPLOY_INTERVAL and (now - copy_start) > app_config.COPY_DEPLOY_INTERVAL:
+        if app_config.LOAD_COPY_INTERVAL and (now - copy_start) > app_config.LOAD_COPY_INTERVAL:
             copy_start = now
             logger.info('Update copy')
             execute('text.update')
 
-        if app_config.RESULTS_DEPLOY_INTERVAL and (now - results_start) > app_config.RESULTS_DEPLOY_INTERVAL:
+        if app_config.LOAD_RESULTS_INTERVAL and (now - results_start) > app_config.LOAD_RESULTS_INTERVAL:
             results_start = now
             logger.info('load results')
             execute('data.load_results')
-            logger.info('deploy results')
-            execute('deploy_results_cards')
+            execute('deploy_results_data')
+
+        if app_config.LOAD_DELEGATES_INTERVAL and (now - delegates_start) > app_config.LOAD_DELEGATES_INTERVAL:
+            sleep(5)
+            delegates_start = now
+            logger.info('load delegates')
+            execute('data.load_delegates')
+            execute('deploy_delegates_data')
+            sleep(5)
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - card_start) > app_config.CARD_DEPLOY_INTERVAL:
             card_start = now
             logger.info('deploy content cards')
-            execute('deploy_all_cards')
+            execute('deploy_cards')
 
         if env.settings == 'production' and app_config.SITE_ARCHIVE_INTERVAL and (now - archive_start) > app_config.SITE_ARCHIVE_INTERVAL:
             archive_start = now
             logger.info('archiving site')
             execute('archive_site')
-
-        if app_config.DELEGATES_DEPLOY_INTERVAL and (now - delegates_start) > app_config.DELEGATES_DEPLOY_INTERVAL:
-            sleep(15)
-            delegates_start = now
-            logger.info('load delegates')
-            execute('data.load_delegates')
-            logger.info('deploy delegates')
-            execute('deploy_delegates_cards')
-            sleep(15)
 
         if run_once:
             logger.info('run once specified, exiting')

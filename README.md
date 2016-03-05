@@ -154,7 +154,7 @@ To get ready for a new live election event, ensure you do the following before r
 3. Rebootstrap your local database: `fab data.bootstrap_db`
 4. Check the results cards locally and make sure the data is zeroed out, showing the correct elections and candidates.
 5. Ensure `ELEX_FLAGS` under the `production` deployment target in `app_config.py` is empty.
-6. Ensure `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` is set to 15.
+6. Ensure `LOAD_RESULTS_INTERVAL` under the `production` deployment target in `app_config.py` is set to 15 or the chosen speed for the current election results.
 7. If you made any changes to app_config, deploy the latest to Github and make sure it is merged into the stable branch.
 8. Ensure the server's code base is up-to-date: `fab production stable servers.checkout_latest`
 9. Bootstrap the database on the server: `fab production servers.fabcast:data.bootstrap_db`
@@ -179,7 +179,7 @@ It is likely that the live audio coverage will end before the data stops coming 
 
 Once all results are in or the AP stops tabulating data, you can turn off the results loader by doing the following:
 
-1. Change `RESULTS_DEPLOY_INTERVAL` under the `production` deployment target in `app_config.py` to 0.
+1. Change `LOAD_RESULTS_INTERVAL` under the `production` deployment target in `app_config.py` to 0.
 2. Commit your changes and merge into stable.
 3. Deploy the latest to stable: `fab production stable deploy_server`.
 

@@ -135,7 +135,7 @@ def results_single(party):
     context['route'] = '/results-single/%s/' % party
 
     if context['state'] != 'inactive':
-        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
+        context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
 
     return render_template('cards/results.html', **context)
 
@@ -161,7 +161,7 @@ def results(party):
     context['route'] = '/results/%s/' % party
 
     if context['state'] != 'inactive':
-        context['refresh_rate'] = app_config.RESULTS_DEPLOY_INTERVAL
+        context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
 
     return render_template('cards/results-multi.html', **context)
 

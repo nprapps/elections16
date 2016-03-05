@@ -225,22 +225,10 @@ def deploy_client(reload=False):
 
 
 @task
-def deploy_results_cards():
+def deploy_results_data():
     """
     Deploy results cards.
     """
-    require('settings', provided_by=[production, staging])
-    local('rm -rf .cards_html/results')
-    render.render_results_html()
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        '.cards_html/results',
-        'results',
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
-        }
-    )
-
     local('rm -rf .cards_html/data')
     render.render_results_json()
     flat.deploy_folder(
@@ -254,22 +242,11 @@ def deploy_results_cards():
 
 
 @task
-def deploy_delegates_cards():
+def deploy_delegates_data():
     """
     Deploy results cards.
     """
     require('settings', provided_by=[production, staging])
-
-    local('rm -rf .cards_html/delegates')
-    render.render_delegates_html()
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        '.cards_html/delegates',
-        'delegates',
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
-        }
-    )
 
     local('rm -rf .cards_html/data')
     render.render_delegates_json()
@@ -284,7 +261,7 @@ def deploy_delegates_cards():
 
 
 @task
-def deploy_all_cards():
+def deploy_cards():
     """
     Deploy content cards.
     """
@@ -301,13 +278,7 @@ def deploy_all_cards():
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'results' or row['function'] == 'delegates':
-            # the daemon will do results separately
-            continue
-        elif row['function'] == 'card':
-            render.render_card_route(row['params'])
-        else:
-            render.render_simple_route(row['function'])
+        render.render_card_route(row['function'], row['params'])
 
     render.render_current_state()
     render.render_index()
