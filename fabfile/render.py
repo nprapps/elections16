@@ -97,6 +97,8 @@ def render_card_route(view_name, params=None):
     with app.app.test_client() as client:
         resp = client.get(path)
 
+    path = path.replace('_', '-')
+
     _write_file(path, resp.data)
 
 
