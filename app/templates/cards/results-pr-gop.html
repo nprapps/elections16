@@ -1,0 +1,56 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<header>
+    {% if state == 'during' or state == 'before' %}
+    <h2>Current Status</h2>
+    {% else %}
+    <h2>The Results Are In</h2>
+    {% endif %}
+
+    <h1>{{ COPY.pr_labels.title }}</h1>
+</header>
+
+<article>
+    <ul class="meta">
+        <li>
+            {{ COPY.pr_labels.timestamp }}
+        </li>
+        <li>{{ COPY.pr_labels.precinctsreportingpct }}% of precincts reporting ({{ COPY.pr_labels.precinctsreporting }} of {{ COPY.pr_labels.precinctstotal }})</li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="votes">Votes</th>
+                <th class="pct">Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in COPY.pr_results %}
+            <tr {% if row.winner == 'yes' %} class="winner" {% endif %}>
+                <td>{{ row.name }} {% if row.winner == 'yes' %} <b class="icon icon-check"></b> {% endif %}</td>
+                <td class="votes">{{ row.votecount }}</td>
+                <td class="pct">{{ row.votepct }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td class="votes">{{ COPY.pr_labels.total_votecount }}</td>
+                <td class="pct">100%</td>
+            </tr>
+        </tfoot>
+    </table>
+    <ul class="meta">
+        {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
+        <li class="footnote">{{ COPY.meta.results_gop_footnote }}</li>
+        {% elif party == 'Democratic' and COPY.meta.results_dem_footnote %}
+        <li class="footnote">{{ COPY.meta.results_dem_footnote }}</li>
+        {% endif %}
+        <li class="source">Source: {{ COPY.pr_labels.source }}</li>
+    </ul>
+</article>
+
+{% endblock %}
