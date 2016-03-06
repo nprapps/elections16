@@ -1,0 +1,59 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<header>
+    {% if state == 'during' or state == 'before' %}
+    <h2>Current Status</h2>
+    {% else %}
+    <h2>The Results Are In</h2>
+    {% endif %}
+
+    <h1>Puerto Rico Republican Primary</h1>
+</header>
+
+<article>
+    <ul class="meta">
+        <li>
+            As of TK TK, TK TK <span class="ap-period">TK TK</span> EST
+        </li>
+        <li>TK TK of precincts reporting (TK TK of TK TK)</li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="votes">Votes</th>
+                <th class="pct">Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="winner">
+                <td>Name <b class="icon icon-check"></b></td>
+                <td class="votes">TK TK</td>
+                <td class="pct">TK TK%</td>
+            </tr>
+            <tr>
+                <td>Other</td>
+                <td class="votes">TK TK</td>
+                <td class="pct">TK TK%</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td class="votes">TK TK</td>
+                <td class="pct">TK TK%</td>
+            </tr>
+        </tfoot>
+    </table>
+    <ul class="meta">
+        {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
+        <li class="footnote">{{ COPY.meta.results_gop_footnote }}</li>
+        {% elif party == 'Democratic' and COPY.meta.results_dem_footnote %}
+        <li class="footnote">{{ COPY.meta.results_dem_footnote }}</li>
+        {% endif %}
+        <li class="source">Source: <a href="http://presidenciales16.ceepur.org/">Republican Party of Puerto Rico</a></li>
+    </ul>
+</article>
+
+{% endblock %}
