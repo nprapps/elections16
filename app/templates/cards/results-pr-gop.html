@@ -8,15 +8,15 @@
     <h2>The Results Are In</h2>
     {% endif %}
 
-    <h1>Puerto Rico Republican Primary</h1>
+    <h1>{{ COPY.pr_labels.title }}</h1>
 </header>
 
 <article>
     <ul class="meta">
         <li>
-            As of TK TK, TK TK <span class="ap-period">TK TK</span> EST
+            {{ COPY.pr_labels.timestamp }}
         </li>
-        <li>TK TK of precincts reporting (TK TK of TK TK)</li>
+        <li>{{ COPY.pr_labels.precinctsreportingpct }} of precincts reporting ({{ COPY.pr_labels.precinctsreporting }} of {{ COPY.pr_labels.precinctstotal }})</li>
     </ul>
     <table>
         <thead>
@@ -27,22 +27,19 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="winner">
-                <td>Name <b class="icon icon-check"></b></td>
-                <td class="votes">TK TK</td>
-                <td class="pct">TK TK%</td>
+            {% for row in COPY.pr_results %}
+            <tr {% if row.winner == 'yes' %} class="winner" {% endif %}>
+                <td>{{ row.name }} {% if row.winner == 'yes' %} <b class="icon icon-check"></b> {% endif %}</td>
+                <td class="votes">{{ row.votecount }}</td>
+                <td class="pct">{{ row.votepct }}%</td>
             </tr>
-            <tr>
-                <td>Other</td>
-                <td class="votes">TK TK</td>
-                <td class="pct">TK TK%</td>
-            </tr>
+            {% endfor %}
         </tbody>
         <tfoot>
             <tr class="total">
                 <td>Total</td>
-                <td class="votes">TK TK</td>
-                <td class="pct">TK TK%</td>
+                <td class="votes">{{ COPY.pr_labels.total_votecount }}</td>
+                <td class="pct">100%</td>
             </tr>
         </tfoot>
     </table>
@@ -52,7 +49,7 @@
         {% elif party == 'Democratic' and COPY.meta.results_dem_footnote %}
         <li class="footnote">{{ COPY.meta.results_dem_footnote }}</li>
         {% endif %}
-        <li class="source">Source: <a href="http://presidenciales16.ceepur.org/">Republican Party of Puerto Rico</a></li>
+        <li class="source">Source: {{ COPY.pr_labels.source }}</li>
     </ul>
 </article>
 
