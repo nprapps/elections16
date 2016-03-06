@@ -599,7 +599,7 @@ var onNewsletterSubmit = function(e) {
         return;
     }
 
-    var timesToClick = calculateTimeBucket(globalStartTime);
+    var timesToClick = ANALYTICS.calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('newsletter-subscribe', currentState, timesToClick[0], timesToClick[1]);
 
     // wait state
