@@ -172,6 +172,7 @@ def results(party):
 def results_pr():
     context = make_context()
     context['refresh_rate'] = 60
+    context['route'] = '/results-pr/'
     context['slug'] = 'results-pr'
     context['template'] = 'results'
 
