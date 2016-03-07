@@ -234,6 +234,12 @@ var onCardChange = function(e) {
         startTest();
         testLogged = true;
     }
+
+    if (audioPlayingIndex === newCardIndex) {
+        $nowPlaying.addClass('on-card');
+    } else {
+        $nowPlaying.removeClass('on-card');
+    }
 }
 
 var checkOverflow = function(cardHeight, $slide) {

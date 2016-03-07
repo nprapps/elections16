@@ -43,7 +43,7 @@ var AUDIO = (function() {
         $cards.eq(audioPlayingIndex).find('.rewind').removeClass('darken');
         $cards.eq(audioPlayingIndex).find('.forward').removeClass('darken');
 
-        $nowPlaying.removeClass('stop-playing').addClass('is-playing');
+        $nowPlaying.removeClass('stop-playing').addClass('is-playing on-card');
     }
 
 
