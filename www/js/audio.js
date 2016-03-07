@@ -84,7 +84,7 @@ var AUDIO = (function() {
         if ($(this).hasClass('darken')) {
             return;
         }
-        
+
         if (!$audioPlayer.data('jPlayer').status.paused) {
             var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
             var seekTime =  currentTime + 15;
@@ -142,6 +142,7 @@ var AUDIO = (function() {
         $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass('pause').addClass('play');
         $cards.eq(audioPlayingIndex).find('.rewind').addClass('darken');
         $cards.eq(audioPlayingIndex).find('.forward').addClass('darken');
+        $nowPlaying.hide();
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
