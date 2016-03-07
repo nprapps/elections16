@@ -334,13 +334,13 @@ body {
 
 .global-controls {
     position: absolute;
-    top: 15px;
+    top: 19px;
     right: 5px;
     z-index: 3;
 
-    @media @screen-small-above {
-        top: 19px;
-    }
+    // @media @screen-small-above {
+    //     top: 19px;
+    // }
 
     @media @screen-medium-above {
         right: 1.7rem;
@@ -398,18 +398,70 @@ body {
             i { padding-left: 2px; }
         }
         &.now-playing {
-            display: none;
-            color: @white;
-            font-size: 16px;
-            padding: 5px 4px 5px 3px;
+            background-color: rgba(255, 255, 255, .1);
+            opacity: 0;
+            color: #fff;
+            font-size: 9px;
+            padding: 5px 5px 5px 25px;
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            animation-delay: 1s;
+            -webkit-animation-delay: 1s;
 
             @media @screen-small-above {
-                font-size: 20px;
-                padding: 7px 4px 7px 5px;
+                font-size: 12px;
+                padding: 8px 8px 8px 33px;
             }
+
+            &:before {
+                display: block;
+                content: ' ';
+                position: absolute;
+                top: 3px;
+                left: 5px;
+                right: 0;
+                bottom: 0;
+                width: 13px;
+                height: 12px;
+                z-index: 1;
+                background: transparent url('@{img-root}/bounce.gif') no-repeat;
+                .background-size(cover);
+                .transform(rotate(180deg));
+
+                @media @screen-small-above {
+                    top: 8px;
+                    left: 8px;
+                    right: 0;
+                    bottom: 0;
+                    width: 17px;
+                    height: 12px;
+                }
+            }
+
+            .no-touchevents & {
+                &:hover,
+                &:active {
+                    background-color: rgba(255, 255, 255, .4);
+                }
+            }
+        }
+
+        &.now-playing.is-playing {
+            -webkit-animation-name: fadeIn;
+            animation-name: fadeIn;
+        }
+        &.now-playing.stop-playing {
+            -webkit-animation-name: fadeOut;
+            animation-name: fadeOut;
         }
     }
 }
+
+
+
+
 
 
 // Global Card Styles

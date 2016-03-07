@@ -43,7 +43,7 @@ var AUDIO = (function() {
         $cards.eq(audioPlayingIndex).find('.rewind').removeClass('darken');
         $cards.eq(audioPlayingIndex).find('.forward').removeClass('darken');
 
-        $nowPlaying.show();
+        $nowPlaying.removeClass('stop-playing').addClass('is-playing');
     }
 
 
@@ -52,7 +52,7 @@ var AUDIO = (function() {
         $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn play');
         $cards.eq(audioPlayingIndex).find('.rewind').addClass('darken');
         $cards.eq(audioPlayingIndex).find('.forward').addClass('darken');
-        $nowPlaying.hide();
+        $nowPlaying.removeClass('is-playing').addClass('stop-playing');
 
         ANALYTICS.trackEvent('audio-paused', $audioPlayer.data().jPlayer.status.src);
     }
@@ -62,7 +62,7 @@ var AUDIO = (function() {
             .jPlayer('stop')
             .jPlayer('clearMedia');
         $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass().addClass('toggle-btn play');
-        $nowPlaying.hide();
+        $nowPlaying.removeClass('is-playing').addClass('stop-playing');
         ANALYTICS.trackEvent('audio-stopped', $audioPlayer.data().jPlayer.status.src);
     }
 
@@ -84,7 +84,7 @@ var AUDIO = (function() {
         if ($(this).hasClass('darken')) {
             return;
         }
-        
+
         if (!$audioPlayer.data('jPlayer').status.paused) {
             var currentTime = $audioPlayer.data('jPlayer')['status']['currentTime'];
             var seekTime =  currentTime + 15;
