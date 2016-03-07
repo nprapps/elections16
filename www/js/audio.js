@@ -142,7 +142,7 @@ var AUDIO = (function() {
         $cards.eq(audioPlayingIndex).find('.toggle-btn').removeClass('pause').addClass('play');
         $cards.eq(audioPlayingIndex).find('.rewind').addClass('darken');
         $cards.eq(audioPlayingIndex).find('.forward').addClass('darken');
-        $nowPlaying.hide();
+        $nowPlaying.removeClass('is-playing').addClass('stop-playing');
         ANALYTICS.trackEvent('audio-ended', $audioPlayer.data().jPlayer.status.src);
     }
 
