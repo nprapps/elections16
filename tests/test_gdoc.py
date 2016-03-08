@@ -17,7 +17,7 @@ class DocParserTestCase(unittest.TestCase):
         self.contents = self.parser.soup.body.contents
 
     def test_num_lines(self):
-        self.assertEqual(len(self.contents), 15)
+        self.assertEqual(len(self.contents), 17)
 
     def test_h1(self):
         self._is_tag(self.contents[0], 'h1')
@@ -114,6 +114,12 @@ class DocParserTestCase(unittest.TestCase):
 
     def test_mobile_credit_extraction(self):
         self.assertEqual(self.parser.mobile_credit, 'this is a mobile photo credit')
+
+    def test_iframe_markup(self):
+        self.assertTrue('<iframe width="560" height="315" src="https://www.youtube.com/embed/659pppwniXA" frameborder="0" allowfullscreen></iframe>' in unicode(self.parser))
+
+    def test_nbsp_markup(self):
+        self.assertTrue('This is a paragraph with a non-breaking&nbsp;space.' in unicode(self.parser))
 
     def _is_tag(self, tag, tag_name):
         self.assertEqual(tag.name, tag_name)
