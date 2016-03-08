@@ -134,14 +134,29 @@
             padding: 0 0 1rem 0;
         }
 
-        h1 {
+        h3 {
+            .knockout();
+            font-size: 1.2rem;
+            line-height: 1;
+            color: @white;
+            margin: .3rem 0;
             text-transform: uppercase;
+            text-shadow: 2px 2px 2px #222;
+
+            @media @screen-small-above {
+                font-size: 1.5rem;
+                margin: .5rem 0;
+            }
+        }
+
+        h1 {
+            //text-transform: uppercase;
             font-size: 2rem;
             line-height: 1;
             text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                font-size: 3.7rem;
+                font-size: 3rem;
             }
         }
 
@@ -153,7 +168,7 @@
             text-shadow: 2px 2px 2px #222;
 
             @media @screen-small-above {
-                font-size: 1.3rem;
+                font-size: 1rem;
             }
         }
     }
