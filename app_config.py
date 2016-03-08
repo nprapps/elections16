@@ -327,7 +327,7 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = '' #'-d tests/data/ap_elections_loader_recording-1456438501.json'
         #ELEX_DELEGATE_FLAGS = ''
-        ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        # ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
         CARD_DEPLOY_INTERVAL = 20

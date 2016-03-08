@@ -180,3 +180,9 @@ class CandidateDelegates(BaseModel):
 
     def delegates_pct(self):
         return 100 * (self.delegates_count / float(self.party_need))
+
+    def previous_delegates_pct(self):
+        return 100 * ((self.delegates_count - self.d1) / float(self.party_need))
+
+    def new_delegates_pct(self):
+        return 100 * (self.d1 / float(self.party_need))
