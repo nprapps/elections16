@@ -14,7 +14,10 @@
             <div class="bar-wrapper">
                 <span class="bar previous" style="width: {{ candidate.previous_delegates_pct() }}%"></span>
                 <span class="bar pickups" style="width: {{ candidate.new_delegates_pct() }}%"></span>
-                <span class="amt">{{ candidate.delegates_count|comma  }}{% if candidate.d1 != 0 %}&nbsp;<span class="pickups">(+{{ candidate.d1 }})</span>{% endif %} {% if party == 'Dem' %}&nbsp;<span class="detail">({{ candidate.pledged_delegates_count() }} + {{ candidate.superdelegates_count }})</span>{% endif %}</span>
+                <span class="amt">
+                    {{ candidate.delegates_count|comma  }}{% if candidate.d1 != 0 %}&nbsp;<span class="pickups">(+{{ candidate.d1 }})</span>{% endif %}
+                    {% if party == 'Dem' %}<span class="detail">{{ candidate.pledged_delegates_count() }} pledged, {{ candidate.superdelegates_count }} super</span>{% endif %}
+                </span>
             </div>
         </li>
         {% endfor %}
