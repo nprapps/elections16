@@ -371,9 +371,10 @@ def _format_poll_closing(poll_closing):
 
 def get_last_updated(races):
     last_updated = None
+
     for race in races:
-        for result in race['results']:
-            if (result['winner'] and result['call'][0]['accept_ap']) or (result['call'][0]['override_winner'] and not result['call'][0]['accept_ap']) or result['precinctsreporting'] > 0:
+        if race['called'] or race['precinctsreporting'] > 0:
+            for result in race['results']:
                 if not last_updated or result['lastupdated'] > last_updated:
                     last_updated = result['lastupdated']
 
