@@ -96,7 +96,7 @@
     <dl class="poll-info">
         {% for closing, states in poll_closings.iteritems() %}
         {% if states|length > 0 %}
-        <dt>Polls close at {{ closing }} EST</dt>
+        <dt>Results expected after {{ closing }} EST</dt>
         {% for state in states %}
         <dd>{{ state }}</dd>
         {% endfor %}
