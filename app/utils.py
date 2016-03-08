@@ -310,7 +310,7 @@ def get_race_results(raceid, party):
 
     serialized_results = []
     for result in sorted_results:
-        if result.winner and (result.call[0].accept_ap or (result.call[0].override_winner)):
+        if (result.winner and result.call[0].accept_ap) or result.call[0].override_winner:
             called = True
         serialized_results.append(model_to_dict(result, backrefs=True))
 
@@ -323,11 +323,16 @@ def get_race_results(raceid, party):
         'precinctsreportingpct': serialized_results[0]['precinctsreportingpct'],
         'precinctsreporting': serialized_results[0]['precinctsreporting'],
         'precinctstotal': serialized_results[0]['precinctstotal'],
-        'poll_closing': serialized_results[0]['meta'][0]['poll_closing'],
-        'race_type': serialized_results[0]['meta'][0]['race_type'],
         'total': tally_results(raceid),
         'called': called,
+        'race_type': '',
     }
+
+    if len(serialized_results[0]['meta']):
+        output.update({
+            'poll_closing': serialized_results[0]['meta'][0].get('poll_closing'),
+            'race_type': serialized_results[0]['meta'][0].get('race_type'),
+        })
 
     return output
 
@@ -364,15 +369,19 @@ def _format_poll_closing(poll_closing):
     return '{0} {1}'.format(formatted_time, formatted_period)
 
 
-def get_last_updated(party):
-    latest_result = models.Result.select(
-        fn.Max(models.Result.lastupdated).alias('lastupdated')
-    ).where(
-        models.Result.party == PARTY_MAPPING[party]['AP'],
-        models.Result.level == 'state'
-    ).get()
+def get_last_updated(races):
+    last_updated = None
 
-    return latest_result.lastupdated
+    for race in races:
+        if race['called'] or race['precinctsreporting'] > 0:
+            for result in race['results']:
+                if not last_updated or result['lastupdated'] > last_updated:
+                    last_updated = result['lastupdated']
+
+    if not last_updated:
+        last_updated = datetime.utcnow()
+
+    return last_updated
 
 
 def tally_results(raceid):
