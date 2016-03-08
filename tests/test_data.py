@@ -9,7 +9,7 @@ from fabfile import data
 from models import models
 from peewee import *
 from time import time
-
+from datetime import datetime
 
 class ResultsLoadingTestCase(unittest.TestCase):
     """
@@ -61,6 +61,26 @@ class ResultsLoadingTestCase(unittest.TestCase):
     def test_vote_tally(self):
         tally = utils.tally_results('16672')
         self.assertEqual(tally, 1406)
+
+    def test_last_updated_precinctsreporting(self):
+        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        last_updated = utils.get_last_updated(races)
+        self.assertEqual(last_updated, datetime(2016, 2, 2, 15, 37, 6))
+
+    def test_last_updated_before(self):
+        models.Result.update(precinctsreporting=0).execute()
+        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        last_updated = utils.get_last_updated(races)
+        last_updated_ts = calendar.timegm(last_updated.timetuple())
+        now = time()
+        self.assertAlmostEqual(now, last_updated_ts, delta=10)
+
+    def test_last_updated_called_noprecincts(self):
+        models.Result.update(precinctsreporting=0).execute()
+        models.Call.update(override_winner=True).where(models.Call.call_id == '16957-polid-53044-state-1').execute()
+        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        last_updated = utils.get_last_updated(races)
+        self.assertEqual(last_updated, datetime(2016, 2, 2, 15, 37, 6))
 
 
 class DelegatesLoadingTestCase(unittest.TestCase):
