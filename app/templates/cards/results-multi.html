@@ -82,6 +82,7 @@
     {% endif %}
     {% endfor %}
 
+    {#
     {% if unreported_races|length > 0 %}
     <dl class="poll-info">
         <dt>Results expected later today</dt>
@@ -90,6 +91,18 @@
         {% endfor %}
     </dl>
     {% endif %}
+    #}
+
+    <dl class="poll-info">
+        {% for closing, states in poll_closings.iteritems() %}
+        {% if states|length > 0 %}
+        <dt>Polls close at {{ closing }} EST</dt>
+        {% for state in states %}
+        <dd>{{ state }}</dd>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </dl>
 
     <ul class="meta">
         {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
