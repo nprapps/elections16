@@ -22,16 +22,16 @@ def get_google_doc(key):
 
 
 def get_google_doc_html(key):
-    #try:
-        #html_string = get_google_doc(key)
-        #parser = DocParser(html_string)
-        #with codecs.open('.{0}'.format(key), 'w', 'utf-8') as f:
-            #f.write(html_string)
-        #return parser
-    #except AttributeError:
-    print 'ERROR DOWNLOADING {0}'.format(key)
-    with codecs.open('.{0}'.format(key), 'r', 'utf-8') as f:
-        return DocParser(f.read())
+    try:
+        html_string = get_google_doc(key)
+        parser = DocParser(html_string)
+        with codecs.open('.{0}'.format(key), 'w', 'utf-8') as f:
+            f.write(html_string)
+        return parser
+    except AttributeError:
+        print 'ERROR DOWNLOADING {0}'.format(key)
+        with codecs.open('.{0}'.format(key), 'r', 'utf-8') as f:
+            return DocParser(f.read())
 
 
 class DocParser:
