@@ -17,6 +17,10 @@ node_modules
 *.log
 .*_html
 
+.*
+!/.gitignore
+
+
 # Installer logs
 pip-log.txt
 
