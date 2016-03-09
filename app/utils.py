@@ -72,7 +72,6 @@ USPS_TO_AP_STATE = {
 }
 
 GOP_CANDIDATES = [
-    'Ben Carson',
     'Ted Cruz',
     'John Kasich',
     'Marco Rubio',
