@@ -18,6 +18,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
     def setUp(self):
         data.load_results()
         data.create_calls()
+        data.create_race_meta()
 
     def test_results_loading(self):
         results_length = models.Result.select().count()
@@ -26,6 +27,10 @@ class ResultsLoadingTestCase(unittest.TestCase):
     def test_calls_creation(self):
         calls_length = models.Call.select().count()
         self.assertEqual(calls_length, 18)
+
+    def test_race_meta_creation(self):
+        race_meta_length = models.RaceMeta.select().count()
+        self.assertEqual(race_meta_length, 18)
 
     def test_multiple_calls_creation(self):
         data.create_calls()
