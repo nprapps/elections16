@@ -331,28 +331,31 @@ def get_race_results(raceid, party):
         output.update({
             'poll_closing': serialized_results[0]['meta'][0].get('poll_closing'),
             'race_type': serialized_results[0]['meta'][0].get('race_type'),
+            'order': serialized_results[0]['meta'][0].get('order')
         })
 
     return output
 
 
 def group_poll_closings(races):
-    poll_closing_times = []
+    poll_closing_orders = []
     for race in races:
-        if race['poll_closing'] not in poll_closing_times:
-            poll_closing_times.append(race['poll_closing'])
+        if race['order'] not in poll_closing_orders:
+            poll_closing_orders.append(race['order'])
 
-    poll_closing_times.sort()
+    poll_closing_orders.sort()
 
     grouped = OrderedDict()
-    for poll_closing in poll_closing_times:
-        poll_closing_time = _format_poll_closing(poll_closing)
-        grouped[poll_closing_time] = []
+    for group in poll_closing_orders:
+        grouped[group] = {
+            'poll_closing': '',
+            'races': []
+        }
 
-    for race in races:
-        poll_closing_time = _format_poll_closing(race['poll_closing'])
-        if race['precinctsreporting'] == 0 and not race['called']:
-            grouped[poll_closing_time].append(race['statename'])
+        for race in races:
+            if race['precinctsreporting'] == 0 and not race['called'] and race['order'] == group:
+                grouped[group]['poll_closing'] = race['poll_closing']
+                grouped[group]['races'].append(race['statename'])
 
     return grouped
 
