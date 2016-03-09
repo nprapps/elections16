@@ -273,9 +273,9 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.WARNING
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        LOAD_COPY_INTERVAL = 10
+        LOAD_RESULTS_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 3600
         LOAD_DELEGATES_INTERVAL = 600
     elif deployment_target == 'staging':
