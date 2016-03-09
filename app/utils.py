@@ -8,7 +8,6 @@ from pytz import timezone
 from time import time
 
 import app_config
-import copytext
 import simplejson as json
 import xlrd
 

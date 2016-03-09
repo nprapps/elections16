@@ -6,7 +6,7 @@ Commands that update or process the application data.
 import app_config
 
 from app.gdoc import get_google_doc
-from app.utils import set_delegates_updated_time, convert_serial_date
+from app.utils import set_delegates_updated_time
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
