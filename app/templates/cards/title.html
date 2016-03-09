@@ -12,18 +12,11 @@
             </div>
         </div>
 
-        <h3>The story so far</h3>
+        <h3>March 8th Contests</h3>
         <h1>{{ headline }}</h1>
         <p>{{ content|safe }}</p>
         <button class="begin title-button">
-            {% if state == 'during' and COPY.meta.live_audio == 'live' %}
             Join the live event
-            {% elif state == 'after' %}
-            View the results
-            {% else %}
-            Get Caught Up
-            {% endif %}
-
             <i class="icon icon-angle-right"></i></button>
         </button>
     </div>
