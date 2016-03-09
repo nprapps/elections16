@@ -16,7 +16,7 @@
         <h1>{{ headline }}</h1>
         <p>{{ content|safe }}</p>
         <button class="begin title-button">
-            {% if state == 'during' and COPY.meta.live_audio == 'live' %}
+            {% if state == 'during' and COPY.meta.live_audio.value == 'live' %}
             Join the live event
             {% elif state == 'after' %}
             View the results
