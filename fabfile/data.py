@@ -6,7 +6,7 @@ Commands that update or process the application data.
 import app_config
 
 from app.gdoc import get_google_doc
-from app.utils import set_delegates_updated_time, convert_serial_date
+from app.utils import set_delegates_updated_time
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
@@ -177,8 +177,6 @@ def create_race_meta():
         if not row.get('full_poll_closing_time'):
             continue
 
-        poll_closing = convert_serial_date(row.get('full_poll_closing_time'))
-
         results = models.Result.select().where(
                 models.Result.level == 'state',
                 models.Result.statename == row['state_name'],
@@ -190,7 +188,8 @@ def create_race_meta():
             models.RaceMeta.create(
                     result_id=result.id,
                     race_type=race_type,
-                    poll_closing=poll_closing
+                    poll_closing=row['full_poll_closing_time'],
+                    order=row['ordinal']
             )
 
 

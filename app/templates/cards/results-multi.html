@@ -94,10 +94,10 @@
     #}
 
     <dl class="poll-info">
-        {% for closing, states in poll_closings.iteritems() %}
-        {% if states|length > 0 %}
-        <dt>Polls close at {{ closing }} EST</dt>
-        {% for state in states %}
+        {% for order, obj in poll_closings.iteritems() %}
+        {% if obj.races|length > 0 %}
+        <dt>{{ obj.poll_closing }}</dt>
+        {% for state in obj.races %}
         <dd>{{ state }}</dd>
         {% endfor %}
         {% endif %}
