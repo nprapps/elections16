@@ -118,11 +118,13 @@
     }
 
     .segment-audio-content {
-
         max-width: 44.4rem;
         margin: 0 30px 2rem 42px;
-        padding-bottom: 1rem;
+        //padding: 1rem 1rem 0 .5rem;
         border-bottom: 1px solid #333;
+        position: relative;
+
+
         &:before,
         &:after {
             content: " ";
@@ -133,7 +135,7 @@
         }
 
         @media @screen-small-above {
-            margin: 0 auto;
+            margin: 3rem auto 0 auto;
             max-width: 41.4rem;
         }
 
@@ -145,8 +147,12 @@
         }
 
         .segment-audio-player {
-            float: left;
-            margin: .2rem 1rem 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4rem;
+            line-height: 5rem;
+            background: @live;
 
 
             li {margin: 0;}
@@ -155,8 +161,8 @@
                 width: 4rem;
                 height: 4rem;
                 margin: 0;
-                background-color: @live;
                 cursor: pointer;
+                position: relative;
 
                 button {
                     border: none;
@@ -170,7 +176,9 @@
                     font-family: elections16;
                     color: @white;
                     font-size: 2.4rem;
-                    padding: .45rem .5rem 0 .5rem;
+                    line-height: 1;
+                    //padding: .5rem 0 0 0;
+
 
                 }
 
@@ -180,22 +188,18 @@
                     font-family: elections16;
                     color: @white;
                     font-size: 2.4rem;
-                    padding: .45rem .5rem 0 .4rem;
-
-                    @screen-medium-above {
-                        padding-top: .55rem;    
-                    }
+                    //padding: .5rem 0 0 0;
                 }
 
                 .loading:before {
                     display: block;
                     content: "\e805";
                     font-size: 2.4rem;
-                    padding: .5rem .3rem;
+                    line-height: 1;
+                    //padding: .5rem 0 0 0;
                     font-family: elections16;
+                    line-height: 1;
                     color: @white;
-                    -webkit-animation: fa-spin 2s infinite linear;
-                    animation: fa-spin 2s infinite linear;
                 }
 
 
@@ -213,21 +217,25 @@
 
 
         .broadcast-description {
+            margin-left: 5rem;
             h3 {
                 .knockout();
+                color: #fff;
                 text-transform: uppercase;
                 margin: 0;
                 padding: 0;
                 line-height: 1;
-                font-size: 1.5rem;
+                font-size: 1.6rem;
+                text-shadow: 2px 2px 2px #111;
             }
 
             p {
-                .gotham();
-                font-size: .8rem;
+                .knockout();
+                font-size: 1.1rem;
                 line-height: 1.2;
-                color: @white;
-                margin: 5px 0 0 0;
+                color: #eee;
+                margin: .2rem 0 2.5rem 0;
+                text-shadow: 2px 2px 2px #111;
             }
         }
     }
