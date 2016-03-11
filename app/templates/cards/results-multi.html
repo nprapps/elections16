@@ -95,10 +95,12 @@
 
     <dl class="poll-info">
         {% for order, obj in poll_closings.iteritems() %}
+        {% if obj.races|length > 0 %}
         <dt>{{ obj.poll_closing }}</dt>
         {% for state in obj.races %}
         <dd>{{ state }}</dd>
         {% endfor %}
+        {% endif %}
         {% endfor %}
     </dl>
 
