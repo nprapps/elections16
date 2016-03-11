@@ -89,6 +89,19 @@ class ResultsLoadingTestCase(unittest.TestCase):
         last_updated = utils.get_last_updated(races)
         self.assertEqual(last_updated, datetime(2016, 3, 2, 2, 4, 1))
 
+    def test_poll_closing_grouping(self):
+        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        poll_closings = utils.group_poll_closings(races)
+        poll_closings_length = len(poll_closings)
+        self.assertEqual(poll_closings_length, 5)
+
+    def test_poll_closing_listing(self):
+        races = utils.get_results('dem', app_config.NEXT_ELECTION_DATE)
+        poll_closings = utils.group_poll_closings(races)
+        nine_pm_closings = poll_closings[4]['races']
+        self.assertEqual(len(nine_pm_closings), 2)
+
+
 
 class DelegatesLoadingTestCase(unittest.TestCase):
     """
