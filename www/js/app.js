@@ -53,6 +53,7 @@ var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
    focusWorkaround = true;
 }
+var autoplayDeepLink = (window.location.search.indexOf('autoplay') >= 0);
 
 /*
  * Run on page load.
@@ -112,6 +113,9 @@ var onDocumentLoad = function(e) {
 
     setPolls();
     AUDIO.setupAudio();
+    if (autoplayDeepLink) {
+        navigateToAudioCard();
+    }
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -193,6 +197,19 @@ var detectMobileBg = function($card) {
     }
 }
 
+var navigateToAudioCard = function() {
+    for (var i = 0; i < $cards.length; i++) {
+        if ($cards.eq(i).hasClass('live-audio')) {
+            $cardsWrapper.flickity('select', i);
+            break;
+        } else if ($cards.eq(i).hasClass('podcast')) {
+            $cardsWrapper.flickity('select', i);
+            AUDIO.setMedia(PODCAST_URL);
+            playedAudio = true;
+            break;
+        }
+    }
+}
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
