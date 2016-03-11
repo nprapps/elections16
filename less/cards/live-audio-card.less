@@ -2,142 +2,33 @@
 
 #live-audio {
 
-    .no-touchevents & {
-        .card-background {
-            .photo-credit {
-                bottom: 55px;
+    .full-block {
+        .full-block-cell {
+            @media @screen-small-above {
+                vertical-align: top;
             }
         }
     }
 
-    .card-inner {
-        max-width: @max-width-content;
-        margin: 0 3rem 2rem 3rem;
-
-        @media @screen-small-above {
-            margin: 0 auto;
-        }
-    }
-
-    .card-background {
-        background-repeat: no-repeat;
+    header {
         .background-size(cover);
         background-position: center center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.4;
-    }
-
-
-    .segment-audio-content {
-
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-            text-align: center;
-        }
+        position: relative;
+        min-height: 8rem;
+        margin-bottom: 22px;
+        border-bottom: 5px solid @accent2;
+        border-top: 1px solid #222;
 
         @media @screen-small-above {
-            max-width: 22rem;
-            margin: 0 auto;
-            padding-top: 2rem;
-        }
-
-        .segment-audio-player {
-            position: relative;
-            margin: 2rem auto;
-            max-width: 8rem;
-
-            li {margin: 0;}
-
-            .segment-type {
-                .knockout();
-                font-size: 1.3rem;
-                text-transform: uppercase;
-                color: #fff;
-                padding: .4rem 0;
-                background-color: @live;
-                margin-bottom: 5px;
-            }
-
-            .segment-play {
-                margin: 0;
-                /*padding: 1.4rem 2rem 1rem 2rem;*/
-                background-color: rgba(255, 255, 255, .4);
-                cursor: pointer;
-
-                button {
-                    border: none;
-                    background-color: transparent;
-                }
-
-                /*.play, .pause, .loading {*/
-                    /*position: relative;*/
-                    /*width: 5rem;*/
-                    /*height: 5rem;*/
-                    /*margin-bottom: .5rem;*/
-                    /*outline: none;*/
-                /*}*/
-
-                .play:before {
-                    content: "\e802";
-                    font-family: elections16;
-                    color: @white;
-                    font-size: 5rem;
-                    /*position: absolute;*/
-                    /*top: 0;*/
-                    /*left: 13px;*/
-                }
-
-                .pause:before {
-                    content: "\e806";
-                    font-family: elections16;
-                    color: @white;
-                    font-size: 5rem;
-                    /*position: absolute;*/
-                    /*top: 0;*/
-                    /*left: 5px;*/
-                }
-
-                .loading:before {
-                    content: "\e805";
-                    font-family: elections16;
-                    color: @white;
-                    font-size: 5rem;
-                    /*position: absolute;*/
-                    /*top: 0;*/
-                    /*left: 7px;*/
-                    -webkit-animation: fa-spin 2s infinite linear;
-                    animation: fa-spin 2s infinite linear;
-                }
-
-
-            }
-
-        }
-
-        // .broadcast-description {
-        //     max-width: 20rem;
-        //     margin: 0 auto;
-        // }
-        .segment-source {
-            .knockout();
-            font-size: 1.5rem;
-            line-height: 1;
-            text-shadow: 2px 2px 2px #222;
-            text-align: center;
+            border-top: 1px solid #444;
+            min-height: 13rem;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: .5rem;
 
             @media @screen-small-above {
+                text-align: left;
                 font-size: 3.1rem;
             }
         }
@@ -147,17 +38,197 @@
             font-size: 1.3rem;
             @media @screen-small-above {
                 font-size: 1.7;
-                text-align: center;
-                white-space: nowrap;
             }
         }
 
-        p {
-            .gotham();
-            font-size: 1rem;
-            line-height: 1.7;
-            color: @white;
+        .header-screen {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            //content: '';
+            background: rgba(0, 0, 0, .5);
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+        .header-content {
+            width: 100%;
+            padding: 2rem;
+            max-width: @max-width-content;
+            margin: 0 auto;
+            @media @screen-small-above {
+                padding: 2rem 0;
+            }
+        }
+
+        .photo-credit {
+            bottom: 5px;
+            right: 5px;
+            opacity: .7;
+        }
+    }
+
+    article {
+        max-width: 44.4rem;
+        margin: 0 30px 2rem 30px;
+
+        @media @screen-small-above {
+            margin: 0 auto;
+            max-width: 41.4rem;
+        }
+    }
+
+
+    // via http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
+    ol {
+        counter-reset: li;
+        margin-left: 3.5rem;
+
+        @media @screen-medium-above {
+            margin-left: 0;
+        }
+
+
+        > li {
+            position: relative;
+            margin-left: 2em;
+            list-style: none;
+            margin: 2.5rem 0 0 0;
+            line-height: 2;
+
+            &:before {
+                content:counter(li);
+                counter-increment:li;
+                -moz-box-sizing:border-box;
+                -webkit-box-sizing:border-box;
+                box-sizing:border-box;
+                position: absolute;
+                top: -0.07em;
+                left: -1.3em;
+                width: 1em;
+                text-align: center;
+                .knockout();
+                font-size: 3rem;
+                line-height: 1;
+            }
+        }
+    }
+
+    .segment-audio-content {
+
+        max-width: 44.4rem;
+        margin: 0 30px 2rem 42px;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #333;
+        &:before,
+        &:after {
+            content: " ";
+            display: table;
+        }
+        &:after {
+            clear: both;
+        }
+
+        @media @screen-small-above {
+            margin: 0 auto;
+            max-width: 41.4rem;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .segment-audio-player {
+            float: left;
+            margin: .2rem 1rem 0 0;
+
+
+            li {margin: 0;}
+
+            .segment-play {
+                width: 4rem;
+                height: 4rem;
+                margin: 0;
+                background-color: @live;
+                cursor: pointer;
+
+                button {
+                    border: none;
+                    background-color: transparent;
+                    outline: none;
+                }
+
+                .play:before {
+                    display: block;
+                    content: "\e802";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 2.4rem;
+                    padding: .45rem .5rem 0 .5rem;
+
+                }
+
+                .pause:before {
+                    display: block;
+                    content: "\e806";
+                    font-family: elections16;
+                    color: @white;
+                    font-size: 2.4rem;
+                    padding: .45rem .5rem 0 .4rem;
+
+                    @screen-medium-above {
+                        padding-top: .55rem;    
+                    }
+                }
+
+                .loading:before {
+                    display: block;
+                    content: "\e805";
+                    font-size: 2.4rem;
+                    padding: .5rem .3rem;
+                    font-family: elections16;
+                    color: @white;
+                    -webkit-animation: fa-spin 2s infinite linear;
+                    animation: fa-spin 2s infinite linear;
+                }
+
+
+            }
+
+        }
+
+        .segment-source {
+            .knockout();
+            font-size: 1.5rem;
+            line-height: 1;
             text-shadow: 2px 2px 2px #222;
+            text-align: center;
+        }
+
+
+        .broadcast-description {
+            h3 {
+                .knockout();
+                text-transform: uppercase;
+                margin: 0;
+                padding: 0;
+                line-height: 1;
+                font-size: 1.5rem;
+            }
+
+            p {
+                .gotham();
+                font-size: .8rem;
+                line-height: 1.2;
+                color: @white;
+                margin: 5px 0 0 0;
+            }
         }
     }
 }

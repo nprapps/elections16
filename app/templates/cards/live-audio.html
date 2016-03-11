@@ -1,26 +1,32 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<div class="segment-audio-content">
-        <h1 style="text-align: center;">{{ headline }}</h1>
-        <h2 style="text-align: center;">{{ subhed }}</h2>
 
-        {% if live %}
+<header style="background-image: url('http://media.npr.org/politics/election2016/whathappenned-march8.jpg');">
+    <div class="header-screen">
+        <div class="header-content">
+            <h2>Mega Tuesday</h2> <!-- {{ subhed }} -->
+            <h1>What's Happening</h1> <!--{{ headline }}-->
+        </div>
+    </div>
+    <p class="photo-credit">{% if DEPLOYMENT_TARGET != 'production' and preview_credit %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}</p>
+</header>
+
+{% if live %}
+<div class="segment-audio-content">
         <ul class="segment-audio-player">
-            <li class="segment-type">Live Audio</li>
             <li class="segment-play">
                 <button class="toggle-btn pause">
                 </button>
             </li>
         </ul>
-        {% endif %}
 
-    <div class="broadcast-description">
-
-        <p>{{ content|safe }}</p>
-
+    <div class="broadcast-description"><!--<p>{{ content|safe }}</p>-->
+        <h3>Live Broadcast</h3>
+        <p>Hosted by Scott Detrow and Sam Sanders.</p>
     </div>
 </div>
+{% endif %}
 
 {% if live %}
 <script type='text/javascript'>
@@ -33,10 +39,46 @@
 </script>
 {% endif %}
 
-{% endblock %}
+<article> <!--{{ content|smarty }}-->
+    <ol>
+     <li>
+      <a href="http://www.npr.org/2016/03/08/469717046/michigan-mississippi-idaho-hawaii-primary-results">
+       Bernie Sanders
+       won
+      </a>
+      Michigan
+      and Hillary Clinton won Mississippi. On the GOP side, Donald Trump won Hawaii, Michigan and Mississippi, while Ted Cruz won Idaho.
+     </li>
+     <li>
+      <strong>
+       Clinton picked up
+      </strong>
+      more delegates than Sanders overall but the story of the night was Sanders’ win in Michigan. He had gone into Michigan polling behind Clinton, and this win shows he’s still holding his own in the race.
+     </li>
+     <li>
+      After weekend wins,
+      <strong>
+       Ted Cruz
+      </strong>
+      was unable to
+      put the brakes on
+      Donald Trump’s momentum.
+     </li>
+     <li>
+      <strong>
+       Marco Rubio had a bad night.
+      </strong>
+      He didn’t score double digits in Mississippi or Michigan, and in
+      Hawaii and
+      Idaho he placed third.
+     </li>
+     <li>
+      What’s next?
+      On Tuesday,
+      March 15,
+      five states will hold both Democratic and Republican contests. All five have considerable delegate prizes — and three of those on the GOP side are winner-take-all.
+     </li>
+    </ol>
+</article>
 
-{% block card_background %}
-<span class="card-background" data-mobile-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_mobile_image %}{{ preview_mobile_image }}{% else %}{{ mobile_image }}{% endif %}" data-default-bg="{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}" style="background-repeat: no-repeat; background-size: cover; background-position: center center; -webkit-background-size: cover;">
-    <p class="photo-credit" data-mobile-credit="{% if DEPLOYMENT_TARGET != 'production' and preview_mobile_credit %}{{ preview_mobile_credit }}{% else %}{{ mobile_credit }}{% endif %}" data-default-credit="{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}">{% if DEPLOYMENT_TARGET != 'production' and preview_credit %}{{ preview_credit }}{% else %}{{ credit }}{% endif %}</p>
-</span>
 {% endblock %}
