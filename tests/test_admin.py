@@ -20,12 +20,12 @@ class FilterResultsTestCase(unittest.TestCase):
 
     def test_results_filtering(self):
         filtered = utils.filter_results()
-        self.assertEqual(filtered.count(), 18)
+        self.assertEqual(filtered.count(), 185)
 
     def test_results_grouping(self):
         filtered = utils.filter_results()
         grouped = utils.group_results_by_race(filtered)
-        self.assertEqual(len(grouped), 2)
+        self.assertEqual(len(grouped), 22)
 
 
 class CallRacesTestCase(unittest.TestCase):
@@ -41,13 +41,13 @@ class CallRacesTestCase(unittest.TestCase):
         response = self.test_app.post(
             '/%s/calls/accept-ap' % app_config.PROJECT_SLUG,
             data={
-                'race_id': '16957'
+                'race_id': '12044'
             }
         )
 
         results = models.Result.select().where(
             models.Result.level == 'state',
-            models.Result.raceid == '16957'
+            models.Result.raceid == '12044'
         )
 
         return results
@@ -56,16 +56,16 @@ class CallRacesTestCase(unittest.TestCase):
         response = self.test_app.post(
             '/%s/calls/call-npr' % app_config.PROJECT_SLUG,
             data={
-                'race_id': '16957',
-                'result_id': '16957-polid-1239-state-1'
+                'race_id': '12044',
+                'result_id': '12044-polid-1746-state-1'
             }
         )
 
-        result = models.Result.get(models.Result.id == '16957-polid-1239-state-1')
+        result = models.Result.get(models.Result.id == '12044-polid-1746-state-1')
 
         race_results = models.Result.select().where(
             models.Result.level == 'state',
-            models.Result.raceid == '16957'
+            models.Result.raceid == '12044'
         )
         return result, race_results
 
