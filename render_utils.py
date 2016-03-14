@@ -211,6 +211,8 @@ def make_gdoc_context(gdoc):
         'preview_credit',
         'preview_mobile_credit',
         'audio_url',
+        'live_audio_headline',
+        'live_audio_subhed'
     ]
 
     for keyword in keywords:
