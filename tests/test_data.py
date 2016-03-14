@@ -18,19 +18,24 @@ class ResultsLoadingTestCase(unittest.TestCase):
     def setUp(self):
         data.load_results()
         data.create_calls()
+        data.create_race_meta()
 
     def test_results_loading(self):
         results_length = models.Result.select().count()
-        self.assertEqual(results_length, 1800)
+        self.assertEqual(results_length, 29863)
 
     def test_calls_creation(self):
         calls_length = models.Call.select().count()
-        self.assertEqual(calls_length, 18)
+        self.assertEqual(calls_length, 185)
+
+    def test_race_meta_creation(self):
+        race_meta_length = models.RaceMeta.select().count()
+        self.assertEqual(race_meta_length, 185)
 
     def test_multiple_calls_creation(self):
         data.create_calls()
         calls_length = models.Call.select().count()
-        self.assertEqual(calls_length, 18)
+        self.assertEqual(calls_length, 185)
 
     def test_results_deletion(self):
         data.delete_results()
@@ -45,7 +50,8 @@ class ResultsLoadingTestCase(unittest.TestCase):
         filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'Dem')
         filtered_length = len(filtered)
         whitelist_length = len(utils.DEM_CANDIDATES)
-        self.assertEqual(filtered_length, whitelist_length)
+        # whitelist_length times number of races
+        self.assertEqual(filtered_length, whitelist_length * 11)
 
     def test_results_collation_gop(self):
         results = models.Result.select().where(
@@ -56,16 +62,17 @@ class ResultsLoadingTestCase(unittest.TestCase):
         filtered, other_votecount, other_votepct = utils.collate_other_candidates(list(results), 'GOP')
         filtered_length = len(filtered)
         whitelist_length = len(utils.GOP_CANDIDATES)
-        self.assertEqual(filtered_length, whitelist_length)
+        # whitelist_length times number of races
+        self.assertEqual(filtered_length, whitelist_length * 11)
 
     def test_vote_tally(self):
-        tally = utils.tally_results('16672')
-        self.assertEqual(tally, 1406)
+        tally = utils.tally_results('12044')
+        self.assertEqual(tally, 167554)
 
     def test_last_updated_precinctsreporting(self):
         races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
         last_updated = utils.get_last_updated(races)
-        self.assertEqual(last_updated, datetime(2016, 2, 2, 15, 37, 6))
+        self.assertEqual(last_updated, datetime(2016, 3, 2, 2, 4, 50))
 
     def test_last_updated_before(self):
         models.Result.update(precinctsreporting=0).execute()
@@ -77,10 +84,23 @@ class ResultsLoadingTestCase(unittest.TestCase):
 
     def test_last_updated_called_noprecincts(self):
         models.Result.update(precinctsreporting=0).execute()
-        models.Call.update(override_winner=True).where(models.Call.call_id == '16957-polid-53044-state-1').execute()
-        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        models.Call.update(override_winner=True).where(models.Call.call_id == '12044-polid-1746-state-1').execute()
+        races = utils.get_results('dem', app_config.NEXT_ELECTION_DATE)
         last_updated = utils.get_last_updated(races)
-        self.assertEqual(last_updated, datetime(2016, 2, 2, 15, 37, 6))
+        self.assertEqual(last_updated, datetime(2016, 3, 2, 2, 4, 1))
+
+    def test_poll_closing_grouping(self):
+        races = utils.get_results('gop', app_config.NEXT_ELECTION_DATE)
+        poll_closings = utils.group_poll_closings(races)
+        poll_closings_length = len(poll_closings)
+        self.assertEqual(poll_closings_length, 5)
+
+    def test_poll_closing_listing(self):
+        races = utils.get_results('dem', app_config.NEXT_ELECTION_DATE)
+        poll_closings = utils.group_poll_closings(races)
+        nine_pm_closings = poll_closings[4]['races']
+        self.assertEqual(len(nine_pm_closings), 2)
+
 
 
 class DelegatesLoadingTestCase(unittest.TestCase):
