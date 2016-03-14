@@ -2,7 +2,7 @@
 
 {% block card_content %}
 
-<header style="background-image: url('http://media.npr.org/politics/election2016/whathappenned-march8.jpg');">
+<header style="background-image: url('{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}');">
     <div class="header-screen">
         <div class="header-content">
             <h2>{{ subhed }}</h2>
