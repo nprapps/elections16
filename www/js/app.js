@@ -200,12 +200,12 @@ var detectMobileBg = function($card) {
 var navigateToAudioCard = function() {
     for (var i = 0; i < $cards.length; i++) {
         if ($cards.eq(i).hasClass('live-audio')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
             $cardsWrapper.flickity('select', i);
             break;
         } else if ($cards.eq(i).hasClass('podcast')) {
             $cardsWrapper.flickity('select', i);
-            AUDIO.setMedia(PODCAST_URL);
-            playedAudio = true;
             break;
         }
     }
