@@ -62,6 +62,8 @@ class DocParser:
         """
         self.headline = None
         self.subhed = None
+        self.live_audio_headline = None
+        self.live_audio_subhed = None
         self.banner = None
         self.image = None
         self.mobile_image = None
@@ -96,6 +98,8 @@ class DocParser:
             self.parse_attrs(tag)
             self.find_token(tag, 'HEADLINE', 'headline')
             self.find_token(tag, 'SUBHED', 'subhed')
+            self.find_token(tag, 'LIVEAUDIOHEADLINE', 'live_audio_headline')
+            self.find_token(tag, 'LIVEAUDIOSUBHED', 'live_audio_subhed')
             self.find_token(tag, 'BANNER', 'banner')
             self.find_token(tag, 'PHOTOCREDIT', 'credit')
             self.find_token(tag, 'MOBILEPHOTOCREDIT', 'mobile_credit')

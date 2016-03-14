@@ -224,19 +224,19 @@ def live_audio():
     context = make_context()
 
     live_audio_state = context['COPY']['meta']['live_audio']['value']
+    key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
 
-    if live_audio_state == 'live':
-        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
-        context['live'] = True
-    else:
-        key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_inactive']
-        context['live'] = False
 
     doc = get_google_doc_html(key)
     context.update(make_gdoc_context(doc))
 
     pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
     context['live_audio_url'] = pointer.segments[0].uri
+
+    if live_audio_state == 'live':
+        context['live'] = True
+    else:
+        context['live'] = False
 
     context['slug'] = 'live-audio'
     context['template'] = 'live-audio'
