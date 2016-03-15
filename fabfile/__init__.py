@@ -159,10 +159,20 @@ def update():
     assets.sync()
     data.update()
 
+
+@task
+def deploy(remote='origin'):
+    """
+    Deploy and restart services
+    """
+    deploy_server(remote)
+    servers.fabcast('deploy_client')
+
+
 @task
 def deploy_server(remote='origin'):
     """
-    Deploy and restart services
+    Deploy and restart server
     """
     if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
