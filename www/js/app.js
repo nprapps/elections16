@@ -113,6 +113,10 @@ var onDocumentLoad = function(e) {
     setPolls();
     AUDIO.setupAudio();
 
+    if (autoplayDeepLink) {
+        navigateToAudioCard();
+    }
+
     $cardsWrapper.css({
         'opacity': 1,
         'visibility': 'visible'
