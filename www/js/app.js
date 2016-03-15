@@ -199,13 +199,12 @@ var detectMobileBg = function($card) {
 
 var navigateToAudioCard = function() {
     for (var i = 0; i < $cards.length; i++) {
-        if ($cards.eq(i).hasClass('live-audio')) {
+        if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
             $('.toggle-btn').removeClass().addClass('toggle-btn play');
             $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
             $cardsWrapper.flickity('select', i);
-            break;
-        } else if ($cards.eq(i).hasClass('podcast')) {
-            $cardsWrapper.flickity('select', i);
+            ANALYTICS.trackEvent('audiocard-navigate');
             break;
         }
     }
