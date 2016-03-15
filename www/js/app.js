@@ -193,6 +193,18 @@ var detectMobileBg = function($card) {
     }
 }
 
+var navigateToAudioCard = function() {
+    for (var i = 0; i < $cards.length; i++) {
+        if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
+            $cardsWrapper.flickity('select', i);
+            ANALYTICS.trackEvent('audiocard-navigate');
+            break;
+        }
+    }
+}
 
 var onCardChange = function(e) {
     var flickity = $cardsWrapper.data('flickity');
@@ -215,12 +227,6 @@ var onCardChange = function(e) {
         $flickityNav.hide();
         $flickityDots.hide();
     }
-
-    // if ($thisCard.is('#podcast') && !playedAudio) {
-    //     // PODCAST_URL is defined in the podcast template
-    //     AUDIO.setMedia(PODCAST_URL);
-    //     playedAudio = true;
-    // }
 
     if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
         AUDIO.setMedia(LIVE_AUDIO_URL);
