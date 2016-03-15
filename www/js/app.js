@@ -54,6 +54,8 @@ if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\
    focusWorkaround = true;
 }
 
+var autoplayDeepLink = (window.location.search.indexOf('autoplay') >= 0);
+
 /*
  * Run on page load.
  */
