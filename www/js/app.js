@@ -54,8 +54,6 @@ if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\
    focusWorkaround = true;
 }
 
-var nproneDeepLink = (window.location.search.indexOf('nprone') >= 0);
-
 /*
  * Run on page load.
  */
@@ -115,7 +113,7 @@ var onDocumentLoad = function(e) {
     setPolls();
     AUDIO.setupAudio();
 
-    if (nproneDeepLink) {
+    if (ANALYTICS.nproneDeepLink) {
         navigateToAudioCard();
     }
 
