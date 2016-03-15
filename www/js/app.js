@@ -206,9 +206,33 @@ var navigateToAudioCard = function() {
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
-            ANALYTICS.trackEvent('audiocard-navigate');
+            var strippedURL = removeURLParameter(window.location.href, 'nprone');
+            window.history.replaceState('stripped', document.title, strippedURL);
+
             break;
         }
+    }
+}
+
+var removeURLParameter = function(url, parameter) {
+    var urlParts = url.split('?');
+    if (urlParts.length >= 2) {
+        var prefix = encodeURIComponent(parameter);
+        var pars = urlParts[1].split(/[&;]/g);
+
+        for (var i = pars.length; i-- > 0;) {
+            if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                pars.splice(i, 1);
+            }
+        }
+        if (pars.length > 0) {
+            url = urlParts[0] + '?' + pars.join('&');
+        } else {
+            url = urlParts[0];
+        }
+        return url;
+    } else {
+        return url;
     }
 }
 
