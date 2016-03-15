@@ -11,6 +11,8 @@ var ANALYTICS = (function () {
     // Global time tracking variables
     var slideStartTime =  new Date();
     var timeOnLastSlide = null;
+    var nproneDeepLink = (window.location.search.indexOf('nprone') >= 0);
+    var queryParams = window.location.search;
 
     /*
      * Google Analytics
@@ -26,11 +28,17 @@ var ANALYTICS = (function () {
 
     var setupVizAnalytics = function() {
         ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
+        if (nproneDeepLink) {
+            ga('set', 'page', '/' + queryParams);
+        }
         ga('send', 'pageview');
     }
 
     var setupDotOrgAnalytics = function() {
         ga('create', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto', 'dotOrgTracker');
+        if (nproneDeepLink) {
+            ga('dotOrgTracker.set', 'page', '/' + queryParams);
+        }
 
         var orientation = 'portrait';
         if (window.orientation == 90 || window.orientation == -90) {
@@ -275,6 +283,7 @@ var ANALYTICS = (function () {
         'logCardExit': logCardExit,
         'calculateSlideExitTime': calculateSlideExitTime,
         'calculateTimeBucket': calculateTimeBucket,
-        'getTimeBucket': getTimeBucket
+        'getTimeBucket': getTimeBucket,
+        'nproneDeepLink': nproneDeepLink
     };
 }());
