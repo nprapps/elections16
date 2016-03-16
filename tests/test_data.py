@@ -22,7 +22,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
 
     def test_results_loading(self):
         results_length = models.Result.select().count()
-        self.assertEqual(results_length, 29863)
+        self.assertEqual(results_length, 29882)
 
     def test_calls_creation(self):
         calls_length = models.Call.select().count()
