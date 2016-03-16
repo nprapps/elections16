@@ -529,7 +529,7 @@ var onResize = function() {
 }
 
 var onDonateLinkClick = function(e) {
-    var timesToClick = calculateTimeBucket(globalStartTime);
+    var timesToClick = ANALYTICS.calculateTimeBucket(globalStartTime);
     var value = 'Cable donate card - ' + donateButtonText;
     ANALYTICS.trackEvent('donate-link-click', value, timesToClick[0], timesToClick[1]);
 }
