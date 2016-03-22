@@ -222,7 +222,7 @@ class DocParser:
             return value
 
     def __unicode__(self):
-        return '\n'.join([unicode(tag.prettify(formatter=None)) for tag in self.soup.body.children])
+        return '\n'.join([unicode(tag) for tag in self.soup.body.children])
 
     def __str__(self):
-        return '\n'.join([str(tag.prettify(formatter=None)) for tag in self.soup.body.children])
+        return '\n'.join([str(tag) for tag in self.soup.body.children])
