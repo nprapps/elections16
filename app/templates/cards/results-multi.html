@@ -82,7 +82,6 @@
     {% endif %}
     {% endfor %}
 
-    {#
     {% if unreported_races|length > 0 %}
     <dl class="poll-info">
         <dt>Results expected later today</dt>
@@ -91,9 +90,8 @@
         {% endfor %}
     </dl>
     {% endif %}
-    #}
 
-    <dl class="poll-info">
+    <!-- <dl class="poll-info">
         {% for order, obj in poll_closings.iteritems() %}
         {% if obj.races|length > 0 %}
         <dt>{{ obj.poll_closing }}</dt>
@@ -102,7 +100,7 @@
         {% endfor %}
         {% endif %}
         {% endfor %}
-    </dl>
+    </dl> -->
 
     <ul class="meta">
         {% if party == 'Republican' and COPY.meta.results_gop_footnote %}
