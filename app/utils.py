@@ -8,6 +8,7 @@ from pytz import timezone
 from time import time
 
 import app_config
+import copytext
 import simplejson as json
 import xlrd
 
@@ -323,6 +324,7 @@ def get_race_results(raceid, party):
         'total': tally_results(raceid),
         'called': called,
         'race_type': '',
+        'note': get_race_note(serialized_results[0])
     }
 
     if len(serialized_results[0]['meta']):
@@ -333,6 +335,16 @@ def get_race_results(raceid, party):
         })
 
     return output
+
+
+def get_race_note(race):
+    """
+    Pluck race note out of meta sheet
+    """
+    copy = copytext.Copy(app_config.COPY_PATH)
+    data = copy['meta']._serialize()
+    key = '{0}_{1}_note'.format(race['statepostal'], race['party']).lower()
+    return data.get(key, '')
 
 
 def group_poll_closings(races):
