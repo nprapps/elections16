@@ -77,6 +77,10 @@
                     </tr>
                 </tfoot>
             </table>
+
+            {% if race.note %}
+            <p>{{ race.note }}</p>
+            {% endif %}
         </div>
     </div>
     {% endif %}
