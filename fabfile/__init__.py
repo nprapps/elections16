@@ -155,9 +155,8 @@ def update():
     Update all application data not in repository (copy, assets, etc).
     """
     utils.install_font(force=False)
-    text.update()
+    text.update_copytext()
     assets.sync()
-    data.update()
 
 
 @task

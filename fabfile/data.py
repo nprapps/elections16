@@ -18,14 +18,6 @@ import servers
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
 
 
-@task(default=True)
-def update():
-    """
-    Stub function for updating app-specific data. Not currently implemented.
-    """
-    pass
-
-
 @task
 def bootstrap_db():
     """

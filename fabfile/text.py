@@ -7,23 +7,32 @@ Commands related to syncing copytext from Google Docs.
 import app_config
 
 from fabric.api import task
-from oauth.blueprint import get_document, get_credentials
-from termcolor import colored
+from oauth.blueprint import get_document, get_spreadsheet
+
 
 @task(default=True)
-def update():
+def update_copytext():
     """
     Downloads a Google Doc as an Excel file.
     """
-    if app_config.COPY_GOOGLE_DOC_KEY == None:
-        print colored('You have set COPY_GOOGLE_DOC_KEY to None. If you want to use a Google Sheet, set COPY_GOOGLE_DOC_KEY  to the key of your sheet in app_config.py', 'blue')
-        return
+    get_spreadsheet(app_config.COPY_GOOGLE_DOC_KEY,
+                    app_config.COPY_PATH)
 
-    credentials = get_credentials()
-    if not credentials:
-        print colored('No Google OAuth credentials file found.', 'yellow')
-        print colored('Run `fab app` and visit `http://localhost:8000` to generate credentials.', 'yellow')
-        return
 
-    get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
-    get_document(app_config.CALENDAR_GOOGLE_DOC_KEY, app_config.CALENDAR_PATH)
+@task
+def update_calendar():
+    """
+    Download calendar file.
+    """
+    get_spreadsheet(app_config.CALENDAR_GOOGLE_DOC_KEY,
+                    app_config.CALENDAR_PATH)
+
+
+@task
+def update_docs():
+    """
+    Update Google docs.
+    """
+    for card_slug, gdoc_id in app_config.CARD_GOOGLE_DOC_KEYS.items():
+        file_path = 'data/%s.html' % card_slug
+        get_document(gdoc_id, file_path)
