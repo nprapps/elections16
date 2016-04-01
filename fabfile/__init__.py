@@ -183,7 +183,9 @@ def deploy_server(remote='origin'):
 
         servers.checkout_latest(remote)
 
-        servers.fabcast('text.update')
+        servers.fabcast('text.update_copytext')
+        servers.fabcast('text.update_active_docs')
+        servers.fabcast('text.update_calendar')
         servers.fabcast('assets.sync')
         servers.fabcast('data.update')
 

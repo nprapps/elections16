@@ -32,6 +32,7 @@ def main(run_once=False):
     Main loop
     """
     copy_start = 0
+    docs_start = 0
     results_start = 0
     card_start = 0
     archive_start = 0
@@ -43,7 +44,12 @@ def main(run_once=False):
         if app_config.LOAD_COPY_INTERVAL and (now - copy_start) > app_config.LOAD_COPY_INTERVAL:
             copy_start = now
             logger.info('Update copy')
-            execute('text.update')
+            execute('text.update_copytext')
+
+        if app_config.LOAD_DOCS_INTERVAL and (now - docs_start) > app_config.LOAD_DOCS_INTERVAL:
+            docs_start = now
+            logger.info('Update docs')
+            execute('text.update_active_docs')
 
         if app_config.LOAD_RESULTS_INTERVAL and (now - results_start) > app_config.LOAD_RESULTS_INTERVAL:
             results_start = now
