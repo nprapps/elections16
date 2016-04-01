@@ -11,7 +11,6 @@ from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
-import codecs
 import copytext
 import servers
 
