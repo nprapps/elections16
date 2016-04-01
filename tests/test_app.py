@@ -5,10 +5,8 @@ import json
 import unittest
 
 from app import utils
-from app.gdoc import DocParser
 from datetime import datetime
 from fabfile import data
-from render_utils import make_gdoc_context
 
 
 class AppTestCase(unittest.TestCase):
