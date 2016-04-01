@@ -81,14 +81,6 @@ class AppTestCase(unittest.TestCase):
         formatted = utils.percent_filter(100)
         self.assertEqual(formatted, '100%')
 
-    def test_make_gdoc_context(self):
-        with open('tests/data/testdoc.html') as f:
-            html_string = f.read()
-
-        doc = DocParser(html_string)
-        context = make_gdoc_context(doc)
-        self.assertEqual(doc, context['content'])
-
     def test_results_json(self):
         self.assertEqual(True, True)
 
