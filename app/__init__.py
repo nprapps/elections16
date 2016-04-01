@@ -1,5 +1,6 @@
 import app_config
 import m3u8
+import os
 import simplejson as json
 
 from . import utils
@@ -7,7 +8,7 @@ from collections import OrderedDict
 from flask import Flask, jsonify, make_response, render_template
 from itertools import groupby
 from models import models
-from oauth.blueprint import oauth, oauth_required
+from oauth.blueprint import oauth, oauth_required, get_document
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
@@ -362,11 +363,12 @@ def title():
 def gdoc(key):
     """
     Get a Google doc and parse for use in template.
-
-    @TODO CURRENTLY BROKEN
     """
     context = make_context()
-    context['content'] = get_google_doc_html(key)
+    file_path = 'data/%s.html' % key
+    get_document(key, file_path)
+    context.update(make_gdoc_context(key))
+    os.remove(file_path)
     return render_template('cards/gdoc.html', **context)
 
 
