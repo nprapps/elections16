@@ -192,6 +192,7 @@ Daemon configuration
 """
 LOAD_COPY_INTERVAL = 15
 LOAD_RESULTS_INTERVAL = 30
+LOAD_DOCS_INTERVAL = 30
 CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 3600
 LOAD_DELEGATES_INTERVAL = 3600
@@ -275,6 +276,7 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 10
         LOAD_RESULTS_INTERVAL = 0
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 3600
         LOAD_DELEGATES_INTERVAL = 600
@@ -294,6 +296,7 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 300
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
@@ -329,6 +332,7 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 20
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 3600

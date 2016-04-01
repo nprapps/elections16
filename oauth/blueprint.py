@@ -1,4 +1,5 @@
 import app_config
+import codecs
 import os
 
 from app_config import authomatic
@@ -9,8 +10,11 @@ from functools import wraps
 from render_utils import make_context
 
 SPREADSHEET_URL_TEMPLATE = 'https://docs.google.com/feeds/download/spreadsheets/Export?exportFormat=xlsx&key=%s'
+DOC_URL_TEMPLATE = 'https://www.googleapis.com/drive/v3/files/%s/export?mimeType=text/html'
+
 
 oauth = Blueprint('_oauth', __name__, template_folder='templates')
+
 
 @oauth.route('/oauth/')
 def oauth_alert():
@@ -29,6 +33,7 @@ def oauth_alert():
             context['email'] = resp.data['email']
 
     return render_template('oauth.html', **context)
+
 
 @oauth.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
@@ -49,11 +54,12 @@ def authenticate():
 
         if not result.error:
             save_credentials(result.user.credentials)
-            get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
+            get_spreadsheet(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
 
         return render_template('authenticate.html', **context)
 
     return response
+
 
 def oauth_required(f):
     """
@@ -67,9 +73,10 @@ def oauth_required(f):
             return redirect(url_for('_oauth.oauth_alert'))
         else:
             if request.args.get('refresh'):
-                get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
+                get_spreadsheet(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
             return f(*args, **kwargs)
     return decorated_function
+
 
 def get_credentials():
     """
@@ -91,6 +98,7 @@ def get_credentials():
 
     return credentials
 
+
 def save_credentials(credentials):
     """
     Take Authomatic credentials object and save to disk.
@@ -99,7 +107,8 @@ def save_credentials(credentials):
     with open(file_path, 'w') as f:
         f.write(credentials.serialize())
 
-def get_document(key, file_path):
+
+def get_spreadsheet(key, file_path):
     """
     Uses Authomatic to get the google doc
     """
@@ -109,12 +118,31 @@ def get_document(key, file_path):
 
     if response.status != 200:
         if response.status == 404:
-            raise KeyError("Error! Your Google Doc does not exist or you do not have permission to access it.")
+            raise KeyError("Error! Your Google Spreadsheet does not exist or you do not have permission to access it.")
         else:
             raise KeyError("Error! Google returned a %s error" % response.status)
 
     with open(file_path, 'wb') as writefile:
         writefile.write(response.content)
+
+
+def get_document(key, file_path):
+    """
+    Uses Authomatic to get the google doc
+    """
+    credentials = get_credentials()
+    url = DOC_URL_TEMPLATE % key
+    response = app_config.authomatic.access(credentials, url)
+
+    if response.status != 200:
+        if response.status == 404:
+            raise KeyError("Error! Your Google Doc does not exist or you do not have permission to access it.")
+        else:
+            raise KeyError("Error! Google returned a %s error" % response.status)
+
+    with codecs.open(file_path, 'w', 'utf-8') as writefile:
+        writefile.write(response.content)
+
 
 def _has_api_credentials():
     """

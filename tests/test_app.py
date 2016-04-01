@@ -5,10 +5,8 @@ import json
 import unittest
 
 from app import utils
-from app.gdoc import DocParser
 from datetime import datetime
 from fabfile import data
-from render_utils import make_gdoc_context
 
 
 class AppTestCase(unittest.TestCase):
@@ -80,14 +78,6 @@ class AppTestCase(unittest.TestCase):
     def test_one_hundred_percent_filter(self):
         formatted = utils.percent_filter(100)
         self.assertEqual(formatted, '100%')
-
-    def test_make_gdoc_context(self):
-        with open('tests/data/testdoc.html') as f:
-            html_string = f.read()
-
-        doc = DocParser(html_string)
-        context = make_gdoc_context(doc)
-        self.assertEqual(doc, context['content'])
 
     def test_results_json(self):
         self.assertEqual(True, True)

@@ -5,25 +5,16 @@ Commands that update or process the application data.
 """
 import app_config
 
-from app.gdoc import get_google_doc
+from oauth.blueprint import get_document
 from app.utils import set_delegates_updated_time
 from fabric.api import local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
-import codecs
 import copytext
 import servers
 
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
-
-
-@task(default=True)
-def update():
-    """
-    Stub function for updating app-specific data. Not currently implemented.
-    """
-    pass
 
 
 @task
@@ -198,6 +189,4 @@ def download_test_gdoc():
     """
     Get the latest testing Google Doc and write to 'tests/data/testdoc.html'.
     """
-    html_string = get_google_doc(TEST_GOOGLE_DOC_KEY)
-    with codecs.open('tests/data/testdoc.html', 'w', 'utf-8') as f:
-        f.write(html_string)
+    get_document(TEST_GOOGLE_DOC_KEY, 'tests/data/testdoc.html')
