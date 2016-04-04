@@ -1,6 +1,60 @@
 //newsletter card
+#newsletter-roundup,
+.newsletter-roundup {
+    article {
+        &.secondary {
+            clear: both;
+            border-bottom: 2px solid @accent2;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
 
-#newsletter {
+            h1 {
+                margin-bottom: 1em;
+                .gotham();
+                font-weight: 400;
+                font-size: 1.5rem;
+            }
+            h2 {
+                text-transform: uppercase;
+                color: #999;
+                font-size: 1rem;
+                margin-bottom: .4rem;
+            }
+
+            a { display: block; }
+            a:link,
+            a:visited {
+                border: none;
+            }
+
+            img {
+                display: block;
+                width: 100%;
+                height: auto;
+                margin: 0;
+            }
+
+            .photo-credit {
+                position: relative;
+                top: auto;
+                right: auto;
+                text-align: right;
+                margin: 1rem 0;
+                padding: 0;
+                line-height: auto;
+            }
+
+            .teaser {
+                margin: 0;
+            }
+        }
+
+    }
+}
+
+#newsletter,
+#newsletter-roundup,
+.newsletter-roundup {
     .card-inner {
         max-width: @max-width-content;
         margin: 0 3rem 2rem 3rem;
