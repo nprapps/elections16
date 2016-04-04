@@ -4,15 +4,20 @@
     header {
         margin-bottom: 2rem;
 
+        .header-content {
+            max-width: @max-width-content;
+            margin: 0 3rem 2rem 3rem;
+
+            @media @screen-small-above {
+                margin: 0 auto;
+            }
+        }
+
         h2 { text-transform: uppercase; }
     }
 
     .stories {
         background-color: #333;
-        margin-left: -3rem;
-        margin-right: -3rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
 
         h1 {
             .gotham();
@@ -29,8 +34,13 @@
     }
 
     article {
-        margin-bottom: 2rem;
         position: relative;
+        max-width: @max-width-content;
+        margin: 0 3rem 2rem 3rem;
+
+        @media @screen-small-above {
+            margin: 0 auto 2rem auto;
+        }
 
         // a { display: block; }
         a:link,
@@ -43,13 +53,13 @@
             background-position: center center;
             border-bottom: 5px solid @accent2;
             border-top: 5px solid @accent2;
-            margin-left: -3rem;
-            margin-right: -3rem;
+            margin-left: 0;
+            margin-right: 0;
+            max-width: none;
+            width: 100%;
             min-height: 20rem;
 
             @media @screen-small-above {
-                margin-left: 0;
-                margin-right: 0;
                 min-height: 24rem;
             }
 
@@ -134,12 +144,12 @@
 #newsletter-roundup,
 .newsletter-roundup {
     .card-inner {
-        max-width: @max-width-content;
-        margin: 0 3rem 2rem 3rem;
-
-        @media @screen-small-above {
-            margin: 0 auto;
-        }
+        // max-width: @max-width-content;
+        // margin: 0 3rem 2rem 3rem;
+        //
+        // @media @screen-small-above {
+        //     margin: 0 auto;
+        // }
     }
 
     header {
