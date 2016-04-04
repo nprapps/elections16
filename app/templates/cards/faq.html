@@ -1,15 +1,14 @@
 {% extends '_card_base.html' %}
 
 {% block card_content %}
-<header style="background-image: url('{% if DEPLOYMENT_TARGET != 'production' and preview_image %}{{ preview_image }}{% else %}{{ image }}{% endif %}');">
+<header style="background-image: url('/assets/img-commoncore.jpg');">
     <div class="header-screen">
         <div class="header-content">
-            <!-- before -->
             <h2>Frequently Asked Questions About</h2>
             <h1>Common Core</h1>
         </div>
     </div>
-    <p class="photo-credit">Photo Credit</p>
+    <p class="photo-credit">LA Johnson/NPR</p>
 </header>
 
 <article>
