@@ -187,7 +187,6 @@ def deploy_server(remote='origin'):
         servers.fabcast('text.update_active_docs')
         servers.fabcast('text.update_calendar')
         servers.fabcast('assets.sync')
-        servers.fabcast('data.update')
 
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
