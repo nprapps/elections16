@@ -30,7 +30,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
 
     def test_race_meta_creation(self):
         race_meta_length = models.RaceMeta.select().count()
-        self.assertEqual(race_meta_length, 185)
+        self.assertEqual(race_meta_length, 191)
 
     def test_multiple_calls_creation(self):
         data.create_calls()
