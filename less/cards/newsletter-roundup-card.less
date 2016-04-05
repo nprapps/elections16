@@ -1,6 +1,6 @@
 //newsletter card
-
-#newsletter {
+#newsletter-roundup,
+.newsletter-roundup {
     .card-inner {
         max-width: @max-width-content;
         margin: 0 3rem 2rem 3rem;
@@ -11,23 +11,93 @@
     }
 
     header {
+        margin-bottom: 2rem;
+
         h1 {
             font-size: 2.2rem;
             margin-bottom: 1rem;
         }
+
+        h2 { text-transform: uppercase; }
     }
 
-    p {
-        margin: 0;
-        &.footnote {
-            color: #999;
-            font-size: 0.8rem;
+    .stories {
+        article {
+            position: relative;
+            border-top: 2px solid @accent2;
+            padding-top: 1rem;
+            margin-bottom: 3rem;
+            .clearfix();
+        }
 
-            a {
+        h1 {
+            .gotham();
+            font-weight: 400;
+            font-size: 1.5rem;
+            margin-bottom: 1em;
+        }
+
+        h2 {
+            text-transform: uppercase;
+            color: #999;
+            font-size: 1.1rem;
+            margin-bottom: .4rem;
+        }
+
+        .photo {
+            @media @screen-small-above {
+                width: 45%;
+                float: left;
+                margin-right: 2rem;
+            }
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin: 0;
+        }
+
+        .photo-credit {
+            position: relative;
+            top: auto;
+            right: auto;
+            text-align: right;
+            margin: 1rem 0;
+            padding: 0;
+            color: #787878;
+
+            @media @screen-small-above {
+                margin-bottom: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        a {
+            .clearfix();
+
+            &:link, &:visited {
                 border: none;
+                display: block;
+            }
+
+            .no-touchevents & {
+                &:hover,
+                &:active {
+                    h1 { color: @accent2; }
+
+                    h2, img, p {
+                        opacity: 0.7;
+                    }
+                }
             }
         }
     }
+}
+
+#newsletter-roundup,
+.newsletter-roundup {
     form {
         padding: 22px 0;
         max-width: 500px;
