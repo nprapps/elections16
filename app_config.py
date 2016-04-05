@@ -270,7 +270,7 @@ def configure_targets(deployment_target):
         DEBUG = False
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
-        LOG_LEVEL = logging.WARNING
+        LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 10
