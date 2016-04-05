@@ -136,7 +136,7 @@ def get_document(key, file_path):
 
     if response.status != 200:
         if response.status == 404:
-            raise KeyError("Error! Your Google Doc does not exist or you do not have permission to access it.")
+            raise KeyError("Error! Your Google Doc (%s) does not exist or you do not have permission to access it." % key)
         else:
             raise KeyError("Error! Google returned a %s error" % response.status)
 

@@ -46,7 +46,7 @@ def update_active_docs():
 
     for row in script:
         if row['function'] == 'live_audio':
-            gdoc_id = 'live_coverage_audio'
+            gdoc_id = 'live_coverage_active'
         else:
             gdoc_id = app_config.CARD_GOOGLE_DOC_KEYS.get(row['function'], None)
 
