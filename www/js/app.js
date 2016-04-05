@@ -438,7 +438,7 @@ var setPolls = function() {
 
     // set poll for state
     checkState();
-    setInterval(checkState, 60000)
+    setInterval(checkState, 15000)
 }
 
 var getCard = function(url, $card, i) {
