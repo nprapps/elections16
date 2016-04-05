@@ -31,7 +31,7 @@ if app_config.DEPLOY_CRONTAB:
 
 # Bootstrap can only be run once, then it's disabled
 if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-    import bootstrap
+    import bootstrap_project
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -141,6 +141,26 @@ def js_tests():
     """
     # render.render_all()
     local('node_modules/karma/bin/karma start www/js/test/karma.conf.js')
+
+
+"""
+Bootstrap
+"""
+
+
+@task
+def bootstrap():
+    """
+    Reset font, db, copy, calendar, and docs.
+
+    Install font, update copy and calendar from Google Spreadsheets, update content from Google Docs, and reset db.
+    """
+    utils.install_font()
+    text.update_copytext()
+    text.update_calendar()
+    text.update_all_docs()
+    data.bootstrap_db()
+
 
 """
 Deployment
