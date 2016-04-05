@@ -172,7 +172,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-03-26'
+NEXT_ELECTION_DATE = '2016-04-05'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -275,7 +275,7 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 10
-        LOAD_RESULTS_INTERVAL = 0
+        LOAD_RESULTS_INTERVAL = 10
         LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 3600
