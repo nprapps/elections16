@@ -105,8 +105,7 @@ CARD_GOOGLE_DOC_KEYS = {
     'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
     'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
     'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
-    'live_coverage_active': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
-    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ',
+    'live_audio': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
     'podcast': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ'
 }
 

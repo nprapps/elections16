@@ -45,10 +45,7 @@ def update_active_docs():
     script = COPY[state]
 
     for row in script:
-        if row['function'] == 'live_audio':
-            gdoc_id = app_config.CARD_GOOGLE_DOC_KEYS.get('live_coverage_active', None)
-        else:
-            gdoc_id = app_config.CARD_GOOGLE_DOC_KEYS.get(row['function'], None)
+        gdoc_id = app_config.CARD_GOOGLE_DOC_KEYS.get(row['function'], None)
 
         if gdoc_id:
             file_path = 'data/%s.html' % row['function']

@@ -222,7 +222,7 @@ def live_audio():
     context = make_context()
 
     live_audio_state = context['COPY']['meta']['live_audio']['value']
-    context.update(make_gdoc_context('live_coverage_active'))
+    context.update(make_gdoc_context('live_audio'))
 
     pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
     context['live_audio_url'] = pointer.segments[0].uri
