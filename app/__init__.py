@@ -249,10 +249,15 @@ def results_json(electiondate):
 
     for party in data.keys():
         results = utils.get_results(party, electiondate)
+
+        # Hack! Simply set last updated on every record to avoid breaking
+        # live updating widget. @TODO chat with Aly about re-shaping the data
+        # a bit.
         lastupdated = utils.get_last_updated(results)
         for race in results:
             for race_result in race['results']:
                 race_result['lastupdated'] = lastupdated
+
         grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
         data[party] = OrderedDict(grouped_results)
 
