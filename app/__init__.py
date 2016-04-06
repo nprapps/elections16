@@ -15,7 +15,6 @@ from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
-from werkzeug.contrib.profiler import ProfilerMiddleware, MergeStream
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -405,11 +404,5 @@ app.after_request(utils.close_db)
 if app_config.DEBUG:
     app.after_request(utils.never_cache_preview)
     wsgi_app = DebuggedApplication(app, evalex=False)
-    
-    
-    f = open('profiler.log', 'w')
-    stream = MergeStream(sys.stdout, f)
-
-    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream, restrictions=[30])
 else:
     wsgi_app = app
