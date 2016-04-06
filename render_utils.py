@@ -180,7 +180,9 @@ def flatten_app_config():
 
     return config
 
-def make_context(asset_depth=0, gdoc=None):
+COPY = copytext.Copy(app_config.COPY_PATH)
+
+def make_context(asset_depth=0):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
@@ -191,11 +193,7 @@ def make_context(asset_depth=0, gdoc=None):
     """
     context = flatten_app_config()
 
-    try:
-        context['COPY'] = copytext.Copy(app_config.COPY_PATH)
-    except copytext.CopyException:
-        pass
-
+    context['COPY'] = COPY
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0

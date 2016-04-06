@@ -21,6 +21,7 @@ def update():
     update_all_docs()
 
 
+@task
 def update_copytext():
     """
     Downloads a Google Doc as an Excel file.
