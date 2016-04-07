@@ -283,14 +283,18 @@ def get_results(party, electiondate):
         models.Result.officename == 'President'
     ).order_by(models.Result.statename, models.Result.raceid)
 
+    # Get copy once
+    copy_obj = copytext.Copy(app_config.COPY_PATH)
+    copy = copy_obj['meta']._serialize()
+
     output = []
     for race in race_ids:
-        output.append(get_race_results(race.raceid, ap_party))
+        output.append(get_race_results(race.raceid, ap_party, copy))
 
     return output
 
 
-def get_race_results(raceid, party):
+def get_race_results(raceid, party, copy):
     """
     Results getter
     """
@@ -324,7 +328,7 @@ def get_race_results(raceid, party):
         'total': tally_results(raceid),
         'called': called,
         'race_type': '',
-        'note': get_race_note(serialized_results[0])
+        'note': get_race_note(serialized_results[0], copy)
     }
 
     if len(serialized_results[0]['meta']):
@@ -337,14 +341,12 @@ def get_race_results(raceid, party):
     return output
 
 
-def get_race_note(race):
+def get_race_note(race, copy):
     """
     Pluck race note out of meta sheet
     """
-    copy = copytext.Copy(app_config.COPY_PATH)
-    data = copy['meta']._serialize()
     key = '{0}_{1}_note'.format(race['statepostal'], race['party']).lower()
-    return data.get(key, '')
+    return copy.get(key, '')
 
 
 def group_poll_closings(races):

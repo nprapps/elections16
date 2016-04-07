@@ -12,6 +12,16 @@ from oauth.blueprint import get_document, get_spreadsheet
 
 
 @task(default=True)
+def update():
+    """
+    Update all Drive content.
+    """
+    update_copytext()
+    update_calendar()
+    update_all_docs()
+
+
+@task
 def update_copytext():
     """
     Downloads a Google Doc as an Excel file.
