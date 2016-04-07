@@ -316,7 +316,6 @@ def delegates_json():
 def get_caught_up():
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
     context.update(make_gdoc_context('get_caught_up'))
 
     context['slug'] = 'get-caught-up'
