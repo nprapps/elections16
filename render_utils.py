@@ -210,7 +210,11 @@ def make_context(asset_depth=0):
     return context
 
 def make_gdoc_context(doc_name):
-    with open('data/%s.html' % doc_name) as f:
+    """
+    Make Google doc context
+    """
+    gdoc_config = app_config.CARD_GOOGLE_DOC_KEYS[doc_name]
+    with open(gdoc_config['path']) as f:
         html = f.read()
 
     gdoc = copydoc.CopyDoc(html, GDOC_TOKENS)
@@ -220,7 +224,7 @@ def make_gdoc_context(doc_name):
 
     for token, keyword in GDOC_TOKENS:
         if hasattr(gdoc, keyword) and getattr(gdoc, keyword):
-            gdoc_context['%s' % keyword] = getattr(gdoc, keyword)
+            gdoc_context[keyword] = getattr(gdoc, keyword)
 
     return gdoc_context
 
