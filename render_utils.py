@@ -180,8 +180,6 @@ def flatten_app_config():
 
     return config
 
-COPY = copytext.Copy(app_config.COPY_PATH)
-
 def make_context(asset_depth=0):
     """
     Create a base-context for rendering views.
@@ -193,7 +191,7 @@ def make_context(asset_depth=0):
     """
     context = flatten_app_config()
 
-    context['COPY'] = COPY
+    context['COPY'] = copytext.Copy(app_config.COPY_PATH)
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
