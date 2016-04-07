@@ -101,12 +101,30 @@ CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
 CALENDAR_PATH = 'data/calendar.xlsx'
 
 CARD_GOOGLE_DOC_KEYS = {
-    'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
-    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
-    'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
-    'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
-    'live_audio': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
-    'podcast': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ'
+    'get_caught_up': {
+        'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
+        'path': 'data/get_caught_up.html',
+    },
+    'title': {
+        'key': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
+        'path': 'data/title.html',
+    },
+    'what_happened': {
+        'key': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+        'path': 'data/what_happened.html',
+    },
+    'whats_happening': {
+        'key': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+        'path': 'data/whats_happening.html',
+    },
+    'live_audio': {
+        'key': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+        'path': 'data/live_audio.html',
+    },
+    'podcast': {
+        'key': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ',
+        'path': 'data/podcast.html',
+    }
 }
 
 """
