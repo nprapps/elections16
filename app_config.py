@@ -257,12 +257,15 @@ def configure_targets(deployment_target):
     global NEXT_ELECTION_DATE
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
-    global database
     global LOAD_COPY_INTERVAL
     global LOAD_RESULTS_INTERVAL
     global CARD_DEPLOY_INTERVAL
     global SITE_ARCHIVE_INTERVAL
     global LOAD_DELEGATES_INTERVAL
+    global COPY_PATH
+    global CALENDAR_PATH
+    global CARD_GOOGLE_DOC_KEYS
+    global database
 
     secrets = get_secrets()
 
@@ -331,8 +334,37 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456884323.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_PATH = 'tests/data/docs/copy.xlsx'
+        CALENDAR_PATH = 'tests/data/docs/calendar.xlsx'
+        CARD_GOOGLE_DOC_KEYS = {
+            'get_caught_up': {
+                'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
+                'path': 'tests/data/docs/get_caught_up.html',
+            },
+            'title': {
+                'key': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
+                'path': 'tests/data/docs/title.html',
+            },
+            'what_happened': {
+                'key': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+                'path': 'tests/data/docs/what_happened.html',
+            },
+            'whats_happening': {
+                'key': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+                'path': 'tests/data/docs/whats_happening.html',
+            },
+            'live_audio': {
+                'key': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+                'path': 'tests/data/docs/live_audio.html',
+            },
+            'podcast': {
+                'key': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ',
+                'path': 'tests/data/docs/podcast.html',
+            }
+        }
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
+
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
