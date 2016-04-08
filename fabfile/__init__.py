@@ -6,7 +6,7 @@ import logging
 import os
 
 from boto.s3.key import Key
-from fabric.api import local, require, settings, task
+from fabric.api import get, local, require, settings, task
 from fabric.state import env
 from termcolor import colored
 
@@ -78,6 +78,14 @@ def dev():
     app_config.configure_targets(env.settings)
 
 
+@task
+def test():
+    """
+    Run locally.
+    """
+    env.settings = 'test'
+    app_config.configure_targets(env.settings)
+
 """
 Branches
 
@@ -132,14 +140,14 @@ def tests():
     """
     Run Python unit tests.
     """
-    local('nose2')
+    local('nose2 -v tests')
 
 @task
 def js_tests():
     """
     Run Karma/Jasmine unit tests.
     """
-    # render.render_all()
+    render.render_all()
     local('node_modules/karma/bin/karma start www/js/test/karma.conf.js')
 
 
@@ -377,6 +385,29 @@ def reset_browsers():
         }
     )
 
+
+"""
+Oh SH*T!
+
+Fallback helpers
+"""
+
+
+@task
+def mirror_gdocs():
+    """
+    Mirror Google docs from server locally. Use in emergencies.
+    """
+    require('settings', provided_by=[production, staging])
+    remote_data_path = '%(SERVER_PROJECT_PATH)s/repository/data' % app_config.__dict__
+    get('%s/*.html' % remote_data_path, 'data')
+    local('git add -f data/*.html')
+    get('%s/*.xlsx' % remote_data_path, 'data')
+    local('git add -f data/*.xlsx')
+    print('Downloaded server versions of Google docs to `data` directory.')
+    print('Files have been staged to be added to version control:')
+    local('git status')
+    print('Commit these files, set LOAD_COPY_INTERVAL and LOAD_DOCS_INTERVAL to 0 in app_config, and re-deploy.')
 
 """
 Destruction

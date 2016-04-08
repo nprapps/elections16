@@ -9,6 +9,5 @@ install:
   - travis_retry pip install -r requirements.txt
 script:
   - fab tests
-  - fab js_tests
-  #- python -m nose2.__main__ -v
+  - fab test js_tests
 sudo: false

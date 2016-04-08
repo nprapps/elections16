@@ -55,11 +55,10 @@ def update_active_docs():
     script = COPY[state]
 
     for row in script:
-        gdoc_id = app_config.CARD_GOOGLE_DOC_KEYS.get(row['function'], None)
+        gdoc = app_config.CARD_GOOGLE_DOC_KEYS.get(row['function'], None)
 
-        if gdoc_id:
-            file_path = 'data/%s.html' % row['function']
-            get_document(gdoc_id, file_path)
+        if gdoc:
+            get_document(gdoc['key'], gdoc['path'])
 
 
 @task
@@ -67,6 +66,8 @@ def update_all_docs():
     """
     Update Google docs.
     """
-    for card_slug, gdoc_id in app_config.CARD_GOOGLE_DOC_KEYS.items():
-        file_path = 'data/%s.html' % card_slug
-        get_document(gdoc_id, file_path)
+    for card_slug, gdoc in app_config.CARD_GOOGLE_DOC_KEYS.items():
+        gdoc = app_config.CARD_GOOGLE_DOC_KEYS.get(card_slug, None)
+
+        if gdoc:
+            get_document(gdoc['key'], gdoc['path'])

@@ -180,8 +180,6 @@ def flatten_app_config():
 
     return config
 
-COPY = copytext.Copy(app_config.COPY_PATH)
-
 def make_context(asset_depth=0):
     """
     Create a base-context for rendering views.
@@ -193,7 +191,7 @@ def make_context(asset_depth=0):
     """
     context = flatten_app_config()
 
-    context['COPY'] = COPY
+    context['COPY'] = copytext.Copy(app_config.COPY_PATH)
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
@@ -210,7 +208,11 @@ def make_context(asset_depth=0):
     return context
 
 def make_gdoc_context(doc_name):
-    with open('data/%s.html' % doc_name) as f:
+    """
+    Make Google doc context
+    """
+    gdoc_config = app_config.CARD_GOOGLE_DOC_KEYS[doc_name]
+    with open(gdoc_config['path']) as f:
         html = f.read()
 
     gdoc = copydoc.CopyDoc(html, GDOC_TOKENS)
@@ -220,7 +222,7 @@ def make_gdoc_context(doc_name):
 
     for token, keyword in GDOC_TOKENS:
         if hasattr(gdoc, keyword) and getattr(gdoc, keyword):
-            gdoc_context['%s' % keyword] = getattr(gdoc, keyword)
+            gdoc_context[keyword] = getattr(gdoc, keyword)
 
     return gdoc_context
 

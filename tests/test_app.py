@@ -2,6 +2,7 @@
 import app
 import app_config
 import json
+import render_utils
 import unittest
 
 from app import utils
@@ -81,6 +82,10 @@ class AppTestCase(unittest.TestCase):
 
     def test_results_json(self):
         self.assertEqual(True, True)
+
+    def test_state_var(self):
+        context = render_utils.make_context()
+        self.assertEqual(context['COPY']['meta']['dev_state']['value'], 'after')
 
 
 class AppDelegatesTestCase(unittest.TestCase):
