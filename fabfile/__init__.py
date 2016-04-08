@@ -147,7 +147,7 @@ def js_tests():
     """
     Run Karma/Jasmine unit tests.
     """
-    # render.render_all()
+    render.render_all()
     local('node_modules/karma/bin/karma start www/js/test/karma.conf.js')
 
 
