@@ -7,7 +7,7 @@ import app_config
 
 from oauth.blueprint import get_document
 from app.utils import set_delegates_updated_time
-from fabric.api import local, task, settings, shell_env
+from fabric.api import hide, local, task, settings, shell_env
 from fabric.state import env
 from models import models
 
@@ -32,7 +32,7 @@ def bootstrap_db():
 
 @task
 def create_db():
-    with settings(warn_only=True):
+    with settings(warn_only=True), hide('output', 'running'):
         if env.get('settings'):
             servers.stop_service('uwsgi')
             servers.stop_service('deploy')
@@ -70,7 +70,7 @@ def load_init_data():
     Bootstrap races, candidates, reporting units, and ballot positions.
     """
     election_date = app_config.NEXT_ELECTION_DATE
-    with shell_env(**app_config.database):
+    with shell_env(**app_config.database), hide('output', 'running'):
         local('elex races %s %s | psql %s -c "COPY race FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
         local('elex reporting-units %s %s | psql %s -c "COPY reportingunit FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
         local('elex candidates %s %s | psql %s -c "COPY candidate FROM stdin DELIMITER \',\' CSV HEADER;"' % (election_date, app_config.ELEX_FLAGS, app_config.database['PGDATABASE']))
@@ -82,7 +82,7 @@ def delete_results():
     """
     Delete results without droppping database.
     """
-    with shell_env(**app_config.database):
+    with shell_env(**app_config.database), hide('output', 'running'):
         local('psql {0} -c "set session_replication_role = replica; DELETE FROM result; set session_replication_role = default;"'.format(app_config.database['PGDATABASE']))
 
 
@@ -91,7 +91,7 @@ def delete_delegates():
     """
     Delete results without droppping database.
     """
-    with shell_env(**app_config.database):
+    with shell_env(**app_config.database), hide('output', 'running'):
         local('psql {0} -c "set session_replication_role = replica; DELETE FROM candidatedelegates; set session_replication_role = default;"'.format(app_config.database['PGDATABASE']))
 
 
@@ -101,16 +101,17 @@ def load_results():
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
     election_date = app_config.NEXT_ELECTION_DATE
-    local('mkdir -p .data')
+    with hide('output', 'running'):
+        local('mkdir -p .data')
     cmd = 'elex results {0} --results-level state {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**app_config.database):
-        with settings(warn_only=True):
+        with settings(warn_only=True), hide('output', 'running'):
             cmd_output = local(cmd, capture=True)
 
         if cmd_output.succeeded:
-            print("LOADING RESULTS")
             delete_results()
-            local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
+            with hide('output', 'running'):
+                local('cat .data/results.csv | psql {0} -c "COPY result FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
         else:
             print("ERROR GETTING RESULTS")
             print(cmd_output.stderr)
@@ -121,16 +122,17 @@ def load_delegates():
     """
     Load AP results. Defaults to next election, or specify a date as a parameter.
     """
-    local('mkdir -p .data')
+    with hide('output', 'running'):
+        local('mkdir -p .data')
     cmd = 'elex delegates {0} > .data/delegates.csv'.format(app_config.ELEX_DELEGATE_FLAGS)
     with shell_env(**app_config.database):
-        with settings(warn_only=True):
+        with settings(warn_only=True), hide('output', 'running'):
             cmd_output = local(cmd, capture=True)
 
         if cmd_output.succeeded:
-            print("LOADING DELEGATES")
             delete_delegates()
-            local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
+            with hide('output', 'running'):
+                local('cat .data/delegates.csv | psql {0} -c "COPY candidatedelegates FROM stdin DELIMITER \',\' CSV HEADER;"'.format(app_config.database['PGDATABASE']))
             set_delegates_updated_time()
         else:
             print("ERROR GETTING DELEGATES")
