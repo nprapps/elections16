@@ -258,6 +258,7 @@ def configure_targets(deployment_target):
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
     global LOAD_COPY_INTERVAL
+    global LOAD_DOCS_INTERVAL
     global LOAD_RESULTS_INTERVAL
     global CARD_DEPLOY_INTERVAL
     global SITE_ARCHIVE_INTERVAL
