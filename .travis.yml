@@ -8,6 +8,6 @@ before_script:
 install:
   - travis_retry pip install -r requirements.txt
 script:
-  - nose2 -v tests
+  - fab tests
   - fab test js_tests
 sudo: false
