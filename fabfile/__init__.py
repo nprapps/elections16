@@ -140,7 +140,7 @@ def tests():
     """
     Run Python unit tests.
     """
-    local('nose2')
+    local('nose2 -v tests')
 
 @task
 def js_tests():
