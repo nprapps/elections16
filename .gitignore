@@ -41,6 +41,7 @@ www/css/*.min.css
 www/css/*.less.css
 www/css/font/
 www/css/icon/
+www/css/rendered/
 www/js/*.min.*.js
 www/js/*.min.js
 www/js/templates.js
