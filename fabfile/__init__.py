@@ -78,6 +78,14 @@ def dev():
     app_config.configure_targets(env.settings)
 
 
+@task
+def test():
+    """
+    Run locally.
+    """
+    env.settings = 'test'
+    app_config.configure_targets(env.settings)
+
 """
 Branches
 
