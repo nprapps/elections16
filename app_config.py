@@ -189,7 +189,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-04-05'
+NEXT_ELECTION_DATE = '2016-04-09'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
