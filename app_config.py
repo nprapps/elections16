@@ -100,6 +100,8 @@ COPY_PATH = 'data/copy.xlsx'
 CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
 CALENDAR_PATH = 'data/calendar.xlsx'
 
+DELEGATES_GOOGLE_DOC_KEY = '1VRjc62h0yKxmg9BudISGQYWWKTrb3LIL7shy0ZhbOfo'
+
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': {
         'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',

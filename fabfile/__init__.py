@@ -8,6 +8,7 @@ import os
 from boto.s3.key import Key
 from fabric.api import get, local, require, settings, task
 from fabric.state import env
+from oauth.blueprint import get_credentials
 from termcolor import colored
 
 import app_config
@@ -296,6 +297,34 @@ def deploy_delegates_data():
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         }
     )
+
+
+@task
+def deploy_delegates_spreadsheet():
+    """
+    Deploy delegates sheet to Google Drive.
+    """
+    with open('.data/delegates.csv') as f:
+        content = f.read()
+
+    url = 'https://www.googleapis.com/upload/drive/v2/files/%s' % app_config.DELEGATES_GOOGLE_DOC_KEY
+
+    credentials = get_credentials()
+    upload_kwargs = {
+        'credentials': credentials,
+        'url': url,
+        'method': 'PUT',
+        'body': content,
+        'params': {
+            'uploadType': 'media',
+            'convert': 'true',
+        },
+    }
+
+    resp = app_config.authomatic.access(**upload_kwargs)
+    if resp.status != 200:
+        logger.error('Upload failed with %s (%s) - %s' % (resp.status, resp.reason, url))
+
 
 
 @task

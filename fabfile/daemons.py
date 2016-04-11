@@ -63,6 +63,7 @@ def main(run_once=False):
             logger.info('load delegates')
             execute('data.load_delegates')
             execute('deploy_delegates_data')
+            execute('deploy_delegates_spreadsheet')
             sleep(5)
 
         if app_config.CARD_DEPLOY_INTERVAL and (now - card_start) > app_config.CARD_DEPLOY_INTERVAL:
