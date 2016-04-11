@@ -47,7 +47,7 @@ if (!LIVE) {
 var testLogged = false;
 var donateButtonText = null;
 var resultsMultiOpen = [];
-
+var router = null;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -110,12 +110,10 @@ var onDocumentLoad = function(e) {
     resultsCountdown($('#results-gop'));
     resultsMultiToggle();
 
+    initRouter();
+
     setPolls();
     AUDIO.setupAudio();
-
-    if (ANALYTICS.nproneDeepLink) {
-        navigateToAudioCard();
-    }
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -126,6 +124,15 @@ var onDocumentLoad = function(e) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
 
+}
+
+var initRouter = function() {
+    routes = {
+        '/nprone': navigateToAudioCard,
+        '/cards/:cardId': navigateToCard
+    };
+    router = Router(routes);
+    router.init();
 }
 
 var setupFlickity = function() {
@@ -197,40 +204,29 @@ var detectMobileBg = function($card) {
     }
 }
 
-var navigateToAudioCard = function() {
+var navigateToAudioCard = function(id) {
     for (var i = 0; i < $cards.length; i++) {
         if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
             $('.toggle-btn').removeClass().addClass('toggle-btn play');
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
-            var strippedURL = removeURLParameter(window.location.href, 'nprone');
-            window.history.replaceState('stripped', document.title, strippedURL);
-
             break;
         }
     }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
+    }
 }
 
-var removeURLParameter = function(url, parameter) {
-    var urlParts = url.split('?');
-    if (urlParts.length >= 2) {
-        var prefix = encodeURIComponent(parameter);
-        var pars = urlParts[1].split(/[&;]/g);
-
-        for (var i = pars.length; i-- > 0;) {
-            if (pars[i].lastIndexOf(prefix, 0) !== -1) {
-                pars.splice(i, 1);
-            }
-        }
-        if (pars.length > 0) {
-            url = urlParts[0] + '?' + pars.join('&');
-        } else {
-            url = urlParts[0];
-        }
-        return url;
-    } else {
-        return url;
+var navigateToCard = function(id) {
+    var $card = $('#' + id);
+    var index = $cards.index($card);
+    if (index > -1) {
+        $cardsWrapper.flickity('select', index);
+    }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
     }
 }
 
