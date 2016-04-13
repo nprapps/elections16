@@ -3,15 +3,21 @@
 {% block content %}
 <div class="cards {{ state }}">
 
-    <div class="alert">
-
+    <div class="alert" id="join-alert">
         <h5> We're live!
             <button class="alert-action">
                 Join the event
             </button>
         </h5>
+    </div>
 
-        <button class="close-alert"><i class="fa fa-times"></i></button>
+    <div class="alert" id="link-alert">
+        <h5> We're live!
+            <button class="alert-action">
+                Listen to the broadcast
+            </button>
+        </h5>
+        <button class="close-alert"><i class="icon icon-cancel"></i></button>
     </div>
 
     <div class="global-nav">

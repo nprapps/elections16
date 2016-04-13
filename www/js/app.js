@@ -21,8 +21,10 @@ var $flickityNav = null;
 var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
-var $alert = null;
-var $alertAction = null;
+var $liveAlert = null;
+var $liveAlertAction = null;
+var $linkAlert = null;
+var $linkAlertAction = null;
 var $closeAlert = null;
 var $donateHeadline = null;
 var $donateText = null;
@@ -48,6 +50,7 @@ var testLogged = false;
 var donateButtonText = null;
 var resultsMultiOpen = [];
 var router = null;
+var deeplinked = false;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -79,8 +82,10 @@ var onDocumentLoad = function(e) {
     $newsletterInput = $newsletterContainer.find('input');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
-    $alert = $('.alert');
-    $alertAction = $('.alert-action');
+    $liveAlert = $('#join-alert');
+    $liveAlertAction = $liveAlert.find('.alert-action');
+    $linkAlert = $('#link-alert');
+    $linkAlertAction = $linkAlert.find('.alert-action');
     $closeAlert = $('.close-alert');
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
@@ -223,6 +228,16 @@ var navigateToCard = function(id) {
     var $card = $('#' + id);
     var index = $cards.index($card);
     if (index > -1) {
+        deeplinked = true;
+
+        if (LIVE || $card.hasClass('live-audio') || $card.hasClass('podcast')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
+        }
+        if (LIVE && !$card.hasClass('live-audio')) {
+            setLinkAlert();
+        }
         $cardsWrapper.flickity('select', index);
     }
     if (!APP_CONFIG.DEBUG) {
@@ -250,6 +265,10 @@ var onCardChange = function(e) {
         $duringModeNotice.hide();
         $flickityNav.hide();
         $flickityDots.hide();
+        if (deeplinked && LIVE) {
+            $linkAlert.addClass('alert-slide-up');
+            playedAudio = false;
+        }
     }
 
     if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
@@ -499,16 +518,26 @@ var checkState = function() {
 }
 
 var setLiveAlert = function() {
-    $alert.removeClass().addClass('alert signal-during');
-    $alertAction.off('click');
-    $alertAction.on('click', function() {
+    $liveAlert.addClass('signal-during');
+    $liveAlertAction.off('click');
+    $liveAlertAction.on('click', function() {
         ANALYTICS.trackEvent('alert-click', 'live-event');
         location.reload(true);
     });
 }
 
+var setLinkAlert = function() {
+    $linkAlert.removeClass('alert-slide-up').addClass('signal-during');
+    $linkAlertAction.off('click');
+    $linkAlertAction.on('click', function() {
+        var index = $cards.index($('#live-audio'));
+        $linkAlert.addClass('alert-slide-up');
+        $cardsWrapper.flickity('select', index);
+    });
+}
+
 var onCloseAlertClick = function() {
-    $alert.addClass('alert-slide-up')
+    $linkAlert.addClass('alert-slide-up');
 }
 
 var onResize = function() {
