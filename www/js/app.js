@@ -535,7 +535,8 @@ var setLinkAlert = function() {
     $linkAlertAction.off('click');
     $linkAlertAction.on('click', function() {
         var index = $cards.index($('#live-audio'));
-        $cardsWrapper.flickity('select', index);
+        AUDIO.toggleAudio();
+        closeAlert();
         ANALYTICS.trackEvent('alert-click', 'listen-live');
     });
 }
