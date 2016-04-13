@@ -105,7 +105,7 @@ var onDocumentLoad = function(e) {
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
-    $closeAlert.on('click', closeAlert);
+    $closeAlert.on('click', onCloseAlertClick);
     $donateLink.on('click', onDonateLinkClick);
 
     $window.resize(onResize);
@@ -218,6 +218,7 @@ var navigateToAudioCard = function(id) {
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
+            ANALYTICS.trackEvent('deeplink', id);
             break;
         }
     }
@@ -241,6 +242,7 @@ var navigateToCard = function(id) {
             setLinkAlert();
         }
         $cardsWrapper.flickity('select', index);
+        ANALYTICS.trackEvent('deeplink', id);
     }
     if (!APP_CONFIG.DEBUG) {
         router.setRoute('');
@@ -534,7 +536,13 @@ var setLinkAlert = function() {
     $linkAlertAction.on('click', function() {
         var index = $cards.index($('#live-audio'));
         $cardsWrapper.flickity('select', index);
+        ANALYTICS.trackEvent('alert-click', 'listen-live');
     });
+}
+
+var onCloseAlertClick = function() {
+    closeAlert();
+    ANALYTICS.trackEvent('alert-click', 'close-alert');
 }
 
 var closeAlert = function() {
