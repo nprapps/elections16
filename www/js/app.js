@@ -51,6 +51,7 @@ var donateButtonText = null;
 var resultsMultiOpen = [];
 var router = null;
 var deeplinked = false;
+var deeplinkNotificationDismissed = false;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -97,13 +98,14 @@ var onDocumentLoad = function(e) {
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
     $body.on('click', '.results-multi .state-result', onStateResultsClick);
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#live-audio .segment-play', closeAlert);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
     $rewindBtn.on('click', AUDIO.rewindAudio);
     $forwardBtn.on('click', AUDIO.forwardAudio);
     $newsletterForm.on('submit', onNewsletterSubmit);
-    $closeAlert.on('click', onCloseAlertClick);
+    $closeAlert.on('click', closeAlert);
     $donateLink.on('click', onDonateLinkClick);
 
     $window.resize(onResize);
@@ -265,8 +267,8 @@ var onCardChange = function(e) {
         $duringModeNotice.hide();
         $flickityNav.hide();
         $flickityDots.hide();
-        if (deeplinked && LIVE) {
-            $linkAlert.addClass('alert-slide-up');
+        if (deeplinked && LIVE && !deeplinkNotificationDismissed) {
+            closeAlert();
             playedAudio = false;
         }
     }
@@ -531,12 +533,12 @@ var setLinkAlert = function() {
     $linkAlertAction.off('click');
     $linkAlertAction.on('click', function() {
         var index = $cards.index($('#live-audio'));
-        $linkAlert.addClass('alert-slide-up');
         $cardsWrapper.flickity('select', index);
     });
 }
 
-var onCloseAlertClick = function() {
+var closeAlert = function() {
+    deeplinkNotificationDismissed = true;
     $linkAlert.addClass('alert-slide-up');
 }
 
