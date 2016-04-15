@@ -522,7 +522,7 @@ var checkState = function() {
 }
 
 var setLiveAlert = function() {
-    $liveAlert.addClass('signal-during');
+    $liveAlert.removeClass().addClass('alert signal-during');
     $liveAlertAction.off('click');
     $liveAlertAction.on('click', function() {
         ANALYTICS.trackEvent('alert-click', 'live-event');
@@ -531,7 +531,7 @@ var setLiveAlert = function() {
 }
 
 var setLinkAlert = function() {
-    $linkAlert.removeClass('alert-slide-up').addClass('signal-during');
+    $linkAlert.removeClass().addClass('alert signal-during');
     $linkAlertAction.off('click');
     $linkAlertAction.on('click', function() {
         var index = $cards.index($('#live-audio'));
