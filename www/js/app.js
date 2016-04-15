@@ -21,8 +21,10 @@ var $flickityNav = null;
 var $flickityDots = null;
 var $subscribeBtn = null
 var $supportBtn = null;
-var $alert = null;
-var $alertAction = null;
+var $liveAlert = null;
+var $liveAlertAction = null;
+var $linkAlert = null;
+var $linkAlertAction = null;
 var $closeAlert = null;
 var $donateHeadline = null;
 var $donateText = null;
@@ -47,7 +49,9 @@ if (!LIVE) {
 var testLogged = false;
 var donateButtonText = null;
 var resultsMultiOpen = [];
-
+var router = null;
+var deeplinked = false;
+var deeplinkNotificationDismissed = false;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -79,8 +83,10 @@ var onDocumentLoad = function(e) {
     $newsletterInput = $newsletterContainer.find('input');
     $subscribeBtn = $('.btn-subscribe');
     $supportBtn = $('.donate-link a');
-    $alert = $('.alert');
-    $alertAction = $('.alert-action');
+    $liveAlert = $('#join-alert');
+    $liveAlertAction = $liveAlert.find('.alert-action');
+    $linkAlert = $('#link-alert');
+    $linkAlertAction = $linkAlert.find('.alert-action');
     $closeAlert = $('.close-alert');
     $donateHeadline = $('.donate-headline');
     $donateText = $('.donate-text');
@@ -92,6 +98,7 @@ var onDocumentLoad = function(e) {
     $body.on('click', '.link-roundup a', onLinkRoundupLinkClick);
     $body.on('click', '.results-multi .state-result', onStateResultsClick);
     $body.on('click', '#live-audio .segment-play', AUDIO.toggleAudio);
+    $body.on('click', '#live-audio .segment-play', closeAlert);
     $body.on('click', '#podcast .toggle-btn', AUDIO.toggleAudio);
     $body.on('click', '.audio-story .toggle-btn', AUDIO.toggleAudio);
     $mute.on('click', AUDIO.toggleAudio);
@@ -110,12 +117,10 @@ var onDocumentLoad = function(e) {
     resultsCountdown($('#results-gop'));
     resultsMultiToggle();
 
+    initRouter();
+
     setPolls();
     AUDIO.setupAudio();
-
-    if (ANALYTICS.nproneDeepLink) {
-        navigateToAudioCard();
-    }
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -126,6 +131,15 @@ var onDocumentLoad = function(e) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
 
+}
+
+var initRouter = function() {
+    routes = {
+        '/nprone': navigateToAudioCard,
+        '/cards/:cardId': navigateToCard
+    };
+    router = Router(routes);
+    router.init();
 }
 
 var setupFlickity = function() {
@@ -197,40 +211,41 @@ var detectMobileBg = function($card) {
     }
 }
 
-var navigateToAudioCard = function() {
+var navigateToAudioCard = function(id) {
     for (var i = 0; i < $cards.length; i++) {
         if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
             $('.toggle-btn').removeClass().addClass('toggle-btn play');
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
-            var strippedURL = removeURLParameter(window.location.href, 'nprone');
-            window.history.replaceState('stripped', document.title, strippedURL);
-
+            ANALYTICS.trackEvent('deeplink', id);
             break;
         }
     }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
+    }
 }
 
-var removeURLParameter = function(url, parameter) {
-    var urlParts = url.split('?');
-    if (urlParts.length >= 2) {
-        var prefix = encodeURIComponent(parameter);
-        var pars = urlParts[1].split(/[&;]/g);
+var navigateToCard = function(id) {
+    var $card = $('#' + id);
+    var index = $cards.index($card);
+    if (index > -1) {
+        deeplinked = true;
 
-        for (var i = pars.length; i-- > 0;) {
-            if (pars[i].lastIndexOf(prefix, 0) !== -1) {
-                pars.splice(i, 1);
-            }
+        if (LIVE || $card.hasClass('live-audio') || $card.hasClass('podcast')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
         }
-        if (pars.length > 0) {
-            url = urlParts[0] + '?' + pars.join('&');
-        } else {
-            url = urlParts[0];
+        if (LIVE && !$card.hasClass('live-audio')) {
+            setLinkAlert();
         }
-        return url;
-    } else {
-        return url;
+        $cardsWrapper.flickity('select', index);
+        ANALYTICS.trackEvent('deeplink', id);
+    }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
     }
 }
 
@@ -254,6 +269,10 @@ var onCardChange = function(e) {
         $duringModeNotice.hide();
         $flickityNav.hide();
         $flickityDots.hide();
+        if (deeplinked && LIVE && !deeplinkNotificationDismissed) {
+            closeAlert();
+            playedAudio = false;
+        }
     }
 
     if ($thisCard.is('#live-audio') && LIVE && !playedAudio) {
@@ -503,16 +522,33 @@ var checkState = function() {
 }
 
 var setLiveAlert = function() {
-    $alert.removeClass().addClass('alert signal-during');
-    $alertAction.off('click');
-    $alertAction.on('click', function() {
+    $liveAlert.removeClass().addClass('alert signal-during');
+    $liveAlertAction.off('click');
+    $liveAlertAction.on('click', function() {
         ANALYTICS.trackEvent('alert-click', 'live-event');
         location.reload(true);
     });
 }
 
+var setLinkAlert = function() {
+    $linkAlert.removeClass().addClass('alert signal-during');
+    $linkAlertAction.off('click');
+    $linkAlertAction.on('click', function() {
+        var index = $cards.index($('#live-audio'));
+        AUDIO.toggleAudio();
+        closeAlert();
+        ANALYTICS.trackEvent('alert-click', 'listen-live');
+    });
+}
+
 var onCloseAlertClick = function() {
-    $alert.addClass('alert-slide-up')
+    closeAlert();
+    ANALYTICS.trackEvent('alert-click', 'close-alert');
+}
+
+var closeAlert = function() {
+    deeplinkNotificationDismissed = true;
+    $linkAlert.addClass('alert-slide-up');
 }
 
 var onResize = function() {
