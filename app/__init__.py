@@ -1,14 +1,15 @@
 import app_config
 import m3u8
+import os
 import simplejson as json
+import sys
 
 from . import utils
 from collections import OrderedDict
 from flask import Flask, jsonify, make_response, render_template
-from gdoc import get_google_doc_html
 from itertools import groupby
 from models import models
-from oauth.blueprint import oauth, oauth_required
+from oauth.blueprint import oauth, oauth_required, get_document
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
 from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
@@ -110,9 +111,7 @@ def podcast():
     """
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['podcast']
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('podcast'))
 
     context['slug'] = 'podcast'
     context['template'] = 'podcast'
@@ -224,11 +223,7 @@ def live_audio():
     context = make_context()
 
     live_audio_state = context['COPY']['meta']['live_audio']['value']
-    key = app_config.CARD_GOOGLE_DOC_KEYS['live_coverage_active']
-
-
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('live_audio'))
 
     pointer = m3u8.load(app_config.LIVESTREAM_POINTER_FILE)
     context['live_audio_url'] = pointer.segments[0].uri
@@ -255,6 +250,15 @@ def results_json(electiondate):
 
     for party in data.keys():
         results = utils.get_results(party, electiondate)
+
+        # Hack! Simply set last updated on every record to avoid breaking
+        # live updating widget. @TODO chat with Aly about re-shaping the data
+        # a bit.
+        lastupdated = utils.get_last_updated(results)
+        for race in results:
+            for race_result in race['results']:
+                race_result['lastupdated'] = lastupdated
+
         grouped_results = [(k, list(g)) for k, g in groupby(results, lambda x: x['statepostal'])]
         data[party] = OrderedDict(grouped_results)
 
@@ -312,9 +316,7 @@ def delegates_json():
 def get_caught_up():
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['get_caught_up']
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('get_caught_up'))
 
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
@@ -328,9 +330,7 @@ def get_caught_up():
 def whats_happening():
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['whats_happening']
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('whats_happening'))
 
     context['slug'] = 'whats-happening'
     context['template'] = 'link-roundup'
@@ -344,9 +344,7 @@ def whats_happening():
 def what_happened():
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['what_happened']
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('what_happened'))
 
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
@@ -360,9 +358,7 @@ def what_happened():
 def title():
     context = make_context()
 
-    key = app_config.CARD_GOOGLE_DOC_KEYS['title']
-    doc = get_google_doc_html(key)
-    context.update(make_gdoc_context(doc))
+    context.update(make_gdoc_context('title'))
 
     context['slug'] = 'title'
     context['template'] = 'title'
@@ -378,7 +374,10 @@ def gdoc(key):
     Get a Google doc and parse for use in template.
     """
     context = make_context()
-    context['content'] = get_google_doc_html(key)
+    file_path = 'data/%s.html' % key
+    get_document(key, file_path)
+    context.update(make_gdoc_context(key))
+    os.remove(file_path)
     return render_template('cards/gdoc.html', **context)
 
 

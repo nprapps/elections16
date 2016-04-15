@@ -67,15 +67,9 @@
       "src": "fontawesome"
     },
     {
-      "uid": "627abcdb627cb1789e009c08e2678ef9",
-      "css": "twitter",
+      "uid": "5211af474d3a9848f67f945e2ccaf143",
+      "css": "cancel",
       "code": 59402,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "8e04c98c8f5ca0a035776e3001ad2638",
-      "css": "facebook",
-      "code": 59403,
       "src": "fontawesome"
     }
   ]

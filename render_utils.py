@@ -1,18 +1,35 @@
 #!/usr/bin/env python
 
+import app_config
 import codecs
-from datetime import datetime
+import copydoc
+import copytext
 import json
+import subprocess
 import time
 import urllib
-import subprocess
 
+from datetime import datetime
 from flask import Markup, g, render_template, request
 from slimit import minify
 from smartypants import smartypants
 
-import app_config
-import copytext
+GDOC_TOKENS = (
+    ('HEADLINE', 'headline'),
+    ('SUBHED', 'subhed'),
+    ('LIVEAUDIOHEADLINE', 'live_audio_headline'),
+    ('LIVEAUDIOSUBHED', 'live_audio_subhed'),
+    ('BANNER', 'banner'),
+    ('PHOTOCREDIT', 'credit'),
+    ('MOBILEPHOTOCREDIT', 'mobile_credit'),
+    ('PREVIEWPHOTOCREDIT', 'preview_credit'),
+    ('PREVIEWMOBILEPHOTOCREDIT', 'preview_mobile_credit'),
+    ('AUDIOURL', 'audio_url'),
+    ('BACKGROUNDIMAGE', 'image'),
+    ('MOBILEIMAGE', 'mobile_image'),
+    ('PREVIEWBACKGROUNDIMAGE', 'preview_image'),
+    ('PREVIEWMOBILEIMAGE', 'preview_mobile_image'),
+)
 
 class BetterJSONEncoder(json.JSONEncoder):
     """
@@ -163,7 +180,7 @@ def flatten_app_config():
 
     return config
 
-def make_context(asset_depth=0, gdoc=None):
+def make_context(asset_depth=0):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
@@ -174,11 +191,7 @@ def make_context(asset_depth=0, gdoc=None):
     """
     context = flatten_app_config()
 
-    try:
-        context['COPY'] = copytext.Copy(app_config.COPY_PATH)
-    except copytext.CopyException:
-        pass
-
+    context['COPY'] = copytext.Copy(app_config.COPY_PATH)
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
     context['refresh_rate'] = 0
@@ -194,30 +207,22 @@ def make_context(asset_depth=0, gdoc=None):
 
     return context
 
-def make_gdoc_context(gdoc):
+def make_gdoc_context(doc_name):
+    """
+    Make Google doc context
+    """
+    gdoc_config = app_config.CARD_GOOGLE_DOC_KEYS[doc_name]
+    with open(gdoc_config['path']) as f:
+        html = f.read()
+
+    gdoc = copydoc.CopyDoc(html, GDOC_TOKENS)
+
     gdoc_context = {}
     gdoc_context['content'] = gdoc
 
-    keywords = [
-        'headline',
-        'subhed',
-        'banner',
-        'image',
-        'mobile_image',
-        'credit',
-        'mobile_credit',
-        'preview_image',
-        'preview_mobile_image',
-        'preview_credit',
-        'preview_mobile_credit',
-        'audio_url',
-        'live_audio_headline',
-        'live_audio_subhed'
-    ]
-
-    for keyword in keywords:
-        if getattr(gdoc, keyword):
-            gdoc_context['%s' % keyword] = getattr(gdoc, keyword)
+    for token, keyword in GDOC_TOKENS:
+        if hasattr(gdoc, keyword) and getattr(gdoc, keyword):
+            gdoc_context[keyword] = getattr(gdoc, keyword)
 
     return gdoc_context
 

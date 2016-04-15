@@ -2,13 +2,12 @@
 import app
 import app_config
 import json
+import render_utils
 import unittest
 
 from app import utils
-from app.gdoc import DocParser
 from datetime import datetime
 from fabfile import data
-from render_utils import make_gdoc_context
 
 
 class AppTestCase(unittest.TestCase):
@@ -81,16 +80,12 @@ class AppTestCase(unittest.TestCase):
         formatted = utils.percent_filter(100)
         self.assertEqual(formatted, '100%')
 
-    def test_make_gdoc_context(self):
-        with open('tests/data/testdoc.html') as f:
-            html_string = f.read()
-
-        doc = DocParser(html_string)
-        context = make_gdoc_context(doc)
-        self.assertEqual(doc, context['content'])
-
     def test_results_json(self):
         self.assertEqual(True, True)
+
+    def test_state_var(self):
+        context = render_utils.make_context()
+        self.assertEqual(context['COPY']['meta']['dev_state']['value'], 'after')
 
 
 class AppDelegatesTestCase(unittest.TestCase):

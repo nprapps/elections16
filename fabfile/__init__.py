@@ -6,7 +6,7 @@ import logging
 import os
 
 from boto.s3.key import Key
-from fabric.api import local, require, settings, task
+from fabric.api import get, local, require, settings, task
 from fabric.state import env
 from termcolor import colored
 
@@ -31,7 +31,7 @@ if app_config.DEPLOY_CRONTAB:
 
 # Bootstrap can only be run once, then it's disabled
 if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-    import bootstrap
+    import bootstrap_project
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -77,6 +77,14 @@ def dev():
     env.settings = 'dev'
     app_config.configure_targets(env.settings)
 
+
+@task
+def test():
+    """
+    Run locally.
+    """
+    env.settings = 'test'
+    app_config.configure_targets(env.settings)
 
 """
 Branches
@@ -132,15 +140,35 @@ def tests():
     """
     Run Python unit tests.
     """
-    local('nose2')
+    local('nose2 -v tests')
 
 @task
 def js_tests():
     """
     Run Karma/Jasmine unit tests.
     """
-    # render.render_all()
+    render.render_all()
     local('node_modules/karma/bin/karma start www/js/test/karma.conf.js')
+
+
+"""
+Bootstrap
+"""
+
+
+@task
+def bootstrap():
+    """
+    Reset font, db, copy, calendar, and docs.
+
+    Install font, update copy and calendar from Google Spreadsheets, update content from Google Docs, and reset db.
+    """
+    utils.install_font()
+    text.update_copytext()
+    text.update_calendar()
+    text.update_all_docs()
+    data.bootstrap_db()
+
 
 """
 Deployment
@@ -155,9 +183,8 @@ def update():
     Update all application data not in repository (copy, assets, etc).
     """
     utils.install_font(force=False)
-    text.update()
+    text.update_copytext()
     assets.sync()
-    data.update()
 
 
 @task
@@ -184,9 +211,10 @@ def deploy_server(remote='origin'):
 
         servers.checkout_latest(remote)
 
-        servers.fabcast('text.update')
+        servers.fabcast('text.update_copytext')
+        servers.fabcast('text.update_active_docs')
+        servers.fabcast('text.update_calendar')
         servers.fabcast('assets.sync')
-        servers.fabcast('data.update')
 
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
@@ -357,6 +385,29 @@ def reset_browsers():
         }
     )
 
+
+"""
+Oh SH*T!
+
+Fallback helpers
+"""
+
+
+@task
+def mirror_gdocs():
+    """
+    Mirror Google docs from server locally. Use in emergencies.
+    """
+    require('settings', provided_by=[production, staging])
+    remote_data_path = '%(SERVER_PROJECT_PATH)s/repository/data' % app_config.__dict__
+    get('%s/*.html' % remote_data_path, 'data')
+    local('git add -f data/*.html')
+    get('%s/*.xlsx' % remote_data_path, 'data')
+    local('git add -f data/*.xlsx')
+    print('Downloaded server versions of Google docs to `data` directory.')
+    print('Files have been staged to be added to version control:')
+    local('git status')
+    print('Commit these files, set LOAD_COPY_INTERVAL and LOAD_DOCS_INTERVAL to 0 in app_config, and re-deploy.')
 
 """
 Destruction

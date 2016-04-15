@@ -101,13 +101,30 @@ CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
 CALENDAR_PATH = 'data/calendar.xlsx'
 
 CARD_GOOGLE_DOC_KEYS = {
-    'get_caught_up': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
-    'title': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
-    'what_happened': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
-    'whats_happening': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
-    'live_coverage_active': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
-    'live_coverage_inactive': '1bDrWDdQflISaQmq7f_OProWbwGvATOSRyHLg6F415MQ',
-    'podcast': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ'
+    'get_caught_up': {
+        'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
+        'path': 'data/get_caught_up.html',
+    },
+    'title': {
+        'key': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
+        'path': 'data/title.html',
+    },
+    'what_happened': {
+        'key': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+        'path': 'data/what_happened.html',
+    },
+    'whats_happening': {
+        'key': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+        'path': 'data/whats_happening.html',
+    },
+    'live_audio': {
+        'key': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+        'path': 'data/live_audio.html',
+    },
+    'podcast': {
+        'key': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ',
+        'path': 'data/podcast.html',
+    }
 }
 
 """
@@ -172,7 +189,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-03-26'
+NEXT_ELECTION_DATE = '2016-04-09'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -192,6 +209,7 @@ Daemon configuration
 """
 LOAD_COPY_INTERVAL = 15
 LOAD_RESULTS_INTERVAL = 30
+LOAD_DOCS_INTERVAL = 30
 CARD_DEPLOY_INTERVAL = 60
 SITE_ARCHIVE_INTERVAL = 3600
 LOAD_DELEGATES_INTERVAL = 3600
@@ -239,12 +257,16 @@ def configure_targets(deployment_target):
     global NEXT_ELECTION_DATE
     global ELEX_FLAGS
     global ELEX_DELEGATE_FLAGS
-    global database
     global LOAD_COPY_INTERVAL
+    global LOAD_DOCS_INTERVAL
     global LOAD_RESULTS_INTERVAL
     global CARD_DEPLOY_INTERVAL
     global SITE_ARCHIVE_INTERVAL
     global LOAD_DELEGATES_INTERVAL
+    global COPY_PATH
+    global CALENDAR_PATH
+    global CARD_GOOGLE_DOC_KEYS
+    global database
 
     secrets = get_secrets()
 
@@ -270,11 +292,12 @@ def configure_targets(deployment_target):
         DEBUG = False
         ASSETS_MAX_AGE = 86400
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
-        LOG_LEVEL = logging.WARNING
+        LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 10
-        LOAD_RESULTS_INTERVAL = 0
+        LOAD_RESULTS_INTERVAL = 10
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 3600
         LOAD_DELEGATES_INTERVAL = 600
@@ -294,6 +317,7 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 300
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
@@ -311,8 +335,37 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456884323.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
+        COPY_PATH = 'tests/data/docs/copy.xlsx'
+        CALENDAR_PATH = 'tests/data/docs/calendar.xlsx'
+        CARD_GOOGLE_DOC_KEYS = {
+            'get_caught_up': {
+                'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
+                'path': 'tests/data/docs/get_caught_up.html',
+            },
+            'title': {
+                'key': '1CzxEsbq3mrEeXpcy4Z14UNj0fnLQHeZcrTr0a1xnQ1Q',
+                'path': 'tests/data/docs/title.html',
+            },
+            'what_happened': {
+                'key': '1ayCXdRxQOrFTU58NlHS_N1vipGRatEo7DBQxLwCFRy4',
+                'path': 'tests/data/docs/what_happened.html',
+            },
+            'whats_happening': {
+                'key': '1qjeJecYhG0SjXh896E6gMKrcI6XATmlPgAHYIxDd5Hk',
+                'path': 'tests/data/docs/whats_happening.html',
+            },
+            'live_audio': {
+                'key': '15rfnjqBwutimoJk8S9jq7LM5L1QCTQwycVaN_OY5H4s',
+                'path': 'tests/data/docs/live_audio.html',
+            },
+            'podcast': {
+                'key': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ',
+                'path': 'tests/data/docs/podcast.html',
+            }
+        }
         database['PGDATABASE'] = '{0}_test'.format(database['PGDATABASE'])
         database['PGUSER'] = '{0}_test'.format(database['PGUSER'])
+
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -329,6 +382,7 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
+        LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 20
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 3600
