@@ -211,8 +211,13 @@ def make_gdoc_context(doc_name):
     """
     Make Google doc context
     """
-    gdoc_config = app_config.CARD_GOOGLE_DOC_KEYS[doc_name]
-    with open(gdoc_config['path']) as f:
+    try:
+        gdoc_config = app_config.CARD_GOOGLE_DOC_KEYS[doc_name]
+        path = gdoc_config['path']
+    except KeyError:
+        path = 'data/%s.html' % doc_name
+
+    with open(path) as f:
         html = f.read()
 
     gdoc = copydoc.CopyDoc(html, GDOC_TOKENS)
