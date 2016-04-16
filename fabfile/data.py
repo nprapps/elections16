@@ -14,9 +14,6 @@ from models import models
 import copytext
 import servers
 
-TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
-
-
 @task
 def bootstrap_db():
     """
@@ -191,4 +188,4 @@ def download_test_gdoc():
     """
     Get the latest testing Google Doc and write to 'tests/data/testdoc.html'.
     """
-    get_document(TEST_GOOGLE_DOC_KEY, 'tests/data/testdoc.html')
+    get_document(app_config.TEST_GOOGLE_DOC_KEY, 'tests/data/testdoc.html')

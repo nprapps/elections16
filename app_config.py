@@ -127,6 +127,9 @@ CARD_GOOGLE_DOC_KEYS = {
     }
 }
 
+TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'
+
+
 """
 SHARING
 """
