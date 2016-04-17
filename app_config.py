@@ -100,6 +100,9 @@ COPY_PATH = 'data/copy.xlsx'
 CALENDAR_GOOGLE_DOC_KEY = '1y1JPSwF1MfeK1gW1eH4q4IQxCmB4iuJ-TgIDW12fnfM'
 CALENDAR_PATH = 'data/calendar.xlsx'
 
+NEWSLETTER_GOOGLE_DOC_KEY = '1NRs1cWxOdeVP2LKveWtQJaxluuCDAy-VLaS069lZwjw'
+NEWSLETTER_PATH = 'data/newsletter-roundup.xlsx'
+
 CARD_GOOGLE_DOC_KEYS = {
     'get_caught_up': {
         'key': '1XJ0Bhi39rm2fAvCGWY_sts1QjMV8d4ddgzP8O_B_sK0',
@@ -124,7 +127,11 @@ CARD_GOOGLE_DOC_KEYS = {
     'podcast': {
         'key': '16KdA1yhGln1oh_3lnop4gfUuNAWxTtCOXeQOBSFnJPQ',
         'path': 'data/podcast.html',
-    }
+    },
+    'newsletter_roundup': {
+        'key': '15_45gSkUuT2AzQuXBlhD0EJo4jOtRa0YnA5uxXtHpSM',
+        'path': 'data/newsletter_roundup.html',
+    },
 }
 
 TEST_GOOGLE_DOC_KEY = '1uXy5ZKRZf3rWJ9ge1DWX2jhOeduvFGf9jfK0x3tmEqE'

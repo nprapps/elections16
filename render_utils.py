@@ -231,6 +231,16 @@ def make_gdoc_context(doc_name):
 
     return gdoc_context
 
+def make_newsletter_context():
+    """
+    @TODO might want to make a registry ala the docs
+    """
+    context = {
+        'NEWSLETTER': copytext.Copy(app_config.NEWSLETTER_PATH)
+    }
+    return context
+
+
 def urlencode_filter(s):
     """
     Filter to urlencode strings.

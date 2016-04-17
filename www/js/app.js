@@ -52,6 +52,8 @@ var resultsMultiOpen = [];
 var router = null;
 var deeplinked = false;
 var deeplinkNotificationDismissed = false;
+var fitVidSelector = "iframe[src^='https://www.facebook.com/plugins/video.php']";
+
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -78,7 +80,7 @@ var onDocumentLoad = function(e) {
     $duringModeNotice = $('.during-mode-notice');
     $duration = $('.duration');
     $begin = $('.begin');
-    $newsletterContainer = $('#newsletter');
+    $newsletterContainer = $('.newsletter-signup');
     $newsletterForm = $newsletterContainer.find('form');
     $newsletterInput = $newsletterContainer.find('input');
     $subscribeBtn = $('.btn-subscribe');
@@ -122,6 +124,8 @@ var onDocumentLoad = function(e) {
     setPolls();
     AUDIO.setupAudio();
 
+    $cards.fitVids({ customSelector: fitVidSelector });
+
     $cardsWrapper.css({
         'opacity': 1,
         'visibility': 'visible'
@@ -130,6 +134,7 @@ var onDocumentLoad = function(e) {
     if (window.navigator.standalone) {
         ANALYTICS.trackEvent('launched-from-homescreen', currentState);
     }
+
 
 }
 
@@ -484,6 +489,8 @@ var getCard = function(url, $card, i) {
                     if ($card.is('.results-multi')) {
                         resultsMultiToggle();
                     }
+
+                    $card.fitVids({ customSelector: fitVidSelector });
                 }
 
                 if ($card.is('.results') || $card.is('.results-multi')) {

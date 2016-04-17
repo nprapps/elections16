@@ -2,7 +2,6 @@ import app_config
 import m3u8
 import os
 import simplejson as json
-import sys
 
 from . import utils
 from collections import OrderedDict
@@ -12,7 +11,7 @@ from models import models
 from oauth.blueprint import oauth, oauth_required, get_document
 from peewee import fn
 from playhouse.shortcuts import model_to_dict
-from render_utils import make_context, make_gdoc_context, smarty_filter, urlencode_filter
+from render_utils import make_context, make_gdoc_context, make_newsletter_context, smarty_filter, urlencode_filter
 from static.blueprint import static
 from werkzeug.debug import DebuggedApplication
 
@@ -239,6 +238,19 @@ def live_audio():
     context['refresh_rate'] = 60
 
     return render_template('cards/live-audio.html', **context)
+
+
+@app.route('/newsletter-roundup/')
+@oauth_required
+def newsletter_roundup():
+    context = make_context()
+    context.update(make_newsletter_context())
+    context['slug'] = 'newsletter-roundup'
+    context['template'] = 'newsletter-roundup'
+    context['route'] = '/newsletter-roundup/'
+    context['refresh_rate'] = 300
+
+    return render_template('cards/newsletter-roundup.html', **context)
 
 
 @app.route('/data/results-<electiondate>.json')

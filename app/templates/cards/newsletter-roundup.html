@@ -3,89 +3,56 @@
 {% block card_content %}
 <header>
     <div class="header-content">
-        <h2>NPR Politics Newsletter: April 2</h2>
-        <h1>This Week's Top Stories</h1>
+        <h2>{{ NEWSLETTER.meta.page_subhed }}</h2>
+        <h1>{{ NEWSLETTER.meta.page_hed }}</h1>
     </div>
 </header>
 
 <div class="stories">
+    {% for article in NEWSLETTER.articles %}
     <article>
-        <a href="http://www.npr.org/2016/03/27/472056754/despite-the-math-bernie-sanders-has-already-won">
-            <h2>Delegates</h2>
-            <h1>Despite The Math, Bernie Sanders Has Already Won</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/03/27/ap_1603260315585424_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Elaine Thompson/AP</p>
-            </div>
-            <p class="teaser">Bernie Sanders won sweeping victories Saturday, and more are sure to come over the next couple of months. Can he win the nomination? And is that what really even matters?</p>
-        </a>
-    </article>
+        {% if article.url %}
+        <a href="{{ article. url }}">
+        {% endif %}
 
-    <article>
-        <a href="http://www.npr.org/2016/04/01/472615778/fact-check-hillary-clinton-and-donations-from-fossil-fuel-companies">
-            <h2>Fact Check</h2>
-            <h1>Hillary Clinton And Donations From Fossil Fuel Industries</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/03/31/gettyimages-518418546_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Chip Somodevilla/Getty Images</p>
-            </div>
-            <p class="teaser">Donations linked to the oil and gas industries equal two-tenths of 1 percent of Clinton's overall fundraising.</p>
-        </a>
-    </article>
+            {% if article.subhed %}
+            <h2>{{ article.subhed }}</h2>
+            {% endif %}
 
-    <article>
-        <a href="http://www.npr.org/2016/04/01/472581943/trump-says-he-can-unify-the-gop-but-polls-suggest-otherwise">
-            <h2>The Candidates</h2>
-            <h1>Trump Says He Can Unify The GOP, But Polls Suggest Otherwise</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/04/01/gettyimages-513617794_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Elaine Thompson/NPR</p>
-            </div>
-            <p class="teaser">New data from the Pew Research Center suggests that the Republican candidate who is doing the best is also the one who would send the most voters running.</p>
-        </a>
-    </article>
+            {% if article.hed %}
+            <h1>{{ article.hed }}</h1>
+            {% endif %}
 
-    <article>
-        <a href="http://www.npr.org/2016/04/01/472716157/despite-strong-poll-numbers-donald-trump-faces-tough-test-with-women">
-            <h2>Political Demographics</h2>
-            <h1>Women Have A Problem With Donald Trump — And It's Huge</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/04/01/ap_trump-open-hands_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Charles Rex Arbogast/AP</p>
-            </div>
-            <p class="teaser">Pollster Celinda Lake says of Donald Trump: "He has been his own worst enemy with women. He's like your worst date ever--it just keeps getting worse and worse and worse as the evening goes on."</p>
-        </a>
-    </article>
+            {% if article.photo_credit and article.photo_url %}
+            {% if not article.full_width_photo %}<div class="photo">{% endif %}
+                <img src="{{ article.photo_url }}" alt="Photo" />
+                <p class="photo-credit">{{ article.full_width_photo }}{{ article.photo_credit }}</p>
+            {% if not article.full_width_photo %}</div>{% endif %}
+            {% endif %}
 
-    <article>
-        <a href="http://www.npr.org/2016/03/30/472279572/do-americans-actually-follow-through-on-election-threats-to-move-to-canada">
-            <h2>Fact Check</h2>
-            <h1>Do Americans Really Move To Canada Because Of Politics?</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/03/29/gettyimages-72907150-1-_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Stringer/AFP/Getty Images</p>
-            </div>
-            <p class="teaser">This campaign season, lots of people are apparently making calls and doing Internet searches to see how to move to Canada. The number who follow through is likely to be much, much lower.</p>
-        </a>
-    </article>
+            {% if article.teaser %}
+            <p class="teaser">{{ article.teaser|safe }}</p>
+            {% endif %}
 
-    <article>
-        <a href="http://www.npr.org/2016/03/28/472160616/-berniemademewhite-no-bernie-sanders-isnt-just-winning-with-white-people">
-            <h2>#memeoftheweek</h2>
-            <h1>#BernieMadeMeWhite: No, Bernie Sanders Isn't Just Winning With White People</h1>
-            <div class="photo">
-                <img src="http://media.npr.org/assets/img/2016/03/28/ap_223438527494_wide-s1600-c85.jpg" alt="Photo" />
-                <p class="photo-credit">Jacquelyn Martin/AP</p>
-            </div>
-            <p class="teaser">The hashtag trended for hours Sunday. It was led by people of color who support the Vermont senator's presidential bid.</p>
+            {% if article.byline %}
+            <p class="byline">{{ article.byline }}</p>
+            {% endif %}
+
+        {% if article.url %}
         </a>
+        {% endif %}
+
+        {% if article.markup %}
+        <div class="markup">{{ article.markup|safe }}</div>
+        {% endif %}
     </article>
+    {% endfor %}
 </div>
 
 <article class="subscribe">
     <h1>Get This In Your Inbox</h1>
     <p>Sign up for the NPR Politics newsletter and receive great stories like these delivered to straight to your&nbsp;inbox.</p>
-    <form class="newsletter-signup" id="newsletter-signup">
+    <form class="newsletter-signup" id="newsletter-roundup-signup">
         <input id="newsletter-email" type="text" placeholder="What's your email?" />
         <button class="btn-subscribe" id="subscribe-button">Subscribe</button>
     </form>

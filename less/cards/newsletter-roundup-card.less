@@ -51,6 +51,20 @@
 
         p { margin: 0; }
 
+        p.byline { 
+            text-transform: uppercase;
+            color: #999;
+            font-size: .8rem;
+        }
+
+        p.teaser+p.byline {
+            margin-top: 1rem;
+        }
+
+        p.photo-credit+p.teaser {
+            margin-top: 1rem;
+        }
+
         .photo {
             @media @screen-small-above {
                 width: 45%;
@@ -96,6 +110,11 @@
                     }
                 }
             }
+        }
+
+        .icon {
+            font-size: .8rem;
+            text-shadow: none;
         }
     }
 
