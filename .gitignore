@@ -56,6 +56,7 @@ confs/rendered/*
 data/copy.xls
 data/copy.xlsx
 data/calendar.xlsx
+data/newsletter-roundup.xlsx
 data/*.html
 www/assets/*
 !www/assets/assetsignore
