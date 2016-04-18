@@ -119,6 +119,10 @@ var onDocumentLoad = function(e) {
 
     initRouter();
 
+    if (ANALYTICS.nproneDeepLink) {
+        navigateToAudioCard();
+    }
+
     setPolls();
     AUDIO.setupAudio();
 
@@ -135,7 +139,6 @@ var onDocumentLoad = function(e) {
 
 var initRouter = function() {
     routes = {
-        '/nprone': navigateToAudioCard,
         '/cards/:cardId': navigateToCard
     };
     router = Router(routes);
