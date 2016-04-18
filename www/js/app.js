@@ -214,14 +214,38 @@ var detectMobileBg = function($card) {
     }
 }
 
-var navigateToAudioCard = function(id) {
+var removeURLParameter = function(url, parameter) {
+    var urlParts = url.split('?');
+    if (urlParts.length >= 2) {
+        var prefix = encodeURIComponent(parameter);
+        var pars = urlParts[1].split(/[&;]/g);
+
+        for (var i = pars.length; i-- > 0;) {
+            if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                pars.splice(i, 1);
+            }
+        }
+        if (pars.length > 0) {
+            url = urlParts[0] + '?' + pars.join('&');
+        } else {
+            url = urlParts[0];
+        }
+        return url;
+    } else {
+        return url;
+    }
+}
+
+var navigateToAudioCard = function() {
     for (var i = 0; i < $cards.length; i++) {
         if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
             $('.toggle-btn').removeClass().addClass('toggle-btn play');
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
-            ANALYTICS.trackEvent('deeplink', id);
+            ANALYTICS.trackEvent('deeplink', 'nprone');
+            var strippedURL = removeURLParameter(window.location.href, 'nprone');
+            window.history.replaceState('stripped', document.title, strippedURL);
             break;
         }
     }
