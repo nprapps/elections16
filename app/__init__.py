@@ -249,7 +249,7 @@ def newsletter_roundup():
     context['slug'] = 'newsletter-roundup'
     context['template'] = 'newsletter-roundup'
     context['route'] = '/newsletter-roundup/'
-    context['refresh_rate'] = 300
+    context['refresh_rate'] = 30
 
     return render_template('cards/newsletter-roundup.html', **context)
 
