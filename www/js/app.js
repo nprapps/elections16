@@ -52,8 +52,11 @@ var resultsMultiOpen = [];
 var router = null;
 var deeplinked = false;
 var deeplinkNotificationDismissed = false;
+<<<<<<< HEAD
 var fitVidSelector = "iframe[src^='https://www.facebook.com/plugins/video.php']";
 
+=======
+>>>>>>> master
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -120,11 +123,17 @@ var onDocumentLoad = function(e) {
     resultsMultiToggle();
 
     initRouter();
+<<<<<<< HEAD
 
     setPolls();
     AUDIO.setupAudio();
+=======
+>>>>>>> master
 
     $cards.fitVids({ customSelector: fitVidSelector });
+
+    setPolls();
+    AUDIO.setupAudio();
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -141,6 +150,14 @@ var onDocumentLoad = function(e) {
 var initRouter = function() {
     routes = {
         '/nprone': navigateToAudioCard,
+        '/cards/:cardId': navigateToCard
+    };
+    router = Router(routes);
+    router.init();
+}
+
+var initRouter = function() {
+    routes = {
         '/cards/:cardId': navigateToCard
     };
     router = Router(routes);
@@ -216,6 +233,7 @@ var detectMobileBg = function($card) {
     }
 }
 
+<<<<<<< HEAD
 var navigateToAudioCard = function(id) {
     for (var i = 0; i < $cards.length; i++) {
         if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
@@ -224,6 +242,53 @@ var navigateToAudioCard = function(id) {
             playedAudio = true;
             $cardsWrapper.flickity('select', i);
             ANALYTICS.trackEvent('deeplink', id);
+            break;
+        }
+    }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
+    }
+}
+
+var navigateToCard = function(id) {
+    var $card = $('#' + id);
+    var index = $cards.index($card);
+    if (index > -1) {
+        deeplinked = true;
+=======
+var removeURLParameter = function(url, parameter) {
+    var urlParts = url.split('?');
+    if (urlParts.length >= 2) {
+        var prefix = encodeURIComponent(parameter);
+        var pars = urlParts[1].split(/[&;]/g);
+>>>>>>> master
+
+        if (LIVE || $card.hasClass('live-audio') || $card.hasClass('podcast')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
+        }
+        if (LIVE && !$card.hasClass('live-audio')) {
+            setLinkAlert();
+        }
+        $cardsWrapper.flickity('select', index);
+        ANALYTICS.trackEvent('deeplink', id);
+    }
+    if (!APP_CONFIG.DEBUG) {
+        router.setRoute('');
+    }
+}
+
+var navigateToAudioCard = function() {
+    for (var i = 0; i < $cards.length; i++) {
+        if ($cards.eq(i).hasClass('live-audio') || $cards.eq(i).hasClass('podcast')) {
+            $('.toggle-btn').removeClass().addClass('toggle-btn play');
+            $mute.removeClass('playing').addClass('muted');
+            playedAudio = true;
+            $cardsWrapper.flickity('select', i);
+            ANALYTICS.trackEvent('deeplink', 'nprone');
+            var strippedURL = removeURLParameter(window.location.href, 'nprone');
+            window.history.replaceState('stripped', document.title, strippedURL);
             break;
         }
     }

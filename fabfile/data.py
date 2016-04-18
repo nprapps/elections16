@@ -14,6 +14,7 @@ from models import models
 import copytext
 import servers
 
+
 @task
 def bootstrap_db():
     """
