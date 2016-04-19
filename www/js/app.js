@@ -29,6 +29,7 @@ var $closeAlert = null;
 var $donateHeadline = null;
 var $donateText = null;
 var $donateLink = null;
+var $anchorLinks = null;
 var fitVidSelector = "iframe[src^='https://www.facebook.com/plugins/video.php']";
 
 // Global references
@@ -53,6 +54,7 @@ var resultsMultiOpen = [];
 var router = null;
 var deeplinked = false;
 var deeplinkNotificationDismissed = false;
+var linkAlertDisplay = true;
 
 var focusWorkaround = false;
 if (/(android)/i.test(navigator.userAgent) || navigator.userAgent.match(/OS 5(_\d)+ like Mac OS X/i)) {
@@ -108,6 +110,7 @@ var onDocumentLoad = function(e) {
     $newsletterForm.on('submit', onNewsletterSubmit);
     $closeAlert.on('click', onCloseAlertClick);
     $donateLink.on('click', onDonateLinkClick);
+    $body.on('click', 'a[href*=#]', onAnchorLinkClick);
 
     $window.resize(onResize);
     $window.on('beforeunload', onUnload);
@@ -263,7 +266,7 @@ var navigateToCard = function(id) {
     if (index > -1) {
         deeplinked = true;
 
-        if (LIVE || $card.hasClass('live-audio') || $card.hasClass('podcast')) {
+        if (linkAlertDisplay && (LIVE || $card.hasClass('live-audio') || $card.hasClass('podcast'))) {
             $('.toggle-btn').removeClass().addClass('toggle-btn play');
             $mute.removeClass('playing').addClass('muted');
             playedAudio = true;
@@ -299,6 +302,7 @@ var onCardChange = function(e) {
         $duringModeNotice.hide();
         $flickityNav.hide();
         $flickityDots.hide();
+        linkAlertDisplay = false;
         if (deeplinked && LIVE && !deeplinkNotificationDismissed) {
             closeAlert();
             playedAudio = false;
@@ -469,6 +473,12 @@ var onUnload = function(e) {
     }
 }
 
+var onAnchorLinkClick = function(e) {
+    e.preventDefault();
+    var id = e.currentTarget.href.split('/').pop();
+    navigateToCard(id);
+}
+
 var setPolls = function() {
     // set poll for cards
     for (var i = 0; i < $cards.length; i++) {
@@ -563,14 +573,16 @@ var setLiveAlert = function() {
 }
 
 var setLinkAlert = function() {
-    $linkAlert.removeClass().addClass('alert signal-during');
-    $linkAlertAction.off('click');
-    $linkAlertAction.on('click', function() {
-        var index = $cards.index($('#live-audio'));
-        AUDIO.toggleAudio();
-        closeAlert();
-        ANALYTICS.trackEvent('alert-click', 'listen-live');
-    });
+    if (linkAlertDisplay) {
+        $linkAlert.removeClass().addClass('alert signal-during');
+        $linkAlertAction.off('click');
+        $linkAlertAction.on('click', function() {
+            var index = $cards.index($('#live-audio'));
+            AUDIO.toggleAudio();
+            closeAlert();
+            ANALYTICS.trackEvent('alert-click', 'listen-live');
+        });
+    }
 }
 
 var onCloseAlertClick = function() {
