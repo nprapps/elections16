@@ -46,15 +46,9 @@
 </div>
 
 <article class="subscribe">
-    <h1>Get This In Your Inbox</h1>
-    <p>Sign up for the NPR Politics newsletter and receive great stories like these delivered to straight to your&nbsp;inbox.</p>
-    <div class="newsletter-wrapper">
-        <form class="newsletter-signup" id="newsletter-roundup-signup">
-            <input id="newsletter-email" type="text" placeholder="What's your email?" />
-            <button class="btn-subscribe" id="subscribe-button">Subscribe</button>
-        </form>
-    </div>
-    <p class="footnote">By subscribing, you agree to NPR's <a href="http://www.npr.org/about-npr/179876898/terms-of-use" target="_blank">terms of use</a> and <a href="http://www.npr.org/about-npr/179878450/privacy-policy" target="_blank">privacy&nbsp;policy</a>.</p>
+    <h1>{{ COPY.newsletter.roundup_newsletter_title|safe }}</h1>
+    <p>{{ COPY.newsletter.roundup_newsletter_promo|safe }}</p>
+    {% include '_newsletter_form.html' %}
 </article>
 
 <article class="more">
