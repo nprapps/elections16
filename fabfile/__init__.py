@@ -166,6 +166,7 @@ def bootstrap():
     utils.install_font()
     text.update_copytext()
     text.update_calendar()
+    text.update_newsletter()
     text.update_all_docs()
     data.bootstrap_db()
 
@@ -184,6 +185,9 @@ def update():
     """
     utils.install_font(force=False)
     text.update_copytext()
+    text.update_calendar()
+    text.update_newsletter()
+    text.update_all_docs()
     assets.sync()
 
 
