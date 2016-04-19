@@ -301,10 +301,10 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        LOAD_COPY_INTERVAL = 15
-        LOAD_RESULTS_INTERVAL = 15
+        LOAD_COPY_INTERVAL = 30
+        LOAD_RESULTS_INTERVAL = 10
         LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 60
     elif deployment_target == 'staging':
@@ -324,7 +324,7 @@ def configure_targets(deployment_target):
         LOAD_COPY_INTERVAL = 30
         LOAD_RESULTS_INTERVAL = 300
         LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
     elif deployment_target == 'test':
