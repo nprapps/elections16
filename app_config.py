@@ -301,12 +301,12 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 30
+        LOAD_COPY_INTERVAL = 15
+        LOAD_RESULTS_INTERVAL = 15
         LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 30
-        SITE_ARCHIVE_INTERVAL = 3600
-        LOAD_DELEGATES_INTERVAL = 600
+        SITE_ARCHIVE_INTERVAL = 0
+        LOAD_DELEGATES_INTERVAL = 60
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
