@@ -29,6 +29,7 @@ var $closeAlert = null;
 var $donateHeadline = null;
 var $donateText = null;
 var $donateLink = null;
+var fitVidSelector = "iframe[src^='https://www.facebook.com/plugins/video.php']";
 
 // Global references
 var candidates = {}
@@ -125,6 +126,8 @@ var onDocumentLoad = function(e) {
 
     setPolls();
     AUDIO.setupAudio();
+
+    $cards.fitVids({ customSelector: fitVidSelector });
 
     $cardsWrapper.css({
         'opacity': 1,
@@ -511,6 +514,8 @@ var getCard = function(url, $card, i) {
                     if ($card.is('.results-multi')) {
                         resultsMultiToggle();
                     }
+
+                    $card.fitVids({ customSelector: fitVidSelector });
                 }
 
                 if ($card.is('.results') || $card.is('.results-multi')) {

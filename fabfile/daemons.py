@@ -45,6 +45,7 @@ def main(run_once=False):
             copy_start = now
             logger.info('Update copy')
             execute('text.update_copytext')
+            execute('text.update_newsletter')
 
         if app_config.LOAD_DOCS_INTERVAL and (now - docs_start) > app_config.LOAD_DOCS_INTERVAL:
             docs_start = now

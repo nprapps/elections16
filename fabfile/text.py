@@ -18,6 +18,7 @@ def update():
     """
     update_copytext()
     update_calendar()
+    update_newsletter()
     update_all_docs()
 
 
@@ -37,6 +38,15 @@ def update_calendar():
     """
     get_spreadsheet(app_config.CALENDAR_GOOGLE_DOC_KEY,
                     app_config.CALENDAR_PATH)
+
+
+@task
+def update_newsletter():
+    """
+    Download newsletter file
+    """
+    get_spreadsheet(app_config.NEWSLETTER_GOOGLE_DOC_KEY,
+                    app_config.NEWSLETTER_PATH)
 
 
 @task

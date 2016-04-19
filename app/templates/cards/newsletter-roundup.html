@@ -1,0 +1,68 @@
+{% extends '_card_base.html' %}
+
+{% block card_content %}
+<header>
+    <div class="header-content">
+        <h2>{{ NEWSLETTER.meta.page_subhed }}</h2>
+        <h1>{{ NEWSLETTER.meta.page_hed }}</h1>
+    </div>
+</header>
+
+<div class="stories">
+    {% for article in NEWSLETTER.articles %}
+    <article>
+        {% if article.url %}
+        <a href="{{ article. url }}">
+        {% endif %}
+
+            {% if article.subhed %}
+            <h2>{{ article.subhed }}</h2>
+            {% endif %}
+
+            {% if article.hed %}
+            <h1>{{ article.hed }}</h1>
+            {% endif %}
+
+            {% if article.photo_credit and article.photo_url %}
+            {% if not article.full_width_photo %}<div class="photo">{% endif %}
+                <img src="{{ article.photo_url }}" alt="Photo" />
+                <p class="photo-credit">{{ article.full_width_photo }}{{ article.photo_credit }}</p>
+            {% if not article.full_width_photo %}</div>{% endif %}
+            {% endif %}
+
+            {% if article.teaser %}
+            <p class="teaser">{{ article.teaser|safe }}</p>
+            {% endif %}
+
+        {% if article.url %}
+        </a>
+        {% endif %}
+
+        {% if article.markup %}
+        <div class="markup">{{ article.markup|safe }}</div>
+        {% endif %}
+    </article>
+    {% endfor %}
+</div>
+
+<article class="subscribe">
+    <h1>Get This In Your Inbox</h1>
+    <p>Sign up for the NPR Politics newsletter and receive great stories like these delivered to straight to your&nbsp;inbox.</p>
+    <div class="newsletter-wrapper">
+        <form class="newsletter-signup" id="newsletter-roundup-signup">
+            <input id="newsletter-email" type="text" placeholder="What's your email?" />
+            <button class="btn-subscribe" id="subscribe-button">Subscribe</button>
+        </form>
+    </div>
+    <p class="footnote">By subscribing, you agree to NPR's <a href="http://www.npr.org/about-npr/179876898/terms-of-use" target="_blank">terms of use</a> and <a href="http://www.npr.org/about-npr/179878450/privacy-policy" target="_blank">privacy&nbsp;policy</a>.</p>
+</article>
+
+<article class="more">
+    <h2>Looking for more NPR Politics coverage?</h2>
+    <p>Follow us on Facebook and Twitter:</p>
+    <ul>
+        <li class="facebook"><a href="https://www.facebook.com/nprpolitics/"><i class="icon icon-facebook"></i></a></li>
+        <li class="twitter"><a href="https://twitter.com/nprpolitics"><i class="icon icon-twitter"></i></a></li>
+    </ul>
+</article>
+{% endblock %}
