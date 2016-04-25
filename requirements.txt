@@ -26,7 +26,7 @@ cement==2.6.2
 clan==0.1.3
 clint==0.5.1
 colorama==0.2.5
-copydoc==1.0.2
+copydoc==1.0.3
 copytext==0.1.9
 csvkit==0.9.1
 dbf==0.94.3
