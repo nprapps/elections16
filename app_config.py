@@ -339,6 +339,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        NEXT_ELECTION_DATE = '2016-03-01'
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456884323.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         COPY_PATH = 'tests/data/docs/copy.xlsx'
