@@ -33,7 +33,7 @@ dbf==0.94.3
 decorator==4.0.6
 docutils==0.11
 ecdsa==0.13
-elex==2.0.3
+elex==2.0.4
 facebook-sdk==0.4.0
 google-api-python-client==1.2
 gunicorn==19.1.1
