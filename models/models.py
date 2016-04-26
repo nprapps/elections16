@@ -23,7 +23,6 @@ class BaseModel(Model):
 
 class Result(BaseModel):
     id = CharField(primary_key=True)
-    unique_id = CharField(null=True)
     raceid = CharField(null=True)
     racetype = CharField(null=True)
     racetypeid = CharField(null=True)
@@ -126,7 +125,6 @@ class ReportingUnit(BaseModel):
 
 class Candidate(BaseModel):
     id = CharField(null=True)
-    unique_id = CharField(null=True)
     candidateid = CharField(null=True)
     ballotorder = IntegerField(null=True)
     first = CharField(null=True)
@@ -138,7 +136,6 @@ class Candidate(BaseModel):
 
 class BallotPosition(BaseModel):
     id = CharField(null=True)
-    unique_id = CharField(null=True)
     candidateid = CharField(null=True)
     ballotorder = IntegerField(null=True)
     description = CharField(null=True)

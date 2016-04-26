@@ -195,7 +195,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-04-19'
+NEXT_ELECTION_DATE = '2016-04-26'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -324,7 +324,7 @@ def configure_targets(deployment_target):
         LOAD_COPY_INTERVAL = 30
         LOAD_RESULTS_INTERVAL = 300
         LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
     elif deployment_target == 'test':
@@ -339,6 +339,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
+        NEXT_ELECTION_DATE = '2016-03-01'
         ELEX_FLAGS = '-d tests/data/ap_elections_loader_recording-1456884323.json'
         ELEX_DELEGATE_FLAGS = '--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         COPY_PATH = 'tests/data/docs/copy.xlsx'
