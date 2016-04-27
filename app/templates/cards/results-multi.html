@@ -37,7 +37,7 @@
                 </table>
             </div>
             <ul class="meta">
-                <li>{{ race.precinctsreportingpct|percent }} <span class="desktop">precincts</span><span class="mobile">in</span></li>
+                <li>{{ race.precinctsreportingpct|normalize_percent|percent }} <span class="desktop">precincts</span><span class="mobile">in</span></li>
             </ul>
             <div class="arrow"><b class="icon-right-open"></b></div>
         </div>
@@ -45,7 +45,7 @@
         <div class="expanded">
             <h2>{{ race.statename }} {{ race.race_type }} <b class="icon-down-open"></b></h2>
             <ul class="meta">
-                <li>{{ race.precinctsreportingpct|percent }} of precincts reporting ({{ race.precinctsreporting|comma }} of {{ race.precinctstotal|comma }})</li>
+                <li>{{ race.precinctsreportingpct|normalize_percent|percent }} of precincts reporting ({{ race.precinctsreporting|comma }} of {{ race.precinctstotal|comma }})</li>
             </ul>
             <table>
                 <thead>

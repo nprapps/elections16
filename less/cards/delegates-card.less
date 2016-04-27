@@ -37,6 +37,7 @@
             margin: 0 0 3px 0;
             line-height: 33px;
             color: #f1f1f1;
+            position: relative;
 
             &.inactive { color: #787878; }
 
@@ -60,26 +61,37 @@
             }
             .amt {
                 display: block;
-                float: left;
+                // float: left;
                 font-size: 0.8rem;
                 margin-left: 0.5rem;
+                position: absolute;
+                right: 0;
+                text-align: right;
 
                 .detail {
                     font-size: 0.6rem;
                     color: #999;
-                    @media @screen-tiny-above { display: inline; }
-                    @media @screen-tiny { display: none; }
                 }
             }
         }
 
         &.democrat > li {
-            .bar-wrapper { background-color: @democratFade3; }
+            .bar-wrapper {
+                background-color: @democratFade3;
+                margin-right: 95px;
+
+                @media @screen-small-above { margin-right: 130px; }
+            }
             .bar { background-color: @democrat; }
             &.inactive .bar { background-color: #666; }
         }
         &.republican > li {
-            .bar-wrapper { background-color: @republicanFade; }
+            .bar-wrapper {
+                background-color: @republicanFade;
+                margin-right: 35px;
+
+                @media @screen-small-above { margin-right: 50px; }
+            }
             .bar { background-color: @republican; }
             &.inactive .bar { background-color: #666; }
         }
