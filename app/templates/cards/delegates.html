@@ -14,7 +14,7 @@
             <div class="bar-wrapper">
                 <span class="bar" style="width: {{ candidate.pledged_delegates_pct() }}%"></span>
                 <span class="bar superdels" style="width: {{ candidate.superdelegates_pct() }}%"></span>
-                <span class="amt">{{ candidate.delegates_count|comma  }}{% if party == 'Dem' %}&nbsp;<span class="detail">({{ candidate.pledged_delegates_count() }} + {{ candidate.superdelegates_count }})</span>{% endif %}</span>
+                <span class="amt">{{ candidate.delegates_count|comma  }}{% if party == 'Dem' %}&nbsp;<span class="detail">({{ candidate.pledged_delegates_count()|comma }} + {{ candidate.superdelegates_count|comma }})</span>{% endif %}</span>
             </div>
         </li>
         {% endfor %}
