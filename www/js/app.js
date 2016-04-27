@@ -616,7 +616,7 @@ var onDonateLinkClick = function(e) {
 
 var onLinkRoundupLinkClick = function() {
     var href = $(this).attr('href');
-    var timesToClick = calculateTimeBucket(globalStartTime);
+    var timesToClick = ANALYTICS.calculateTimeBucket(globalStartTime);
     ANALYTICS.trackEvent('link-roundup-click', href, timesToClick[0], timesToClick[1]);
 }
 
