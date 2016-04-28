@@ -195,7 +195,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-04-26'
+NEXT_ELECTION_DATE = '2016-05-10'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -319,11 +319,11 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 0
-        LOAD_DOCS_INTERVAL = 30
+        LOAD_COPY_INTERVAL = 0
+        LOAD_RESULTS_INTERVAL = 10
+        LOAD_DOCS_INTERVAL = 0
         CARD_DEPLOY_INTERVAL = 10
         SITE_ARCHIVE_INTERVAL = 0
         LOAD_DELEGATES_INTERVAL = 0
@@ -385,14 +385,14 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
         LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 20
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 3600
+        LOAD_DELEGATES_INTERVAL = 60
 
     DEPLOYMENT_TARGET = deployment_target
 
