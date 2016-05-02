@@ -101,7 +101,7 @@ def load_results():
     election_date = app_config.NEXT_ELECTION_DATE
     with hide('output', 'running'):
         local('mkdir -p .data')
-    cmd = 'elex results {0} --results-level state {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
+    cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**app_config.database):
         with settings(warn_only=True), hide('output', 'running'):
             cmd_output = local(cmd, capture=True)
