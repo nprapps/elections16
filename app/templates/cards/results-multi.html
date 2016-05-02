@@ -31,13 +31,13 @@
                     {% for result in race.results[:2] %}
                     <tr {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %} class="winner" {% endif %}>
                         <td>{{ result.last }} {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %}<b class="icon icon-check"></b> {% endif %}</td>
-                        <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
+                        <td class="pct">{{ result.votepct|percent }}</td>
                     </tr>
                     {% endfor %}
                 </table>
             </div>
             <ul class="meta">
-                <li>{{ race.precinctsreportingpct|normalize_percent|percent }} <span class="desktop">precincts</span><span class="mobile">in</span></li>
+                <li>{{ race.precinctsreportingpct|percent }} <span class="desktop">precincts</span><span class="mobile">in</span></li>
             </ul>
             <div class="arrow"><b class="icon-right-open"></b></div>
         </div>
@@ -45,7 +45,7 @@
         <div class="expanded">
             <h2>{{ race.statename }} {{ race.race_type }} <b class="icon-down-open"></b></h2>
             <ul class="meta">
-                <li>{{ race.precinctsreportingpct|normalize_percent|percent }} of precincts reporting ({{ race.precinctsreporting|comma }} of {{ race.precinctstotal|comma }})</li>
+                <li>{{ race.precinctsreportingpct|percent }} of precincts reporting ({{ race.precinctsreporting|comma }} of {{ race.precinctstotal|comma }})</li>
             </ul>
             <table>
                 <thead>
@@ -60,13 +60,13 @@
                     <tr {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %} class="winner" {% endif %}>
                         <td>{{ result.first }} {{ result.last }} {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %}<b class="icon icon-check"></b> {% endif %}</td>
                         <td class="votes">{{ result.votecount|comma }}</td>
-                        <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
+                        <td class="pct">{{ result.votepct|percent }}</td>
                     </tr>
                     {% endfor %}
                     <tr>
                         <td>Other</td>
                         <td class="votes">{{ race.other_votecount|comma }}</td>
-                        <td class="pct">{{ race.other_votepct|normalize_percent|percent }}</td>
+                        <td class="pct">{{ race.other_votepct|percent }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
