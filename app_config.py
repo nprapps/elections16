@@ -385,14 +385,14 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = ''
+        ELEX_FLAGS = '-t'
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
-        LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 20
+        LOAD_DOCS_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 3600
+        LOAD_DELEGATES_INTERVAL = 60
 
     DEPLOYMENT_TARGET = deployment_target
 
