@@ -109,6 +109,7 @@ def percent_filter(value):
     """
     Format percentage
     """
+    value = Decimal(value) * Decimal(100)
     if value == 0:
         return '0%'
     elif value == 100:
@@ -116,14 +117,8 @@ def percent_filter(value):
     elif value > 0 and value < 1:
         return '<1%'
     else:
-        return '{:.1f}%'.format(Decimal(value).quantize(Decimal('.1'), rounding=ROUND_DOWN))
-
-
-def normalize_percent_filter(value):
-    """
-    Multiply value times 100
-    """
-    return Decimal(value) * Decimal(100)
+        cleaned_pct = value.quantize(Decimal('.1'), rounding=ROUND_DOWN)
+        return '{:.1f}%'.format(cleaned_pct)
 
 
 def ordinal_filter(num):

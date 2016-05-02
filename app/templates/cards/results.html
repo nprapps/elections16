@@ -35,13 +35,13 @@
                     {% if (result.winner and result.call[0].accept_ap) or (result.call[0].override_winner and not result.call[0].accept_ap) %}<b class="icon icon-check"></b>{% endif %}
                 </td>
                 <td class="votes">{{ result.votecount|comma }}</td>
-                <td class="pct">{{ result.votepct|normalize_percent|percent }}</td>
+                <td class="pct">{{ result.votepct|percent }}</td>
             </tr>
             {% endfor %}
             <tr>
                 <td>Other</td>
                 <td class="votes">{{ races[0].other_votecount|comma }}</td>
-                <td class="pct">{{ races[0].other_votepct|normalize_percent|percent }}</td>
+                <td class="pct">{{ races[0].other_votepct|percent }}</td>
             </tr>
         </tbody>
         <tfoot>
