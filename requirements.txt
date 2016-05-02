@@ -1,4 +1,4 @@
--e git+git@github.com:newsdev/elex.git@0121-response-caching#egg=elex
+-e git+https://github.com/newsdev/elex.git#egg=elex
 Authomatic==0.1.0.post1
 Babel==2.2.0
 Fabric==1.10.2
