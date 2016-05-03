@@ -301,12 +301,12 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 0
-        LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
+        LOAD_COPY_INTERVAL = 15
+        LOAD_RESULTS_INTERVAL = 15
+        LOAD_DOCS_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 300
+        LOAD_DELEGATES_INTERVAL = 60
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -319,14 +319,14 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://www.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-t'
+        ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
-        LOAD_COPY_INTERVAL = 15
-        LOAD_RESULTS_INTERVAL = 15
-        LOAD_DOCS_INTERVAL = 15
-        CARD_DEPLOY_INTERVAL = 15
+        LOAD_COPY_INTERVAL = 30
+        LOAD_RESULTS_INTERVAL = 60
+        LOAD_DOCS_INTERVAL = 30
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 60
+        LOAD_DELEGATES_INTERVAL = 300
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
