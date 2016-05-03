@@ -163,16 +163,6 @@ def results(party):
 
     return render_template('cards/results-multi.html', **context)
 
-@app.route('/results-pr/')
-@oauth_required
-def results_pr():
-    context = make_context()
-    context['refresh_rate'] = 60
-    context['route'] = '/results-pr/'
-    context['slug'] = 'results-pr'
-    context['template'] = 'results'
-
-    return render_template('cards/results-pr-gop.html', **context)
 
 @app.route('/delegates/<party>/')
 @oauth_required
