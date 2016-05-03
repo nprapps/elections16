@@ -325,7 +325,7 @@ def configure_targets(deployment_target):
         LOAD_RESULTS_INTERVAL = 60
         LOAD_DOCS_INTERVAL = 30
         CARD_DEPLOY_INTERVAL = 30
-        SITE_ARCHIVE_INTERVAL = 0
+        SITE_ARCHIVE_INTERVAL = 1800
         LOAD_DELEGATES_INTERVAL = 300
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
