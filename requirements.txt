@@ -1,4 +1,5 @@
--e git+https://github.com/newsdev/elex.git#egg=elex
+-e git+https://github.com/ionrock/cachecontrol.git@4746b906ae9b2e7ada8e732688cb9571a33a3fa5#egg=CacheControl
+-e git+https://github.com/newsdev/elex.git@f62ca187ecb4441f3d80169476d5f9bedea29865#egg=elex
 Authomatic==0.1.0.post1
 Babel==2.2.0
 Fabric==1.10.2
