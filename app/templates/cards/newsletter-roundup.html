@@ -26,7 +26,7 @@
             {% if article.photo_credit and article.photo_url %}
             {% if not article.full_width_photo %}<div class="photo">{% endif %}
                 <img src="{{ article.photo_url }}" alt="Photo" />
-                <p class="photo-credit">{{ article.full_width_photo }}{{ article.photo_credit }}</p>
+                <p class="photo-credit">{{ article.photo_credit }}</p>
             {% if not article.full_width_photo %}</div>{% endif %}
             {% endif %}
 
