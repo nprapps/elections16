@@ -204,7 +204,7 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
-DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239', '1187', '64509', '53044']
+DROPPED_OUT = ['61815', '60208', '60339', '60051', '45650', '1239', '1187', '64509', '53044']
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
@@ -385,7 +385,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
         NEWSLETTER_POST_URL = 'http://stage1.npr.org/newsletter/subscribe/politics'
         LOG_LEVEL = logging.DEBUG
-        ELEX_FLAGS = '-t'
+        ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
