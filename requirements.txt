@@ -28,13 +28,9 @@ Flask==0.9
 Flask-Admin==1.4.0
 Flask-Login==0.3.2
 Flask-OAuth2-Login==0.0.9
-gnureadline==6.3.3
 google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9
-ipdb==0.9.3
-ipython==4.2.0
-ipython-genutils==0.1.0
 iso8601==0.1.11
 jdcal==1.2
 Jinja2==2.7.3
