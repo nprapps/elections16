@@ -9,7 +9,7 @@ bcdoc==0.12.0
 beautifulsoup4==4.4.1
 boto==2.34.0
 botocore==1.3.23
--e git+git@github.com:eads/cachecontrol.git@db28cafcdb1237309fd6b619c6c3319a014fd353#egg=CacheControl
+-e git+https://github.com/eads/cachecontrol.git@db28cafcdb1237309fd6b619c6c3319a014fd353#egg=CacheControl
 cement==2.8.2
 clan==0.1.3
 clint==0.5.1
@@ -21,7 +21,7 @@ dbf==0.94.3
 decorator==4.0.6
 docutils==0.11
 ecdsa==0.13
--e git+git@github.com:newsdev/elex.git@acac5fe7df0f4525bdc2816ad88e359282571ebc#egg=elex
+-e git+https://github.com/newsdev/elex.git@acac5fe7df0f4525bdc2816ad88e359282571ebc#egg=elex
 Fabric==1.10.2
 facebook-sdk==0.4.0
 Flask==0.9
