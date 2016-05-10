@@ -275,8 +275,14 @@ def get_results(party, electiondate):
         models.Result.electiondate == electiondate,
         models.Result.party == ap_party,
         models.Result.level == 'state',
-        models.Result.officename == 'President'
-    ).order_by(models.Result.statename, models.Result.raceid)
+        models.Result.officename == 'President',
+    )
+
+    blacklist = app_config.RACE_BLACKLIST.get(electiondate)
+    if blacklist:
+        race_ids = race_ids.where(~(models.Result.raceid << blacklist))
+
+    race_ids.order_by(models.Result.statename, models.Result.raceid)
 
     # Get copy once
     copy_obj = copytext.Copy(app_config.COPY_PATH)

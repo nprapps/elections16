@@ -204,7 +204,13 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
+# IDs of candidates who have dropped out (primarily for delegate tracker)
 DROPPED_OUT = ['61815', '36679', '60208', '60339', '60051', '45650', '1239', '1187', '64509', '53044']
+
+# Races to exclude from results, organized by date
+RACE_BLACKLIST = {
+    '2016-05-10': ('28001',)
+}
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
