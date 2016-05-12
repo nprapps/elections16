@@ -487,7 +487,7 @@ var setPolls = function() {
         var refreshRate = $thisCard.data('refresh-rate');
 
         if (refreshRoute && refreshRate > 0) {
-            var fullURL = APP_CONFIG.S3_BASE_URL + refreshRoute;
+            var fullURL = APP_CONFIG.S3_BASE_URL + refreshRoute + 'index.html';
             var fullRefreshRate = refreshRate * 1000;
 
             var cardGetter = _.partial(getCard, fullURL, $thisCard, i);
