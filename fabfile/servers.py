@@ -206,6 +206,9 @@ def deploy_confs():
 
     with settings(warn_only=True):
         for service, remote_path, extension in app_config.SERVER_SERVICES:
+            if extension == 'ini':
+                continue
+
             rendered_path = _get_rendered_conf_path(service, extension)
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
