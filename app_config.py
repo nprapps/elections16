@@ -76,7 +76,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVER_SERVICES = [
-    #('app', SERVER_REPOSITORY_PATH, 'ini'),
+    ('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
     ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
