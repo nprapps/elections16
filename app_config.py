@@ -315,7 +315,7 @@ def configure_targets(deployment_target):
         LOAD_DELEGATES_INTERVAL = 60
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
-        S3_BASE_URL = 'http://elections.npr.org'
+        S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com/'
         S3_DEPLOY_URL = 's3://stage-elections16.apps.npr.org'
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
