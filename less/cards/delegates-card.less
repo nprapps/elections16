@@ -2,7 +2,6 @@
 
 #delegates-dem,
 #delegates-gop {
-
     .card-inner {
         max-width: @max-width-content;
         margin: 0 3rem 2rem 3rem;
@@ -20,6 +19,7 @@
             font-size: 1.3rem;
         }
     }
+
     .needed {
         margin-bottom: 11px;
         text-align: right;
@@ -50,6 +50,7 @@
                 -webkit-flex-grow: 1;
                 flex-grow: 1;
                 height: 33px;
+                position: relative;
             }
             .bar {
                 height: 100%;
@@ -73,6 +74,13 @@
                     color: #999;
                 }
             }
+        }
+        .needed-marker {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: #fff;
         }
 
         &.democrat > li {
