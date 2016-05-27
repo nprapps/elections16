@@ -80,15 +80,19 @@
             top: 0;
             height: 100%;
             width: 1px;
-            background-color: #fff;
+            background-color: #787878;
         }
 
         &.democrat > li {
             .bar-wrapper {
                 background-color: @democratFade3;
                 margin-right: 95px;
+                .amt { right: -95px; }
 
-                @media @screen-small-above { margin-right: 130px; }
+                @media @screen-small-above {
+                    margin-right: 130px;
+                    .amt { right: -130px; }
+                }
             }
             .bar { background-color: @democrat; }
             &.inactive .bar { background-color: #666; }
@@ -97,8 +101,12 @@
             .bar-wrapper {
                 background-color: @republicanFade;
                 margin-right: 35px;
+                .amt { right: -35px; }
 
-                @media @screen-small-above { margin-right: 50px; }
+                @media @screen-small-above {
+                    margin-right: 50px;
+                    .amt { right: -50px; }
+                }
             }
             .bar { background-color: @republican; }
             &.inactive .bar { background-color: #666; }
