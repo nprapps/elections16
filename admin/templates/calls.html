@@ -44,7 +44,7 @@
                         <div class="ap-btns">
                             <button
                                 class="btn btn-success btn-mini ap accept-ap {% if not results[0].call[0].accept_ap %} hidden {% endif %}"
-                                data-race-id="{{ results[0].raceid }}">
+                                data-race-id="{{ results[0].raceid }}" data-office="{{ results[0].officename }}">
                                 Accepting AP calls
                             </button>
 
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <p>{{ results[0].precinctsreportingpct|percent }} of precincts reporting ({{ results[0].precinctsreporting|comma }} of {{ results[0].precinctstotal|comma }})</p>
 
                 <table class="table table-striped table-bordered table-hover table-condensed">
