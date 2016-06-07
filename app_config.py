@@ -76,7 +76,7 @@ UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVER_SERVICES = [
-    #('app', SERVER_REPOSITORY_PATH, 'ini'),
+    ('app', SERVER_REPOSITORY_PATH, 'ini'),
     ('uwsgi', '/etc/init', 'conf'),
     ('deploy', '/etc/init', 'conf'),
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
@@ -195,7 +195,7 @@ authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 """
 Election configuration
 """
-NEXT_ELECTION_DATE = '2016-04-26'
+NEXT_ELECTION_DATE = '2016-05-24'
 ELEX_FLAGS = ''
 ELEX_DELEGATE_FLAGS = ''
 
@@ -204,7 +204,13 @@ DELEGATE_ESTIMATES = {
     'GOP': 1237,
 }
 
-DROPPED_OUT = ['60208', '60339', '60051', '45650', '1239', '1187', '64509', '53044']
+# IDs of candidates who have dropped out (primarily for delegate tracker)
+DROPPED_OUT = ['61815', '36679', '60208', '60339', '60051', '45650', '1239', '1187', '64509', '53044']
+
+# Races to exclude from results, organized by date
+RACE_BLACKLIST = {
+    '2016-05-10': ('28001',)
+}
 
 DELEGATE_TIMESTAMP_FILE = './.delegates_updated'
 
@@ -301,12 +307,12 @@ def configure_targets(deployment_target):
         LOG_LEVEL = logging.DEBUG
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''
-        LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 0
-        LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 30
-        SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 300
+        LOAD_COPY_INTERVAL = 15
+        LOAD_RESULTS_INTERVAL = 15
+        LOAD_DOCS_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 15
+        SITE_ARCHIVE_INTERVAL = 900
+        LOAD_DELEGATES_INTERVAL = 60
     elif deployment_target == 'staging':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -322,11 +328,11 @@ def configure_targets(deployment_target):
         ELEX_FLAGS = ''
         ELEX_DELEGATE_FLAGS = ''  #'--delegate-sum-file tests/data/20160118_delsum.json --delegate-super-file tests/data/20160118_delsuper.json'
         LOAD_COPY_INTERVAL = 30
-        LOAD_RESULTS_INTERVAL = 0
+        LOAD_RESULTS_INTERVAL = 30
         LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 10
+        CARD_DEPLOY_INTERVAL = 30
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 0
+        LOAD_DELEGATES_INTERVAL = 120
     elif deployment_target == 'test':
         S3_BUCKET = 'stage-elections16.apps.npr.org'
         S3_BASE_URL = 'http://stage-elections16.apps.npr.org.s3-website-us-east-1.amazonaws.com'
@@ -389,10 +395,10 @@ def configure_targets(deployment_target):
         ELEX_DELEGATE_FLAGS = ''
         LOAD_COPY_INTERVAL = 15
         LOAD_RESULTS_INTERVAL = 15
-        LOAD_DOCS_INTERVAL = 30
-        CARD_DEPLOY_INTERVAL = 20
+        LOAD_DOCS_INTERVAL = 15
+        CARD_DEPLOY_INTERVAL = 15
         SITE_ARCHIVE_INTERVAL = 0
-        LOAD_DELEGATES_INTERVAL = 3600
+        LOAD_DELEGATES_INTERVAL = 60
 
     DEPLOYMENT_TARGET = deployment_target
 

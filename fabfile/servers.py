@@ -188,8 +188,7 @@ def render_confs():
         template_path = _get_template_conf_path(service, extension)
         rendered_path = _get_rendered_conf_path(service, extension)
 
-        with open(template_path,  'r') as read_template:
-
+        with open(template_path, 'r') as read_template:
             with open(rendered_path, 'wb') as write_template:
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
@@ -211,6 +210,9 @@ def deploy_confs():
 
             print 'Updating %s' % installed_path
             put(rendered_path, installed_path, use_sudo=True)
+
+            if extension == 'ini':
+                continue
 
             sudo('initctl reload-configuration')
 
