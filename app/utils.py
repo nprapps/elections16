@@ -369,7 +369,7 @@ def group_poll_closings(races):
         }
 
         for race in races:
-            if race['precinctsreporting'] == 0 and not race['called'] and race['order'] == group:
+            if race['total'] == 0 and not race['called'] and race['order'] == group:
                 grouped[group]['poll_closing'] = race['poll_closing']
                 grouped[group]['races'].append(race['statename'])
 
@@ -377,7 +377,7 @@ def group_poll_closings(races):
 
 
 def get_unreported_races(races):
-    unreported = [race['statename'] for race in races if race['precinctsreporting'] == 0 and not race['called']]
+    unreported = [race['statename'] for race in races if race['total'] == 0 and not race['called']]
     return unreported
 
 
