@@ -290,7 +290,6 @@ def get_results(party, electiondate):
 
     output = []
     for race in race_ids:
-        print race.statename
         output.append(get_race_results(race.raceid, ap_party, copy, race.statename))
 
     return output
@@ -300,7 +299,6 @@ def get_race_results(raceid, party, copy, statename):
     """
     Results getter
     """
-    print statename
     race_results = models.Result.select().where(
         models.Result.raceid == raceid,
         models.Result.level == 'state',
