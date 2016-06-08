@@ -292,7 +292,9 @@ def get_results(party, electiondate):
     for race in race_ids:
         output.append(get_race_results(race.raceid, ap_party, copy, race.statename))
 
-    return output
+    sorted_output = sorted(output, key=lambda k: k['statename'])
+
+    return sorted_output
 
 
 def get_race_results(raceid, party, copy, statename):
