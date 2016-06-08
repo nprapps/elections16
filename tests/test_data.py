@@ -66,7 +66,7 @@ class ResultsLoadingTestCase(unittest.TestCase):
         self.assertEqual(filtered_length, whitelist_length * 11)
 
     def test_vote_tally(self):
-        tally = utils.tally_results('12044')
+        tally = utils.tally_results('12044', 'Georgia')
         self.assertEqual(tally, 167554)
 
     def test_last_updated_precinctsreporting(self):
