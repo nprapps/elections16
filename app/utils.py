@@ -290,18 +290,19 @@ def get_results(party, electiondate):
 
     output = []
     for race in race_ids:
-        output.append(get_race_results(race.raceid, ap_party, copy))
+        output.append(get_race_results(race.raceid, ap_party, copy, race.statename))
 
     return output
 
 
-def get_race_results(raceid, party, copy):
+def get_race_results(raceid, party, copy, statename):
     """
     Results getter
     """
     race_results = models.Result.select().where(
         models.Result.raceid == raceid,
-        models.Result.level == 'state'
+        models.Result.level == 'state',
+        models.Result.statename == statename
     )
 
     filtered, other_votecount, other_votepct = collate_other_candidates(list(race_results), party)
@@ -326,7 +327,7 @@ def get_race_results(raceid, party, copy):
         'precinctsreportingpct': serialized_results[0]['precinctsreportingpct'],
         'precinctsreporting': serialized_results[0]['precinctsreporting'],
         'precinctstotal': serialized_results[0]['precinctstotal'],
-        'total': tally_results(raceid),
+        'total': tally_results(raceid, statename),
         'called': called,
         'race_type': '',
         'note': get_race_note(serialized_results[0], copy)
@@ -399,13 +400,14 @@ def get_last_updated(races):
     return last_updated
 
 
-def tally_results(raceid):
+def tally_results(raceid, statename):
     """
     Add results for a given party on a given date.
     """
     tally = models.Result.select(fn.SUM(models.Result.votecount)).where(
         models.Result.level == 'state',
-        models.Result.raceid == raceid
+        models.Result.raceid == raceid,
+        models.Result.statename == statename
     ).scalar()
     return tally
 
