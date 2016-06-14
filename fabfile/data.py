@@ -167,6 +167,8 @@ def create_race_meta():
     for row in calendar_sheet._serialize():
         if not row.get('full_poll_closing_time'):
             continue
+        if row.get('status') == 'past':
+            continue
 
         results = models.Result.select().where(
                 models.Result.level == 'state',
