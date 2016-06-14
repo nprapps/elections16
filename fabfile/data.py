@@ -170,8 +170,6 @@ def create_race_meta():
         if row.get('status') == 'past':
             continue
 
-        print row['type']
-
         results = models.Result.select().where(
                 models.Result.level == 'state',
                 models.Result.statename == row['state_name'],
