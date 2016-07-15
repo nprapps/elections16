@@ -101,7 +101,7 @@ def load_results():
     election_date = app_config.NEXT_ELECTION_DATE
     with hide('output', 'running'):
         local('mkdir -p .data')
-    cmd = 'elex results {0} --results-level state {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
+    cmd = 'elex results {0} {1} > .data/results.csv'.format(election_date, app_config.ELEX_FLAGS)
     with shell_env(**app_config.database):
         with settings(warn_only=True), hide('output', 'running'):
             cmd_output = local(cmd, capture=True)
@@ -166,6 +166,8 @@ def create_race_meta():
 
     for row in calendar_sheet._serialize():
         if not row.get('full_poll_closing_time'):
+            continue
+        if row.get('status') == 'past':
             continue
 
         results = models.Result.select().where(

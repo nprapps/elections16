@@ -170,10 +170,13 @@ class CandidateDelegates(BaseModel):
         return (self.delegates_count - self.superdelegates_count)
 
     def pledged_delegates_pct(self):
-        return 100 * ((self.delegates_count - self.superdelegates_count) / float(self.party_need))
+        return 100 * ((self.delegates_count - self.superdelegates_count) / (float(self.party_need) + 600))
 
     def superdelegates_pct(self):
-        return 100 * (self.superdelegates_count / float(self.party_need))
+        return 100 * (self.superdelegates_count / (float(self.party_need) + 600))
 
     def delegates_pct(self):
-        return 100 * (self.delegates_count / float(self.party_need))
+        return 100 * (self.delegates_count / (float(self.party_need) + 600))
+
+    def needed_bar_position(self):
+        return  100 * (float(self.party_need) / (float(self.party_need) + 600))

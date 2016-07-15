@@ -93,7 +93,8 @@ def accept_ap():
 
     results = models.Result.select().where(
         models.Result.level == 'state',
-        models.Result.raceid == race_id
+        models.Result.raceid == race_id,
+        models.Result.officename == 'President'
     )
 
     for result in results:

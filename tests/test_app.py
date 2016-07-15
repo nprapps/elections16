@@ -67,17 +67,17 @@ class AppTestCase(unittest.TestCase):
 
     def test_small_percent_filter(self):
         # 7927 is the number of precincts in Texas
-        value = (1.0 / 7927.0) * 100
+        value = 1.0 / 7927.0
         formatted = utils.percent_filter(value)
         self.assertEqual(formatted, '<1%')
 
     def test_large_percent_filter(self):
-        value = (7926.0 / 7927.0) * 100
+        value = 7926.0 / 7927.0
         formatted = utils.percent_filter(value)
         self.assertEqual(formatted, '99.9%')
 
     def test_one_hundred_percent_filter(self):
-        formatted = utils.percent_filter(100)
+        formatted = utils.percent_filter(1)
         self.assertEqual(formatted, '100%')
 
     def test_results_json(self):

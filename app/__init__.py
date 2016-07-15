@@ -23,7 +23,6 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 app.add_template_filter(utils.comma_filter, name='comma')
 app.add_template_filter(utils.percent_filter, name='percent')
-app.add_template_filter(utils.normalize_percent_filter, name='normalize_percent')
 app.add_template_filter(utils.ordinal_filter, name='ordinal')
 app.add_template_filter(utils.ap_month_filter, name='ap_month')
 app.add_template_filter(utils.ap_date_filter, name='ap_date')
@@ -133,8 +132,7 @@ def results_single(party):
     context['template'] = 'results'
     context['route'] = '/results-single/%s/' % party
 
-    if context['state'] != 'inactive':
-        context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
+    context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
 
     return render_template('cards/results.html', **context)
 
@@ -161,21 +159,10 @@ def results(party):
     context['template'] = 'results-multi'
     context['route'] = '/results/%s/' % party
 
-    if context['state'] != 'inactive':
-        context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
+    context['refresh_rate'] = app_config.LOAD_RESULTS_INTERVAL
 
     return render_template('cards/results-multi.html', **context)
 
-@app.route('/results-pr/')
-@oauth_required
-def results_pr():
-    context = make_context()
-    context['refresh_rate'] = 60
-    context['route'] = '/results-pr/'
-    context['slug'] = 'results-pr'
-    context['template'] = 'results'
-
-    return render_template('cards/results-pr-gop.html', **context)
 
 @app.route('/delegates/<party>/')
 @oauth_required
@@ -211,8 +198,7 @@ def delegates(party):
     context['template'] = 'delegates'
     context['route'] = '/delegates/%s/' % party
 
-    if context['state'] != 'inactive':
-        context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DELEGATES_INTERVAL
 
     return render_template('cards/delegates.html', **context)
 
@@ -236,7 +222,7 @@ def live_audio():
     context['slug'] = 'live-audio'
     context['template'] = 'live-audio'
     context['route'] = '/live-audio/'
-    context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DOCS_INTERVAL
 
     return render_template('cards/live-audio.html', **context)
 
@@ -334,7 +320,7 @@ def get_caught_up():
     context['slug'] = 'get-caught-up'
     context['template'] = 'link-roundup'
     context['route'] = '/get-caught-up/'
-    context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DOCS_INTERVAL
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -348,7 +334,7 @@ def whats_happening():
     context['slug'] = 'whats-happening'
     context['template'] = 'link-roundup'
     context['route'] = '/whats-happening/'
-    context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DOCS_INTERVAL
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -362,7 +348,7 @@ def what_happened():
     context['slug'] = 'what-happened'
     context['template'] = 'link-roundup'
     context['route'] = '/what-happened/'
-    context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DOCS_INTERVAL
 
     return render_template('cards/link-roundup.html', **context)
 
@@ -376,7 +362,7 @@ def title():
     context['slug'] = 'title'
     context['template'] = 'title'
     context['route'] = '/title/'
-    context['refresh_rate'] = 60
+    context['refresh_rate'] = app_config.LOAD_DOCS_INTERVAL
     return render_template('cards/title.html', **context)
 
 
